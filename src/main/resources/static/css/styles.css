@@ -121,3 +121,87 @@ body {
   min-height: 100vh;                          /* 남는 높이 채우기 */
 }
 main, main.container { flex: 1; }
+
+/* ---------------------------------- */
+/* 게시글 쓰기 폼 (post-form) 스타일 */
+/* ---------------------------------- */
+
+/* 폼 전체를 감싸는 컨테이너 */
+.post-form {
+    max-width: 800px;  /* 폼의 최대 너비 */
+    margin: 2rem auto; /* 상하 여백 2rem, 좌우 중앙 정렬 */
+    padding: 2rem;       /* 내부 여백 */
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* 폼 내부의 각 입력 그룹 (제목, 내용) */
+.form-group {
+    margin-bottom: 1.5rem; /* 각 그룹 사이의 하단 여백 */
+}
+
+/* '제목', '내용' 라벨 스타일 */
+.form-group label {
+    display: block;  /* 라벨을 블록 요소로 만들어 한 줄 전체 차지 */
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem; /* 라벨과 입력창 사이의 여백 */
+    color: #333;
+}
+
+/* '제목' 입력창 스타일 */
+.form-group input[type="text"] {
+    width: 100%;             /* 부모 요소(form-group) 너비에 꽉 채우기 */
+    padding: 12px 15px;      /* 내부 여백 (상하 12px, 좌우 15px) */
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;  /* 패딩, 테두리를 포함하여 너비 100% 유지 */
+}
+
+/* '내용' 입력창 스타일 */
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    min-height: 250px; /* 최소 높이 지정 */
+    resize: vertical;    /* 사용자가 세로로만 크기 조절 가능하게 */
+    font-family: inherit; /* 폼의 다른 글꼴과 동일하게 */
+}
+
+/* 입력창 포커스(클릭) 시 스타일 */
+.form-group input[type="text"]:focus,
+.form-group textarea:focus {
+    border-color: #007bff; /* 파란색 테두리 */
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+    outline: none; /* 기본 아웃라인 제거 */
+}
+
+/* '등록' 버튼 관련 스타일 */
+.form-actions {
+    text-align: right; /* 버튼들을 오른쪽으로 정렬 */
+    margin-top: 1.5rem;
+}
+
+/* '등록' 버튼 스타일 */
+.submit-button {
+    padding: 12px 28px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background-color: #007bff; /* 메인 파란색 */
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+/* 버튼에 마우스 올렸을 때 */
+.submit-button:hover {
+    background-color: #0056b3; /* 더 진한 파란색 */
+}
