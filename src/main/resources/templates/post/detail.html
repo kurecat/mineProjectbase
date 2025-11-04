@@ -1,39 +1,157 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
-  <head>
+<head>
     <meta charset="UTF-8" />
-    <title>게시글 상세</title>
+    <title th:text="${post.title}">게시글 상세</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}" />
-  </head>
-  <body>
-    <div th:replace="fragments/header :: header"></div>
-    <!-- 게시글 본문 -->
-    <h2 th:text="${post.title}"></h2>
-    <p th:text="${post.content}"></p>
-    <p th:text="${post.memberEmail}"></p>
-    <p th:text="${post.createAt}"></p>
+</head>
+<body>
+<!-- 헤더 -->
+<div th:replace="fragments/header :: header"></div>
 
-    <!-- 댓글 등록 -->
-    <button type="submit" class="btn btn-primary">등록</button>
+<main class="container">
+    <div class="page-head">
+        <h2 th:text="${post.title}">게시글 상세</h2>
+        <a
+                class="btn"
+                th:href="@{/posts}"
+                style="border: 1px solid var(--border); background: #fff"
+        >목록</a
+        >
+    </div>
+
+    <!-- 게시글 본문 -->
+    <div class="card" style="padding: 24px; margin-bottom: 16px">
+        <p style="color: #667085; margin: 0 0 8px 0">
+            <span th:text="${post.memberEmail}">author@example.com</span> ·
+            <span th:text="${#temporals.format(post.createAt,'yyyy-MM-dd HH:mm')}"
+            >2025-11-04 10:00</span
+            >
+        </p>
+        <div
+                th:text="${post.content}"
+                style="white-space: pre-wrap; line-height: 1.7"
+        ></div>
+    </div>
+
+    <!-- 알림 (옵션) -->
+    <div
+            th:if="${message}"
+            class="card"
+            style="
+          padding: 12px;
+          margin-bottom: 16px;
+          color: #0a7d32;
+          border-left: 4px solid #0a7d32;
+        "
+    >
+        <span th:text="${message}"></span>
+    </div>
+    <div
+            th:if="${error}"
+            class="card"
+            style="
+          padding: 12px;
+          margin-bottom: 16px;
+          color: #dc3545;
+          border-left: 4px solid #dc3545;
+        "
+    >
+        <span th:text="${error}"></span>
+    </div>
+
+    <!-- 댓글 작성 -->
+    <div class="card" style="padding: 24px; margin-bottom: 16px">
+        <h3 style="margin: 0 0 12px 0; font-size: 18px">댓글 쓰기</h3>
+
+        <!-- 컨트롤러에서 model.addAttribute("commentWrite", ...)로 제공 -->
+        <form
+                class="form"
+                th:action="@{|/posts/${post.id}|}"
+                th:object="${commentWrite}"
+                method="post"
+        >
+            <!-- 어떤 게시글의 댓글인지 -->
+            <input type="hidden" th:field="*{postId}" />
+
+            <div>
+                <label for="ccontent">내용</label>
+                <textarea
+                        id="ccontent"
+                        th:field="*{content}"
+                        class="textarea"
+                        rows="4"
+                        placeholder="댓글을 입력하세요"
+                        required
+                ></textarea>
+                <div
+                        class="error-message"
+                        th:if="${#fields.hasErrors('content')}"
+                        th:errors="*{content}"
+                ></div>
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="btn btn-primary">등록</button>
+            </div>
+        </form>
+    </div>
 
     <!-- 댓글 목록 -->
-    <table class="table">
-      <thead>
-        <tr>
-          <th>작성자</th>
-          <th>내용</th>
-          <th>작성일</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="comment : ${comments}">
-          <td th:text="${comment.memberEmail}"></td>
-          <td th:text="${comment.content}"></td>
-          <td th:text="${comment.createAt}"></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="card" style="padding: 0">
+        <table class="table">
+            <thead>
+            <tr>
+                <th style="width: 220px">작성자</th>
+                <th>내용</th>
+                <th style="width: 180px">작성일</th>
+                <th style="width: 160px; text-align: right">액션</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="c : ${comments}">
+                <td th:text="${c.authorEmail}">user@example.com</td>
+                <td th:text="${c.content}" style="white-space: pre-wrap"></td>
+                <td
+                        th:text="${#temporals.format(c.createdAt,'yyyy-MM-dd HH:mm')}"
+                >
+                    2025-11-04 10:10
+                </td>
+                <td style="text-align: right">
+                    <a
+                            class="btn"
+                            th:href="@{|/comments/${c.id}/edit|}"
+                            style="border: 1px solid var(--border); background: #fff"
+                    >수정</a
+                    >
 
-    <div th:replace="fragments/footer :: footer"></div>
-  </body>
+                    <form
+                            th:action="@{|/comments/${c.id}/delete|}"
+                            method="post"
+                            style="display: inline"
+                    >
+                        <!-- 삭제 후 다시 이 게시글 상세로 돌아가기 위해 postId 함께 전송 -->
+                        <input type="hidden" name="postId" th:value="${post.id}" />
+                        <button
+                                class="btn btn-primary"
+                                type="submit"
+                                style="background: #ef4444; border-color: #ef4444"
+                        >
+                            삭제
+                        </button>
+                    </form>
+                </td>
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(comments)}">
+                <td colspan="4" class="empty">등록된 댓글이 없습니다.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<!-- 푸터 -->
+<div th:replace="fragments/footer :: footer"></div>
+</body>
 </html>
