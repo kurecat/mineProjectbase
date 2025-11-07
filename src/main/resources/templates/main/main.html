@@ -1,119 +1,117 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>main</title>
-</head>
-<body>
-<div class="container">
-    <header>
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
         <div class="header-top">
-            <h1 class="logo">AjiteU</h1>
-            <div class="top-center-box">(W 300 H 50)</div>
+          <h1 class="logo">AjiteU</h1>
+          <div class="top-center-box">(W 300 H 50)</div>
         </div>
         <nav class="main-nav">
-            <ul>
-                <li><a href="#">게시판</a></li>
-                <li><a href="#">설문조사</a></li>
-            </ul>
+          <ul>
+            <li><a href="#">게시판</a></li>
+            <li><a href="#">설문조사</a></li>
+          </ul>
         </nav>
-    </header>
+      </header>
 
-    <main class="main-content">
+      <main class="main-content">
         <section class="content-area">
-            <div class="board-list">
-            </div>
+          <div class="board-list"></div>
 
-            <div class="pagination">
-                <span>&lt;&lt;</span>
-                <span>&lt;</span>
-                <span class="current">1</span>
-                <span>2</span>
-                <span>3</span>
-                <span>4</span>
-                <span>5</span>
-                <span>6</span>
-                <span>7</span>
-                <span>8</span>
-                <span>9</span>
-                <span>10</span>
-                <span>&gt;</span>
-                <span>&gt;&gt;</span>
-            </div>
+          <div class="pagination">
+            <span>&lt;&lt;</span>
+            <span>&lt;</span>
+            <span class="current">1</span>
+            <span>2</span>
+            <span>3</span>
+            <span>4</span>
+            <span>5</span>
+            <span>6</span>
+            <span>7</span>
+            <span>8</span>
+            <span>9</span>
+            <span>10</span>
+            <span>&gt;</span>
+            <span>&gt;&gt;</span>
+          </div>
         </section>
         <aside class="sidebar">
-            <!-- 로그인 박스 -->
-            <div class="login-box">
-                <h3>로그인</h3>
-                <form action="#">
-                    <div class="login-inputs">
-                        <div class="input-group">
-                            <label for="id">id</label>
-                            <input type="text" id="id" />
-                        </div>
-                        <div class="input-group">
-                            <label for="pwd">pwd</label>
-                            <input type="password" id="pwd" />
-                        </div>
-                    </div>
-                    <button type="submit" class="login-button">로그인</button>
-                </form>
-                <div class="login-links">
-                    <a href="#">ID/PW 찾기</a> | <a href="#">회원가입</a>
+          <!-- 로그인 박스 -->
+          <div class="login-box">
+            <h3>로그인</h3>
+            <form action="#">
+              <div class="login-inputs">
+                <div class="input-group">
+                  <label for="id">id</label>
+                  <input type="text" id="id" />
                 </div>
+                <div class="input-group">
+                  <label for="pwd">pwd</label>
+                  <input type="password" id="pwd" />
+                </div>
+              </div>
+              <button type="submit" class="login-button">로그인</button>
+            </form>
+            <div class="login-links">
+              <a href="#">ID/PW 찾기</a> | <a href="#">회원가입</a>
             </div>
+          </div>
 
-            <div class="sidebar-ad-box">(W 402 H 505)</div>
+          <div class="sidebar-ad-box">(W 402 H 505)</div>
         </aside>
-    </main>
+      </main>
 
-    <footer>Footer</footer>
-</div>
+      <footer>Footer</footer>
+    </div>
 
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const paginationContainer = document.querySelector(".pagination");
+        const boardListContainer = document.querySelector(".board-list");
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const paginationContainer = document.querySelector(".pagination");
-      const boardListContainer = document.querySelector(".board-list");
+        function renderBoard(page) {
+          boardListContainer.innerHTML = "";
 
+          const postsPerPage = 15;
+          const startPostNumber = (page - 1) * postsPerPage + 1;
+          const endPostNumber = page * postsPerPage;
 
-      function renderBoard(page) {
-        boardListContainer.innerHTML = "";
+          for (let i = startPostNumber; i <= endPostNumber; i++) {
+            const item = document.createElement("div");
+            item.className = "board-item";
+            item.textContent = `게시글 제목 ${i}`;
 
-        const postsPerPage = 15;
-        const startPostNumber = (page - 1) * postsPerPage + 1;
-        const endPostNumber = page * postsPerPage;
-
-        for (let i = startPostNumber; i <= endPostNumber; i++) {
-          const item = document.createElement("div");
-          item.className = "board-item";
-          item.textContent = `게시글 제목 ${i}`;
-
-          boardListContainer.appendChild(item);
-        }
-      }
-
-      if (paginationContainer) {
-        paginationContainer.addEventListener("click", function (event) {
-          if (event.target.tagName === "SPAN") {
-            const pageText = event.target.textContent;
-            const pageNumber = parseInt(pageText);
-
-            if (!isNaN(pageNumber)) {
-              const currentActive =
-                paginationContainer.querySelector(".current");
-              if (currentActive) {
-                currentActive.classList.remove("current");
-              }
-              event.target.classList.add("current");
-              renderBoard(pageNumber);
-            }
+            boardListContainer.appendChild(item);
           }
-        });
-      }
-      renderBoard(1);
-    });
-</script>
-</body>
+        }
+
+        if (paginationContainer) {
+          paginationContainer.addEventListener("click", function (event) {
+            if (event.target.tagName === "SPAN") {
+              const pageText = event.target.textContent;
+              const pageNumber = parseInt(pageText);
+
+              if (!isNaN(pageNumber)) {
+                const currentActive =
+                  paginationContainer.querySelector(".current");
+                if (currentActive) {
+                  currentActive.classList.remove("current");
+                }
+                event.target.classList.add("current");
+                renderBoard(pageNumber);
+              }
+            }
+          });
+        }
+        renderBoard(1);
+      });
+    </script>
+  </body>
 </html>
