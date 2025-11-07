@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class LoginController {
     private final MemberService memberService;  // 생성자 의존성 주입
 
-    @GetMapping("/")  // 루트 경로에 대한 페이지 이동, http://localhost:8111
+    @GetMapping("/A")  // 루트 경로에 대한 페이지 이동, http://localhost:8111
     public String loginPage() {
         return "login/login";   // resoures/template/login/login.html
     }
