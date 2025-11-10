@@ -2,6 +2,7 @@ package com.human.web_board.service;
 
 import com.human.web_board.dto.PostCreateReq;
 import com.human.web_board.dto.PostRes;
+import com.human.web_board.dto.PostSummaryRes;
 
 import java.util.List;
 
@@ -16,5 +17,7 @@ public interface PostService {
     boolean edit(PostCreateReq req, Long id);
     // 게시글 삭제
     boolean delete(Long id);
+    // 게시글 목록
+    List<PostSummaryRes> summaryListByBoardId(Long boardId, int offset, int rowNum);
 
 }

@@ -4,6 +4,7 @@ import com.human.web_board.dao.MemberDao;
 import com.human.web_board.dao.PostDao;
 import com.human.web_board.dto.PostCreateReq;
 import com.human.web_board.dto.PostRes;
+import com.human.web_board.dto.PostSummaryRes;
 import com.human.web_board.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,16 @@ import java.util.List;
 @Slf4j
 public class PostServiceImpl implements PostService {
     private final PostDao postDao;
+
+    @Override
+    public List<PostSummaryRes> summaryListByBoardId(Long boardId, int offset, int rowNum) {
+        try {
+            postDao.findSummaryByCategoryId(boardId, offset, rowNum);
+        } catch (IllegalArgumentException e) {
+            log.error("게시글 요약 불러오기 에러 발생: {}", e);
+        }
+        return List.of();
+    }
     private final MemberDao memberDao;
     @Override
     @Transactional
@@ -55,4 +66,5 @@ public class PostServiceImpl implements PostService {
             throw new IllegalArgumentException("게시글을 삭제 할 수 없습니다.");
         }
     }
+
 }

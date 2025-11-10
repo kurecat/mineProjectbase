@@ -2,6 +2,7 @@ package com.human.web_board.dao;
 
 import com.human.web_board.dto.PostCreateReq;
 import com.human.web_board.dto.PostRes;
+import com.human.web_board.dto.PostSummaryRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -94,6 +95,35 @@ public class PostDao {
             post.setView_count(rs.getLong("view_count"));
             post.setCreated_at(rs.getTimestamp("created_at").toLocalDateTime());
             return post;
+        }
+    }
+
+    //게시글 요약 목록 가져오기
+    public List<PostSummaryRes> findSummaryByCategoryId(Long categoryId, int offset, int rowNum) {
+        String sql = """
+                SELECT p.id, p.title, m.NICKNAME, p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT
+                    FROM POSTS p
+                    JOIN members m ON p.member_id = m.id
+                    WHERE p.CATEGORY_ID = ? and ROWNUM BETWEEN ? and ?
+                    ORDER BY p.id DESC
+                """;
+        List<PostSummaryRes> postSummaryResList = jdbc.query(
+                sql, new PostSummaryResRowMapper(), categoryId, offset, offset + rowNum);
+        if (postSummaryResList.isEmpty()) throw new IllegalArgumentException("0개 행이 반환되었습니다");
+        return postSummaryResList;
+    }
+
+    static class PostSummaryResRowMapper implements RowMapper<PostSummaryRes> {
+        @Override
+        public PostSummaryRes mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new PostSummaryRes(
+                    rs.getLong("id"),
+                    rs.getString("title"),
+                    rs.getString("nickname"),
+                    rs.getLong("view_count"),
+                    rs.getLong("recommendations_count"),
+                    rs.getTimestamp("created_at").toLocalDateTime()
+            );
         }
     }
 }
