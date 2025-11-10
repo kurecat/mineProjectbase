@@ -22,7 +22,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public Long write(PostCreateReq req) {
-        if (memberDao.findById(req.getMemberId()) == null) {
+        if (memberDao.findById(req.getMember_Id()) == null) {
             throw new IllegalArgumentException("존재하지 않는 회원 입니다.");
         }
         return postDao.save(req);

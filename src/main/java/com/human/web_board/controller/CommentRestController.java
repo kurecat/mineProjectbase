@@ -24,7 +24,7 @@ public class CommentRestController {
     }
 
     // 댓글 목록 조회 : GET, 정보가 URL 경로에 포함됨
-    @GetMapping("/post/{postId}")
+    @GetMapping("/posts/{postId}")
     public ResponseEntity<List<CommentRes>> listByPost(@PathVariable Long postId) {
         return ResponseEntity.ok(commentService.list(postId));
     }

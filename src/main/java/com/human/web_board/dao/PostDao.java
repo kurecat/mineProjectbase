@@ -21,21 +21,27 @@ public class PostDao {
     // 게시글 등록(수정)
     public Long save(PostCreateReq p) {
         @Language("SQL")
-        String sql = "INSERT INTO posts(id,member_id,title,content,category,view_count,recommendations_count,created_at) VALUES (seq_post.NEXTVAL, ?, ?, ?,?,?,?,?)";
-        jdbc.update(sql, p.getMemberId(), p.getTitle(), p.getContent(),p.getCategory,0,0, LocalDateTime.now());
-        return jdbc.queryForObject("SELECT seq_post.CURRVAL FROM dual", Long.class);
+        String sql = "INSERT INTO posts(id,member_id,title,content,category_id,view_count,recommendations_count,created_at) VALUES (posts_seq.NEXTVAL, ?, ?, ?,?,?,?,?)";
+        jdbc.update(sql, p.getMember_Id(), p.getTitle(), p.getContent(),p.getCategory_id(),0,0, LocalDateTime.now());
+        return jdbc.queryForObject("SELECT posts_seq.CURRVAL FROM dual", Long.class);
     }
 
     // 게시글 목록 보기(수정)
+
     public List<PostRes> findAll() {
         @Language("SQL")
         String sql = """
-        SELECT post_id, title, view_count, created_at
+        SELECT 
+            id,
+            title,
+            view_count,
+            created_at
         FROM posts
-        ORDER BY post_id DESC
+        ORDER BY id DESC
         """;
-        return jdbc.query(sql, new PostResPowMapper());
+        return jdbc.query(sql, new PostListMapper());
     }
+
 
     // id로 게시글 가져 오기(수정)
     public PostRes findById(Long id) {
@@ -72,11 +78,24 @@ public class PostDao {
                     rs.getLong("member_id"),
                     rs.getString("title"),
                     rs.getString("content"),
-                    rs.getLong("category"),
+                    rs.getLong("category_id"),
                     rs.getLong("view_count"),
-                    rs.getLong("recommendation_count"),
+                    rs.getLong("recommendations_count"),
                     rs.getTimestamp("created_at").toLocalDateTime()
             );
         }
     }
+    static class PostListMapper implements RowMapper<PostRes> {
+        @Override
+        public PostRes mapRow(ResultSet rs, int rowNum) throws SQLException {
+            PostRes post = new PostRes();
+            post.setId(rs.getLong("id"));
+            post.setTitle(rs.getString("title"));
+            post.setView_count(rs.getLong("view_count"));
+            post.setCreated_at(rs.getTimestamp("created_at").toLocalDateTime());
+            return post;
+        }
+    }
 }
+
+

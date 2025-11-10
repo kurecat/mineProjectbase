@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @ToString
 public class PostRes {
     private Long id;    //PK
-    private Long memberId;  // FK
+    private Long member_Id;  // FK
     private String title;
     private String content;
     private Long category_id;  // FK(여기 나중에 수정할 수도 있음! long->string)
