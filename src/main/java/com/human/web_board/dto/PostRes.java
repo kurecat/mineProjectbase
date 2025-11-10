@@ -7,10 +7,12 @@ import java.time.LocalDateTime;
 // 게시글 응답
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @ToString
 public class PostRes {
-    private Long id;
-    private Long memberId;
-    private String memberEmail;  // 회원 테이블에 있는 정보를 조인해서 가져 옴
+    private Long id;    //PK
+    private Long memberId;  // FK
     private String title;
     private String content;
-    private LocalDateTime createAt;
+    private Long category_id;  // FK(여기 나중에 수정할 수도 있음! long->string)
+    private Long view_count;
+    private Long recommendations_count;
+    private LocalDateTime created_at;
 }
