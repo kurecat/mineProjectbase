@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @ToString
 public class CommentRes {
     private Long id;
-    private Long postId;
-    private Long memberId;
+    private Long post_Id;
+    private Long member_Id;
     private String content;
     private LocalDateTime created_At;
 }
