@@ -21,8 +21,8 @@ public class CommentDao {
     // 댓글 등록(수정)
     public Long save(CommentCreateReq c) {
         @Language("SQL")
-        String sql = "INSERT INTO comments (id, post_id, member_id, content) VALUES (seq_comments.NEXTVAL, ?, ?, ?)";
-        jdbc.update(sql, c.getPostId(), c.getMemberId(), c.getContent());
+        String sql = "INSERT INTO comments (id, post_id, member_id, content) VALUES (comments_seq.NEXTVAL, ?, ?, ?)";
+        jdbc.update(sql, c.getPost_Id(), c.getMember_Id(), c.getContent());
         return jdbc.queryForObject("SELECT comments_seq.CURRVAL FROM dual", Long.class);
     }
 
