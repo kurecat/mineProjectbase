@@ -38,7 +38,40 @@ public class MainPageController {
             @RequestParam(defaultValue = "10") int rowNum,
             Model model, HttpSession session) {
         // 서비스에서 지정 게시판 정보 & 기타정보 가져와서 모델에 추가
-        model.addAttribute("postsSummaries", postService.summaryListByBoardId(id, offset, rowNum));
+        model.addAttribute(
+                "postSummaries",
+                postService.list(id, offset, rowNum)
+        );
+        return "main/main";
+    }
+    // 게시물 검색 기능
+    @GetMapping("/boards/search")
+    public String searchPost(
+            @RequestParam(defaultValue = "") String query,
+            @RequestParam(defaultValue = "1") int offset,
+            @RequestParam(defaultValue = "10") int rowNum,
+            Model model, HttpSession session) {
+        // text가 포함된 게시물들 찾아서 모델에 추가
+        model.addAttribute(
+                "postSummaries",
+                postService.searchList(query, offset, rowNum)
+        );
+        return "main/main";
+    }
+
+    // 게시판 내에서 게시물 검색 기능
+    @GetMapping("/boards/{id}/search")
+    public String searchPost(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "") String query,
+            @RequestParam(defaultValue = "1") int offset,
+            @RequestParam(defaultValue = "10") int rowNum,
+            Model model, HttpSession session) {
+        // text가 포함된 게시물들 찾아서 모델에 추가
+        model.addAttribute(
+                "postSummaries",
+                postService.searchList(id, query, offset, rowNum)
+        );
         return "main/main";
     }
 

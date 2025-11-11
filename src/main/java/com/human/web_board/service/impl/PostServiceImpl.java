@@ -20,15 +20,6 @@ import java.util.List;
 public class PostServiceImpl implements PostService {
     private final PostDao postDao;
 
-    @Override
-    public List<PostSummaryRes> summaryListByBoardId(Long boardId, int offset, int rowNum) {
-        try {
-            postDao.findSummaryByCategoryId(boardId, offset, rowNum);
-        } catch (IllegalArgumentException e) {
-            log.error("게시글 요약 불러오기 에러 발생: {}", e);
-        }
-        return List.of();
-    }
     private final MemberDao memberDao;
     @Override
     @Transactional
@@ -37,11 +28,6 @@ public class PostServiceImpl implements PostService {
             throw new IllegalArgumentException("존재하지 않는 회원 입니다.");
         }
         return postDao.save(req);
-    }
-
-    @Override
-    public List<PostRes> list() {
-        return postDao.findAll();
     }
 
     @Override
@@ -65,6 +51,54 @@ public class PostServiceImpl implements PostService {
             log.error("게시글 삭제 예외 발생: {}", e.getCause());
             throw new IllegalArgumentException("게시글을 삭제 할 수 없습니다.");
         }
+    }
+
+    @Override
+    public List<PostSummaryRes> list(int offset, int rowNum) {
+        List<PostSummaryRes> res;
+        try {
+            res = postDao.findAll(offset, rowNum);
+        } catch (IllegalArgumentException e) {
+            log.error("게시판 불러오기 에러 발생: {}", e);
+            res = null;
+        }
+        return res;
+    }
+
+    @Override
+    public List<PostSummaryRes> list(Long boardId, int offset, int rowNum) {
+        List<PostSummaryRes> res;
+        try {
+            res = postDao.findByCategoryId(boardId, offset, rowNum);
+        } catch (IllegalArgumentException e) {
+            log.error("게시판 불러오기 에러 발생: {}", e);
+            res = null;
+        }
+        return res;
+    }
+
+    @Override
+    public List<PostSummaryRes> searchList(String query, int offset, int rowNum) {
+        List<PostSummaryRes> res;
+        try {
+            res = postDao.findByQuery(query, offset, rowNum);
+        } catch (IllegalArgumentException e) {
+            log.error("게시글 검색 에러 발생: {}", e);
+            res = null;
+        }
+        return res;
+    }
+
+    @Override
+    public List<PostSummaryRes> searchList(Long boardId, String query, int offset, int rowNum) {
+        List<PostSummaryRes> res;
+        try {
+            res = postDao.findByCategoryIdAndQuery(boardId, query, offset, rowNum);
+        } catch (IllegalArgumentException e) {
+            log.error("게시글 검색 에러 발생: {}", e);
+            res = null;
+        }
+        return res;
     }
 
 }
