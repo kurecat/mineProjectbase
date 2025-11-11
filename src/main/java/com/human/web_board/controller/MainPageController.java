@@ -20,7 +20,7 @@ public class MainPageController {
 
     @GetMapping("/")
     public String mainPage() {
-        return "redirect:/boards/1/posts";
+        return "redirect:/boards/posts";
     }
 
     // 로그인 기능
@@ -29,6 +29,20 @@ public class MainPageController {
 //        // 로그인 서비스
 //        return "redirect:/";
 //    }
+
+    // 전체 게시판
+    @GetMapping("/boards/posts")
+    public String selectBoard(
+            @RequestParam(defaultValue = "1") int offset,
+            @RequestParam(defaultValue = "10") int rowNum,
+            Model model, HttpSession session) {
+        // 서비스에서 전체 목록 가져와서 모델에 추가
+        model.addAttribute(
+                "postSummaries",
+                postService.list(offset, rowNum)
+        );
+        return "main/main";
+    }
 
     // 게시판 이동 기능
     @GetMapping("/boards/{id}/posts")
@@ -67,13 +81,15 @@ public class MainPageController {
             @RequestParam(defaultValue = "1") int offset,
             @RequestParam(defaultValue = "10") int rowNum,
             Model model, HttpSession session) {
-        // text가 포함된 게시물들 찾아서 모델에 추가
+        // 지정 게시판 내 text가 포함된 게시물들 찾아서 모델에 추가
         model.addAttribute(
                 "postSummaries",
                 postService.searchList(id, query, offset, rowNum)
         );
         return "main/main";
     }
+
+
 
 }
 
