@@ -52,11 +52,18 @@ public class MemberDao {
         return jdbc.query(sql, new MemberRowMapper());
     }
 
-    public MemberRes delete(Long id){
-        @Language("SQL")
-        String sql = "delete from member where id=?";
-        return jdbc.queryForObject(sql, new MemberRowMapper());
+    public boolean delete(Long id) {
+        String sql = "DELETE FROM member WHERE id=?";
+        int affected = jdbc.update(sql, id);
+        return affected > 0;
     }
+
+    public boolean update(MemberSignupReq req, Long id) {
+        String sql = "UPDATE member SET email=?, pwd=?, name=? WHERE id=?";
+        int affected = jdbc.update(sql, req.getEmail(), req.getPwd(), req.getName(), id);
+        return affected > 0;
+    }
+
 
     public List<MemberSummaryRes> findHighScores(int offset, int rowNum) {
         @Language("SQL")

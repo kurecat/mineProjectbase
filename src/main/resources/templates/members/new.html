@@ -9,7 +9,8 @@
 <Section class="card">
     <h2>회원 가입</h2>
 
-<form th:action="@{/members/new}" th:object="${memberFrom}" method="post">
+    <form th:action="@{/members/new}" th:object="${memberForm}" method="post">
+
 
     <label for="name">이름</label>
     <input type="text" id="name" th:field="*{name}" required />

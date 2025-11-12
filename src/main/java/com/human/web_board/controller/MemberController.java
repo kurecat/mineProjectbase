@@ -1,60 +1,78 @@
 package com.human.web_board.controller;
 
-import com.human.web_board.dto.MemberRes;
+import org.springframework.ui.Model;
 import com.human.web_board.dto.MemberSignupReq;
-import com.human.web_board.dto.PostRes;
 import com.human.web_board.service.MemberService;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/members")
 public class MemberController {
-    private final MemberService memberService; // 의존성 주입
-    // 회원 가입 폼 페이지
-    @GetMapping("/members/new")
+    private final MemberService memberService;
+
+    // 회원 가입 폼
+    @GetMapping("/new")
     public String signupForm(Model model) {
-        // model은 화면과 정보공유를 위해서 사용, 회원 정보를 담을 빈 객체를 생성 후 전달
-        model.addAttribute("memberFrom", new MemberSignupReq());
+        model.addAttribute("memberForm", new MemberSignupReq());
         return "members/new";
     }
+
     // 회원 가입 처리
-    @PostMapping("/members/new")
+    @PostMapping("/new")
     public String signup(MemberSignupReq req, Model model) {
-        try{
+        try {
             memberService.signup(req);
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
             return "members/new";
         }
-        return "redirect:/"; // 가입이 성공하면 로그인 페이지로 이동함.
+        return "redirect:/login";
     }
 
-    // 회원 조회
-    @GetMapping("/members/memberlist")
-    public String memberlist(HttpSession session,Model model){
-        var loginMember = session.getAttribute("loginMember");
-        if (loginMember == null) return "redirect:/";
-        List<MemberRes> list = memberService.list();
-        model.addAttribute("members", list);
+    // 회원 목록
+    @GetMapping("/memberlist")
+    public String list(Model model) {
+        model.addAttribute("members", memberService.list());
         return "members/memberlist";
     }
 
-    @GetMapping("/members/memberS/{id}")
-    public String findMemberById(@PathVariable Long id, Model model){
-        MemberRes memberRes = memberService.getById(id);
-        model.addAttribute("member", memberRes);
+    // 회원 상세
+    @GetMapping("/{id}")
+    public String detail(@PathVariable Long id, Model model) {
+        model.addAttribute("member", memberService.getById(id));
         return "members/memberS";
     }
 
-    // 포인트랭킹조회
+    // 회원 수정 폼
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model) {
+        model.addAttribute("memberForm", memberService.getById(id));
+        return "members/edit";
+    }
+
+    // 회원 수정 처리
+    @PostMapping("/{id}/edit")
+    public String edit(@PathVariable Long id, MemberSignupReq req, Model model) {
+        try {
+            memberService.update(req, id);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            return "members/edit";
+        }
+        return "redirect:/members/" + id;
+    }
+
+    // 회원 삭제
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable Long id) {
+        memberService.delete(id);
+        return "redirect:/members/memberlist";
+    }
 }
