@@ -32,6 +32,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public List<PostRes> list() {
+        return postDao.findAll();
+    }
+
+    @Override
     public PostRes get(Long id) {
         return postDao.findById(id);
     }

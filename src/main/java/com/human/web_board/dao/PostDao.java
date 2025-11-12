@@ -27,6 +27,17 @@ public class PostDao {
         return jdbc.queryForObject("SELECT posts_seq.CURRVAL FROM dual", Long.class);
     }
 
+    // 게시글 목록 보기
+    public List<PostRes> findAll() {
+        @Language("SQL")
+        String sql = """
+                SELECT p.id, p.member_id, m.email, p.title, p.content, p.created_at
+                FROM post p JOIN member m ON p.member_id = m.id
+                ORDER BY p.id DESC
+                """;
+        return jdbc.query(sql, new PostResPowMapper());
+    }
+
     // 게시글 수정(수정)
     public boolean update(Long id, String title, String content) {
         @Language("SQL")
