@@ -63,5 +63,4 @@ public class MemberServiceImpl implements MemberService {
         if(!success) throw new IllegalArgumentException("회원 수정 실패");
         return true;
     }
-
 }
