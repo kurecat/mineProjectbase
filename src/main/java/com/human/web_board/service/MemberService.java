@@ -2,6 +2,7 @@ package com.human.web_board.service;
 
 import com.human.web_board.dto.MemberRes;
 import com.human.web_board.dto.MemberSignupReq;
+import com.human.web_board.dto.MemberSummaryRes;
 
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface MemberService {
     List<MemberRes> list();
 
     MemberRes delete(Long id);
+
+    List<MemberSummaryRes> listHighScores(int offset, int rowNum);
 }

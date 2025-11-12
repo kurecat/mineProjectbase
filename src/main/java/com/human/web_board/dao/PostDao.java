@@ -66,76 +66,110 @@ public class PostDao {
 
     // 전체 게시글 리스트 가져오기
     public List<PostSummaryRes> findAll(int offset, int rowNum) {
-        @Language("SQL")
         String sql = """
-                SELECT p.id, c.name AS category_name, p.title, m.NICKNAME, p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT
-                  FROM POSTS p
-                  JOIN members m ON p.member_id = m.id
-                  JOIN CATEGORY c ON p.CATEGORY_ID = c.id
-                  WHERE ROWNUM BETWEEN ? and ?
-                  ORDER BY p.id DESC
-        """;
+        SELECT * FROM (
+            SELECT ROWNUM AS rn, inner_query.*
+            FROM (
+                SELECT p.id, c.name AS category_name, p.title, m.NICKNAME, 
+                       p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT
+                FROM POSTS p
+                JOIN members m ON p.member_id = m.id
+                JOIN CATEGORY c ON p.CATEGORY_ID = c.id
+                ORDER BY p.id DESC
+            ) inner_query
+            WHERE ROWNUM <= ?
+        )
+        WHERE rn > ?
+    """;
         return jdbc.query(
                 sql,
                 new PostSummaryResRowMapper(),
-                offset,
-                offset + rowNum);
+                offset + rowNum,
+                offset
+        );
     }
+
 
     // 게시판별 게시글 리스트 가져오기
     public List<PostSummaryRes> findByCategoryId(Long categoryId, int offset, int rowNum) {
-        @Language("SQL")
         String sql = """
-                SELECT p.id, c.name AS category_name, p.title, m.NICKNAME, p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT
-                  FROM POSTS p
-                  JOIN members m ON p.member_id = m.id
-                  JOIN CATEGORY c ON p.CATEGORY_ID = c.id
-                  WHERE p.CATEGORY_ID = ? and ROWNUM BETWEEN ? and ?
-                  ORDER BY p.id DESC
-                """;
+        SELECT * FROM (
+            SELECT ROWNUM AS rn, inner_query.*
+            FROM (
+                SELECT p.id, c.name AS category_name, p.title, m.NICKNAME, 
+                       p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT
+                FROM POSTS p
+                JOIN members m ON p.member_id = m.id
+                JOIN CATEGORY c ON p.CATEGORY_ID = c.id
+                WHERE p.CATEGORY_ID = ?
+                ORDER BY p.id DESC
+            ) inner_query
+            WHERE ROWNUM <= ?
+        )
+        WHERE rn > ?
+    """;
         return jdbc.query(
                 sql,
                 new PostSummaryResRowMapper(),
                 categoryId,
-                offset,
-                offset + rowNum);
+                offset + rowNum,
+                offset
+        );
     }
 
     // 전체 게시판에서 검색
     public List<PostSummaryRes> findByQuery(String query, int offset, int rowNum) {
         String sql = """
-                SELECT p.id, c.name AS category_name, p.title, m.NICKNAME, p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT
-                  FROM POSTS p
-                  JOIN members m ON p.member_id = m.id
-                  JOIN CATEGORY c ON p.CATEGORY_ID = c.id
-                  WHERE ROWNUM BETWEEN ? and ? and p.TITLE like '%?%'
-                  ORDER BY p.id DESC
-                """;
+        SELECT * FROM (
+            SELECT ROWNUM AS rn, inner_query.*
+            FROM (
+                SELECT p.id, c.name AS category_name, p.title, m.NICKNAME, 
+                       p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT
+                FROM POSTS p
+                JOIN members m ON p.member_id = m.id
+                JOIN CATEGORY c ON p.CATEGORY_ID = c.id
+                WHERE p.TITLE LIKE ?
+                ORDER BY p.id DESC
+            ) inner_query
+            WHERE ROWNUM <= ?
+        )
+        WHERE rn > ?
+    """;
         return jdbc.query(
                 sql,
                 new PostSummaryResRowMapper(),
-                offset,
+                "%" + query + "%",
                 offset + rowNum,
-                query);
+                offset
+        );
     }
 
     // 게시판별 검색
     public List<PostSummaryRes> findByCategoryIdAndQuery(Long categoryId, String query, int offset, int rowNum) {
         String sql = """
-                SELECT p.id, c.name AS category_name, p.title, m.NICKNAME, p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT
-                  FROM POSTS p
-                  JOIN members m ON p.member_id = m.id
-                  JOIN CATEGORY c ON p.CATEGORY_ID = c.id
-                  WHERE p.CATEGORY_ID = ? and ROWNUM BETWEEN ? and ? and p.TITLE like '%?%'
-                  ORDER BY p.id DESC
-                """;
+        SELECT * FROM (
+            SELECT ROWNUM AS rn, inner_query.*
+            FROM (
+                SELECT p.id, c.name AS category_name, p.title, m.NICKNAME, 
+                       p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT
+                FROM POSTS p
+                JOIN members m ON p.member_id = m.id
+                JOIN CATEGORY c ON p.CATEGORY_ID = c.id
+                WHERE p.CATEGORY_ID = ? AND p.TITLE LIKE ?
+                ORDER BY p.id DESC
+            ) inner_query
+            WHERE ROWNUM <= ?
+        )
+        WHERE rn > ?
+    """;
         return jdbc.query(
                 sql,
                 new PostSummaryResRowMapper(),
                 categoryId,
-                offset,
+                "%" + query + "%",
                 offset + rowNum,
-                query);
+                offset
+        );
     }
 
     public List<PostSummaryRes> findPopular(int offset, int rowNum) {

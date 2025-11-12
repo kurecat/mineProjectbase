@@ -3,6 +3,7 @@ package com.human.web_board.service.impl;
 import com.human.web_board.dao.MemberDao;
 import com.human.web_board.dto.MemberRes;
 import com.human.web_board.dto.MemberSignupReq;
+import com.human.web_board.dto.MemberSummaryRes;
 import com.human.web_board.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service   // Spring Container에 Bean 등록
@@ -66,5 +68,17 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberRes delete(Long id) {
         return null;
+    }
+
+    @Override
+    public List<MemberSummaryRes> listHighScores(int offset, int rowNum) {
+        List<MemberSummaryRes> list = null;
+        try {
+            list = memberDao.findHighScores(offset, rowNum);
+        } catch (DataAccessException e) {
+            log.error("회원 목록 조회 중 DB 예외 발생: {}", e.getMessage());
+            throw new IllegalArgumentException("회원 목록을 조회 할 수 없습니다.");
+        }
+        return list;
     }
 }

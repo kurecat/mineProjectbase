@@ -64,7 +64,7 @@ public class PostServiceImpl implements PostService {
         List<PostSummaryRes> res;
         try {
             res = postDao.findAll(offset, rowNum);
-        } catch (IllegalArgumentException e) {
+        } catch (DataAccessException e) {
             log.error("게시판 불러오기 에러 발생: {}", e);
             res = Collections.emptyList();
         }
@@ -76,7 +76,7 @@ public class PostServiceImpl implements PostService {
         List<PostSummaryRes> res;
         try {
             res = postDao.findByCategoryId(boardId, offset, rowNum);
-        } catch (IllegalArgumentException e) {
+        } catch (DataAccessException e) {
             log.error("게시판 불러오기 에러 발생: {}", e);
             res = Collections.emptyList();
         }
@@ -88,7 +88,7 @@ public class PostServiceImpl implements PostService {
         List<PostSummaryRes> res;
         try {
             res = postDao.findByQuery(query, offset, rowNum);
-        } catch (IllegalArgumentException e) {
+        } catch (DataAccessException e) {
             log.error("게시글 검색 에러 발생: {}", e);
             res = Collections.emptyList();
         }
@@ -100,7 +100,7 @@ public class PostServiceImpl implements PostService {
         List<PostSummaryRes> res;
         try {
             res = postDao.findByCategoryIdAndQuery(boardId, query, offset, rowNum);
-        } catch (IllegalArgumentException e) {
+        } catch (DataAccessException e) {
             log.error("게시글 검색 에러 발생: {}", e);
             res = Collections.emptyList();
         }
@@ -112,7 +112,7 @@ public class PostServiceImpl implements PostService {
         List<PostSummaryRes> res;
         try {
             res = postDao.findPopular(offset, rowNum);
-        } catch (IllegalArgumentException e) {
+        } catch (DataAccessException e) {
             log.error("게시판 불러오기 에러 발생: {}", e);
             res = Collections.emptyList();
         }
@@ -124,7 +124,7 @@ public class PostServiceImpl implements PostService {
         List<PostSummaryRes> res;
         try {
             res = postDao.findRecommended(offset, rowNum);
-        } catch (IllegalArgumentException e) {
+        } catch (DataAccessException e) {
             log.error("게시판 불러오기 에러 발생: {}", e);
             res = Collections.emptyList();
         }
