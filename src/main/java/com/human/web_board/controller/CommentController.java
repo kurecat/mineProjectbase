@@ -16,13 +16,13 @@ import javax.swing.plaf.PanelUI;
 public class CommentController {
     private final CommentService commentService;
 
-//     댓글 등록
+    // 댓글 등록
     @PostMapping("{postId}")
     public String create(@PathVariable Long postId, CommentCreateReq req, HttpSession session){
         MemberRes member = (MemberRes) session.getAttribute("loginMember");
         if (session.getAttribute("loginMember") == null) return "redirect:/";
-        req.setPostId(postId);
-        req.setMemberId(member.getId());
+        req.setPost_Id(postId);
+        req.setMember_Id(member.getId());
         commentService.write(req);
         return "redirect:/posts/" + postId;
     }
@@ -62,6 +62,6 @@ public class CommentController {
 
         commentService.update(req, commentId);
 
-        return "redirect:/posts/" + req.getPostId();
+        return "redirect:/posts/" + req.getPost_Id();
     }
 }

@@ -1,5 +1,4 @@
 package com.human.web_board.controller;
-
 import com.human.web_board.dto.CommentCreateReq;
 import com.human.web_board.dto.CommentRes;
 import com.human.web_board.service.CommentService;
@@ -7,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController  // RestFull API 통신을 위한 어노테이션, 내부적으로 JSON 직결화/역직렬화 지원
@@ -24,7 +22,7 @@ public class CommentRestController {
     }
 
     // 댓글 목록 조회 : GET, 정보가 URL 경로에 포함됨
-    @GetMapping("/post/{postId}")
+    @GetMapping("/posts/{postId}")
     public ResponseEntity<List<CommentRes>> listByPost(@PathVariable Long postId) {
         return ResponseEntity.ok(commentService.list(postId));
     }

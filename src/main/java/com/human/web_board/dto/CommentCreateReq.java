@@ -5,7 +5,7 @@ import lombok.*;
 // 댓글 생성
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @ToString
 public class CommentCreateReq {
-    private Long postId;
-    private Long memberId;
+    private Long post_Id;
+    private Long member_Id;
     private String content;
 }

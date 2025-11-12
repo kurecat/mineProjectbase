@@ -18,34 +18,34 @@ import java.util.List;
 public class CommentDao {
     private final JdbcTemplate jdbc;
 
-    // 댓글 등록
+    // 댓글 등록(수정)
     public Long save(CommentCreateReq c) {
         @Language("SQL")
-        String sql = "INSERT INTO comments (id, post_id, member_id, content) VALUES (seq_comments.NEXTVAL, ?, ?, ?)";
-        jdbc.update(sql, c.getPostId(), c.getMemberId(), c.getContent());
-        return jdbc.queryForObject("SELECT seq_comments.CURRVAL FROM dual", Long.class);
+        String sql = "INSERT INTO comments (id, post_id, member_id, content) VALUES (comments_seq.NEXTVAL, ?, ?, ?)";
+        jdbc.update(sql, c.getPost_Id(), c.getMember_Id(), c.getContent());
+        return jdbc.queryForObject("SELECT comments_seq.CURRVAL FROM dual", Long.class);
     }
 
-    // 댓글 가져오기 (게시글 ID를 통해서 가져 와야 함)
+    // 댓글 가져오기 (게시글 ID를 통해서 가져 와야 함)(수정)
     public List<CommentRes> findByPostId(Long postId) {
         @Language("SQL")
         String sql = """
-            SELECT c.id, c.post_id, c.member_id, m.email, c.content, c.created_at 
+            SELECT c.id, c.post_id, c.member_id, c.content, c.created_at 
             FROM comments c JOIN member m ON c.member_id = m.id 
-            WHERE c.post_id = ?
+            WHERE c.id = ?
             ORDER BY c.id ASC
         """;
         return jdbc.query(sql, new CommentResMapper(), postId);
     }
 
-    // 댓글 삭제
+    // 댓글 삭제(수정)
     public boolean delete(Long id) {
         @Language("SQL")
         String sql = "DELETE FROM comments WHERE id=?";
         return jdbc.update(sql, id) > 0; // 반환값은 영향을 받는 행의 갯수
     }
 
-    // 댓글 수정
+    // 댓글 수정(수정)
     public boolean update(CommentCreateReq c, Long id) {
         @Language("SQL")
         String sql = " UPDATE comments SET content = ? WHERE id = ?";
@@ -55,7 +55,7 @@ public class CommentDao {
     public CommentRes findById(Long id) {
         @Language("SQL")
         String sql = """
-            SELECT c.id, c.post_id, c.member_id, m.email, c.content, c.created_at 
+            SELECT c.id, c.post_id, c.member_id, c.content, c.created_at 
             FROM comments c JOIN member m ON c.member_id = m.id 
             WHERE c.id = ?
         """;
@@ -67,7 +67,7 @@ public class CommentDao {
         }
     }
 
-    // mapper 메서드
+    // mapper 메서드(수정)
     static class CommentResMapper implements RowMapper<CommentRes> {
         @Override
         public CommentRes mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -75,7 +75,6 @@ public class CommentDao {
               rs.getLong("id"),
               rs.getLong("post_id"),
               rs.getLong("member_id"),
-              rs.getString("email"),
               rs.getString("content"),
               rs.getTimestamp("created_at").toLocalDateTime()
             );
