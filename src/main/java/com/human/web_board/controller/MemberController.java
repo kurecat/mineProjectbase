@@ -55,4 +55,6 @@ public class MemberController {
         model.addAttribute("member", memberRes);
         return "members/memberS";
     }
+
+    // 포인트랭킹조회
 }
