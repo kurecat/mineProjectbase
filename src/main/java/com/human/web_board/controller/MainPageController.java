@@ -60,7 +60,7 @@ public class MainPageController {
     }
     // 게시물 검색 기능
     @GetMapping("/boards/search")
-    public String searchPost(
+    public String searchPosts(
             @RequestParam(defaultValue = "") String query,
             @RequestParam(defaultValue = "1") int offset,
             @RequestParam(defaultValue = "10") int rowNum,
@@ -75,7 +75,7 @@ public class MainPageController {
 
     // 게시판 내에서 게시물 검색 기능
     @GetMapping("/boards/{id}/search")
-    public String searchPost(
+    public String searchPosts(
             @PathVariable Long id,
             @RequestParam(defaultValue = "") String query,
             @RequestParam(defaultValue = "1") int offset,
@@ -85,6 +85,30 @@ public class MainPageController {
         model.addAttribute(
                 "postSummaries",
                 postService.searchList(id, query, offset, rowNum)
+        );
+        return "main/main";
+    }
+
+    @GetMapping("/boards/popular")
+    public String getPopularPosts(
+            @RequestParam(defaultValue = "1") int offset,
+            @RequestParam(defaultValue = "10") int rowNum,
+            Model model, HttpSession session) {
+        model.addAttribute(
+                "postSummaries",
+                postService.listPopular(offset, rowNum)
+        );
+        return "main/main";
+    }
+
+    @GetMapping("/boards/recommended")
+    public String getRecommendedPosts(
+            @RequestParam(defaultValue = "1") int offset,
+            @RequestParam(defaultValue = "10") int rowNum,
+            Model model, HttpSession session) {
+        model.addAttribute(
+                "postSummaries",
+                postService.listRecommended(offset, rowNum)
         );
         return "main/main";
     }

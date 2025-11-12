@@ -23,4 +23,8 @@ public interface PostService {
     List<PostSummaryRes> searchList(String query, int offset, int rowNum);
 
     List<PostSummaryRes> searchList(Long boardId, String query, int offset, int rowNum);
+
+    List<PostSummaryRes> listPopular(int offset, int rowNum);
+
+    List<PostSummaryRes> listRecommended(int offset, int rowNum);
 }

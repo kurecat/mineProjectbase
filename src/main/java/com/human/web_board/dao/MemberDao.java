@@ -2,6 +2,7 @@ package com.human.web_board.dao;
 
 import com.human.web_board.dto.MemberSignupReq;
 import com.human.web_board.dto.MemberRes;
+import com.human.web_board.dto.MemberSummaryRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.intellij.lang.annotations.Language;
@@ -57,6 +58,16 @@ public class MemberDao {
         return jdbc.queryForObject(sql, new MemberRowMapper());
     }
 
+    public List<MemberSummaryRes> findHighScores() {
+        @Language("SQL")
+        String sql = """
+            select NICKNAME, POINT
+            from members
+            ORDER By POINT DESC
+        """;
+        return jdbc.query(sql, new MemberSummaryResRowMapper());
+    }
+
     // Mapper 메서드  DB -> Member
     static class MemberRowMapper implements RowMapper<MemberRes> {
         @Override
@@ -67,6 +78,17 @@ public class MemberDao {
               rs.getString("pwd"),
               rs.getString("name"),
               rs.getTimestamp("reg_date").toLocalDateTime()
+            );
+        }
+    }
+
+    static class MemberSummaryResRowMapper implements RowMapper<MemberSummaryRes> {
+
+        @Override
+        public MemberSummaryRes mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new MemberSummaryRes(
+                rs.getString("nickname"),
+                rs.getLong("point")
             );
         }
     }
