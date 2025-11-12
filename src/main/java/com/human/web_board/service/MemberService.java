@@ -22,5 +22,7 @@ public interface MemberService {
     // 회원 목록 보기
     List<MemberRes> list();
 
-    MemberRes delete(Long id);
+    boolean delete(Long id);
+
+    boolean update(MemberSignupReq req, Long id);
 }

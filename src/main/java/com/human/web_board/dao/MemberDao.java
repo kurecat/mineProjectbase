@@ -1,9 +1,8 @@
 package com.human.web_board.dao;
 
-import com.human.web_board.dto.MemberSignupReq;
 import com.human.web_board.dto.MemberRes;
+import com.human.web_board.dto.MemberSignupReq;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.intellij.lang.annotations.Language;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,63 +12,66 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-// DB와 정보를 주고 받기 위한 SQL 작성 구간
-@Repository     //  Spring Container 에 Bean 객체 등록, 싱글톤 객체가 됨
-@RequiredArgsConstructor  // 생성자를 통한 의존성 주입을 하기 위해서 사용
-@Slf4j  // log 메세지 출력을 지원하기 위한  lombok 기능
+@Repository
+@RequiredArgsConstructor
 public class MemberDao {
-    private final JdbcTemplate jdbc;  // JdbcTemplate을 의존성 주입 받음
+    private final JdbcTemplate jdbc;
 
     // 회원 가입
     public Long save(MemberSignupReq m) {
         @Language("SQL")
-        String sql = "INSERT INTO member(id, email, pwd, name) VALUES (seq_member.NEXTVAL, ?, ?, ?)";
+        String sql = "INSERT INTO members(id, email, pwd, nickname, grade, reg_date, point) " +
+                "VALUES (members_seq.NEXTVAL, ?, ?, ?, 1, SYSDATE, 0)";
         jdbc.update(sql, m.getEmail(), m.getPwd(), m.getName());
-        return jdbc.queryForObject("SELECT seq_member.CURRVAL FROM dual", Long.class);  // Long 타입의 id를 반환
+        return jdbc.queryForObject("SELECT members_seq.CURRVAL FROM dual", Long.class);
     }
 
-    // 이메일로 회원 조회
+    // 회원 조회
     public MemberRes findByEmail(String email) {
         @Language("SQL")
-        String sql = "SELECT * FROM member WHERE email=?";
+        String sql = "SELECT * FROM members WHERE email=?";
         List<MemberRes> list = jdbc.query(sql, new MemberRowMapper(), email);
-        return list.isEmpty() ? null : list.get(0); // 조회 시 결과가 없는 경우 null을 넣기 위해서
+        return list.isEmpty() ? null : list.get(0);
     }
 
-    // ID로 회원 조회
     public MemberRes findById(Long id) {
         @Language("SQL")
-        String sql = "SELECT * FROM member WHERE id=?";
+        String sql = "SELECT * FROM members WHERE id=?";
         List<MemberRes> list = jdbc.query(sql, new MemberRowMapper(), id);
-        return list.isEmpty() ? null : list.get(0); // 조회 시 결과가 없는 경우 null을 넣기 위해서
+        return list.isEmpty() ? null : list.get(0);
     }
 
-    // 전체 회원 조회
     public List<MemberRes> findAll() {
         @Language("SQL")
-        String sql = "SELECT * from member ORDER BY id DESC";
+        String sql = "SELECT * FROM members ORDER BY id DESC";
         return jdbc.query(sql, new MemberRowMapper());
     }
 
-    public MemberRes delete(Long id){
+    // 회원 삭제
+    public boolean delete(Long id){
         @Language("SQL")
-        String sql = "delete from member where id=?";
-        return jdbc.queryForObject(sql, new MemberRowMapper());
+        String sql = "DELETE FROM members WHERE id=?";
+        return jdbc.update(sql, id) > 0;
     }
 
-    // Mapper 메서드  DB -> Member
+    // 회원 수정
+    public boolean update(MemberSignupReq m, Long id){
+        @Language("SQL")
+        String sql = "UPDATE members SET email=?, pwd=?, nickname=? WHERE id=?";
+        return jdbc.update(sql, m.getEmail(), m.getPwd(), m.getName(), id) > 0;
+    }
+
+    // Mapper
     static class MemberRowMapper implements RowMapper<MemberRes> {
         @Override
         public MemberRes mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new MemberRes(
-              rs.getLong("id"),
-              rs.getString("email"),
-              rs.getString("pwd"),
-              rs.getString("name"),
-              rs.getTimestamp("reg_date").toLocalDateTime()
+                    rs.getLong("id"),
+                    rs.getString("email"),
+                    rs.getString("pwd"),
+                    rs.getString("nickname"),
+                    rs.getTimestamp("reg_date").toLocalDateTime()
             );
         }
     }
-
-
 }
