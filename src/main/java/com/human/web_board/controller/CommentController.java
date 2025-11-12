@@ -37,16 +37,11 @@ public class CommentController {
         return "redirect:/posts/" + postId;
     }
 
-
     @GetMapping("/{commentId}/edit")
     public String showEditForm(@PathVariable("commentId") Long commentId, Model model, HttpSession session) {
-
         if (session.getAttribute("loginMember") == null) return "redirect:/";
-
         CommentRes comment = commentService.findById(commentId);
-
         model.addAttribute("comment", comment);
-
         return "post/edit";
     }
 
