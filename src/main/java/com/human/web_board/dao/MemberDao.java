@@ -24,7 +24,7 @@ public class MemberDao {
     // 회원 가입
     public Long save(MemberSignupReq m) {
         @Language("SQL")
-        String sql = "INSERT INTO member(id, email, pwd, name) VALUES (seq_member.NEXTVAL, ?, ?, ?)";
+        String sql = "INSERT INTO members(id, email, pwd, name) VALUES (seq_member.NEXTVAL, ?, ?, ?)";
         jdbc.update(sql, m.getEmail(), m.getPwd(), m.getName());
         return jdbc.queryForObject("SELECT seq_member.CURRVAL FROM dual", Long.class);  // Long 타입의 id를 반환
     }
@@ -32,7 +32,7 @@ public class MemberDao {
     // 이메일로 회원 조회
     public MemberRes findByEmail(String email) {
         @Language("SQL")
-        String sql = "SELECT * FROM member WHERE email=?";
+        String sql = "SELECT * FROM members WHERE email=?";
         List<MemberRes> list = jdbc.query(sql, new MemberRowMapper(), email);
         return list.isEmpty() ? null : list.get(0); // 조회 시 결과가 없는 경우 null을 넣기 위해서
     }
@@ -40,7 +40,7 @@ public class MemberDao {
     // ID로 회원 조회
     public MemberRes findById(Long id) {
         @Language("SQL")
-        String sql = "SELECT * FROM member WHERE id=?";
+        String sql = "SELECT * FROM members WHERE id=?";
         List<MemberRes> list = jdbc.query(sql, new MemberRowMapper(), id);
         return list.isEmpty() ? null : list.get(0); // 조회 시 결과가 없는 경우 null을 넣기 위해서
     }
@@ -48,15 +48,22 @@ public class MemberDao {
     // 전체 회원 조회
     public List<MemberRes> findAll() {
         @Language("SQL")
-        String sql = "SELECT * from member ORDER BY id DESC";
+        String sql = "SELECT * from members ORDER BY id DESC";
         return jdbc.query(sql, new MemberRowMapper());
     }
 
-    public MemberRes delete(Long id){
-        @Language("SQL")
-        String sql = "delete from member where id=?";
-        return jdbc.queryForObject(sql, new MemberRowMapper());
+    public boolean delete(Long id) {
+        String sql = "DELETE FROM members WHERE id=?";
+        int affected = jdbc.update(sql, id);
+        return affected > 0;
     }
+
+    public boolean update(MemberSignupReq req, Long id) {
+        String sql = "UPDATE members SET email=?, pwd=?, name=? WHERE id=?";
+        int affected = jdbc.update(sql, req.getEmail(), req.getPwd(), req.getName(), id);
+        return affected > 0;
+    }
+
 
     public List<MemberSummaryRes> findHighScores() {
         @Language("SQL")

@@ -18,7 +18,7 @@ public class MemberController {
     private final MemberService memberService;
 
     // 회원 가입 폼
-    @GetMapping("/new")
+    @GetMapping("/signup")
     public String signupForm(Model model) {
         model.addAttribute("memberForm", new MemberSignupReq());
         return "members/new";
@@ -27,6 +27,7 @@ public class MemberController {
     // 회원 가입 처리
     @PostMapping("/new")
     public String signup(MemberSignupReq req, Model model) {
+        log.info("회원가입 요청 들어옴: {}", req);
         try {
             memberService.signup(req);
         } catch (IllegalArgumentException e) {
@@ -39,15 +40,8 @@ public class MemberController {
     // 회원 목록
     @GetMapping("/memberlist")
     public String list(Model model) {
-        model.addAttribute("members", memberService.list());
+        model.addAttribute("member", memberService.list());
         return "members/memberlist";
-    }
-
-    // 회원 상세
-    @GetMapping("/{id}")
-    public String detail(@PathVariable Long id, Model model) {
-        model.addAttribute("member", memberService.getById(id));
-        return "members/memberS";
     }
 
     // 회원 수정 폼
@@ -74,5 +68,11 @@ public class MemberController {
     public String delete(@PathVariable Long id) {
         memberService.delete(id);
         return "redirect:/members/memberlist";
+    }
+    // 회원 상세
+    @GetMapping("/{id}")
+    public String detail(@PathVariable Long id, Model model) {
+        model.addAttribute("member", memberService.getById(id));
+        return "members/memberS";
     }
 }

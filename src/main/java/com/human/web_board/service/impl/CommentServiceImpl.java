@@ -6,6 +6,7 @@ import com.human.web_board.dao.PostDao;
 import com.human.web_board.dto.CommentCreateReq;
 import com.human.web_board.dto.CommentRes;
 import com.human.web_board.service.CommentService;
+import lombok.Lombok;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,10 +21,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public Long write(CommentCreateReq req) {
-        if(memberDao.findById(req.getMemberId()) == null) {
+        if(memberDao.findById(req.getMember_Id()) == null) {
             throw new IllegalArgumentException("존재 하지 않은 회원 입니다.");
         }
-        if(postDao.findById(req.getPostId()) == null) {
+        if(postDao.findById(req.getMember_Id()) == null) {
             throw new IllegalArgumentException("존재하지 않는 게시글 입니다.");
         }
         return commentDao.save(req);
