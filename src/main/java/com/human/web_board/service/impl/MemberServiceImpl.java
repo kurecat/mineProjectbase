@@ -7,6 +7,7 @@ import com.human.web_board.dto.MemberSummaryRes;
 import com.human.web_board.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,20 +16,35 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class MemberServiceImpl implements MemberService {
-    private final MemberDao memberDao;
 
+    private final MemberDao memberDao;
+    private final PasswordEncoder passwordEncoder;
+
+    // 회원가입
     @Override
     public Long signup(MemberSignupReq req) {
+        // 이메일 중복 체크
         if (memberDao.findByEmail(req.getEmail()) != null) {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
         }
+
+        // 비밀번호 암호화
+        String encodedPwd = passwordEncoder.encode(req.getPwd());
+        req.setPwd(encodedPwd);
+
+        // DB 저장
         return memberDao.save(req);
     }
 
+    // 로그인
     @Override
-    public MemberRes login(String email, String pwd) {
+    public MemberRes login(String email, String rawPwd) {
         MemberRes member = memberDao.findByEmail(email);
-        if (member == null || !member.getPwd().equals(pwd)) return null;
+        if (member == null) return null;
+
+        // 암호화된 비밀번호와 입력 비밀번호 비교
+        if (!passwordEncoder.matches(rawPwd, member.getPwd())) return null;
+
         return member;
     }
 
@@ -59,9 +75,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public boolean update(MemberSignupReq req, Long id){
+    public boolean update(MemberSignupReq req, Long id) {
         boolean success = memberDao.update(req, id);
-        if(!success) throw new IllegalArgumentException("회원 수정 실패");
+        if (!success) throw new IllegalArgumentException("회원 수정 실패");
         return true;
     }
 
@@ -69,5 +85,6 @@ public class MemberServiceImpl implements MemberService {
     public List<MemberSummaryRes> listHighScores(int offset, int rowNum) {
         return List.of();
     }
-
 }
+
+
