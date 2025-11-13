@@ -16,6 +16,4 @@ public class PostRes {
     private Long recommendations_count;
     private LocalDateTime created_at;
     private String nickname;
-
-
 }
