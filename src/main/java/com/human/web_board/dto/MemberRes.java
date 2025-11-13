@@ -10,5 +10,5 @@ public class MemberRes {
     private String pwd;
     private String nickname;  // name → nickname
     private String grade;     // grade 추가
-    private LocalDateTime regDate;
+    private LocalDateTime regDate; //날짜
 }

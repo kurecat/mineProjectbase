@@ -12,8 +12,8 @@
     <form th:action="@{/members/new}" th:object="${memberForm}" method="post">
         <!-- CSRF hidden input 삭제 -->
 
-        <label for="name">이름</label>
-        <input type="text" id="name" th:field="*{name}" required />
+        <label for="nickname">이름</label>
+        <input type="text" id="nickname" th:field="*{nickname}" required />
 
         <label for="email">이메일</label>
         <input type="email" id="email" th:field="*{email}" required />

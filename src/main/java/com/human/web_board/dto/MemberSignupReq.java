@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class MemberSignupReq {
+    private int grade = 1; // 기본값 1 grade 추가
     private String email;
     private String pwd;
     private String nickname;  // name → nickname으로 변경
-    private String grade;     // grade 추가
 }
 
