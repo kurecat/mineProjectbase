@@ -8,6 +8,7 @@ public class MemberRes {
     private Long id;
     private String email;
     private String pwd;
-    private String name;
+    private String nickname;  // name → nickname
+    private String grade;     // grade 추가
     private LocalDateTime regDate;
 }

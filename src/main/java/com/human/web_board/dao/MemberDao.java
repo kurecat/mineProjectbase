@@ -23,11 +23,12 @@ public class MemberDao {
 
     // 회원 가입
     public Long save(MemberSignupReq m) {
-        @Language("SQL")
-        String sql = "INSERT INTO members(id, email, pwd, name) VALUES (seq_member.NEXTVAL, ?, ?, ?)";
-        jdbc.update(sql, m.getEmail(), m.getPwd(), m.getName());
-        return jdbc.queryForObject("SELECT seq_member.CURRVAL FROM dual", Long.class);  // Long 타입의 id를 반환
+        String sql = "INSERT INTO MEMBERS(ID, EMAIL, PWD, NICKNAME, GRADE, REG_DATE, POINT) "
+                + "VALUES (MEMBERS_SEQ.NEXTVAL, ?, ?, ?, ?, SYSTIMESTAMP, 0)";
+        jdbc.update(sql, m.getEmail(), m.getPwd(), m.getNickname(), m.getGrade());
+        return jdbc.queryForObject("SELECT MEMBERS_SEQ.CURRVAL FROM dual", Long.class);
     }
+
 
     // 이메일로 회원 조회
     public MemberRes findByEmail(String email) {
@@ -59,8 +60,8 @@ public class MemberDao {
     }
 
     public boolean update(MemberSignupReq req, Long id) {
-        String sql = "UPDATE members SET email=?, pwd=?, name=? WHERE id=?";
-        int affected = jdbc.update(sql, req.getEmail(), req.getPwd(), req.getName(), id);
+        String sql = "UPDATE members SET email=?, pwd=?, nickname=? WHERE id=?";
+        int affected = jdbc.update(sql, req.getEmail(), req.getPwd(), req.getNickname(), id);
         return affected > 0;
     }
 
@@ -80,14 +81,16 @@ public class MemberDao {
         @Override
         public MemberRes mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new MemberRes(
-              rs.getLong("id"),
-              rs.getString("email"),
-              rs.getString("pwd"),
-              rs.getString("name"),
-              rs.getTimestamp("reg_date").toLocalDateTime()
+                    rs.getLong("id"),
+                    rs.getString("email"),
+                    rs.getString("pwd"),
+                    rs.getString("nickname"),   // nickname
+                    rs.getString("grade"),      // grade 추가
+                    rs.getTimestamp("reg_date").toLocalDateTime() // regDate
             );
         }
     }
+
 
     static class MemberSummaryResRowMapper implements RowMapper<MemberSummaryRes> {
 

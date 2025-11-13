@@ -3,6 +3,7 @@ package com.human.web_board.service.impl;
 import com.human.web_board.dao.MemberDao;
 import com.human.web_board.dto.MemberRes;
 import com.human.web_board.dto.MemberSignupReq;
+import com.human.web_board.dto.MemberSummaryRes;
 import com.human.web_board.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +63,11 @@ public class MemberServiceImpl implements MemberService {
         boolean success = memberDao.update(req, id);
         if(!success) throw new IllegalArgumentException("회원 수정 실패");
         return true;
+    }
+
+    @Override
+    public List<MemberSummaryRes> listHighScores(int offset, int rowNum) {
+        return List.of();
     }
 
 }

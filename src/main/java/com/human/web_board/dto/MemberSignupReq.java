@@ -10,6 +10,7 @@ import lombok.Setter;
 public class MemberSignupReq {
     private String email;
     private String pwd;
-    private String name;
+    private String nickname;  // name → nickname으로 변경
+    private String grade;     // grade 추가
 }
 
