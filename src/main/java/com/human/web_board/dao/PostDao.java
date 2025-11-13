@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.intellij.lang.annotations.Language;
 
@@ -63,80 +64,86 @@ public class PostDao {
         List<PostRes> list = jdbc.query(sql, new PostResPowMapper(), id);
         return list.isEmpty() ? null : list.get(0);
     }
-
-    // 전체 게시글 리스트 가져오기
-    public List<PostSummaryRes> findAll(int offset, int rowNum) {
-        @Language("SQL")
-        String sql = """
-                SELECT p.id, c.name AS category_name, p.title, m.NICKNAME, p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT
-                  FROM POSTS p
-                  JOIN members m ON p.member_id = m.id
-                  JOIN CATEGORY c ON p.CATEGORY_ID = c.id
-                  WHERE ROWNUM BETWEEN ? and ?
-                  ORDER BY p.id DESC
-        """;
-        return jdbc.query(
-                sql,
-                new PostSummaryResRowMapper(),
-                offset,
-                offset + rowNum);
-    }
-
-    // 게시판별 게시글 리스트 가져오기
-    public List<PostSummaryRes> findByCategoryId(Long categoryId, int offset, int rowNum) {
-        @Language("SQL")
-        String sql = """
-                SELECT p.id, c.name AS category_name, p.title, m.NICKNAME, p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT
-                  FROM POSTS p
-                  JOIN members m ON p.member_id = m.id
-                  JOIN CATEGORY c ON p.CATEGORY_ID = c.id
-                  WHERE p.CATEGORY_ID = ? and ROWNUM BETWEEN ? and ?
-                  ORDER BY p.id DESC
-                """;
-        return jdbc.query(
-                sql,
-                new PostSummaryResRowMapper(),
-                categoryId,
-                offset,
-                offset + rowNum);
-    }
-
     // 전체 게시판에서 검색
     public List<PostSummaryRes> findByQuery(String query, int offset, int rowNum) {
         String sql = """
-                SELECT p.id, c.name AS category_name, p.title, m.NICKNAME, p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT
-                  FROM POSTS p
-                  JOIN members m ON p.member_id = m.id
-                  JOIN CATEGORY c ON p.CATEGORY_ID = c.id
-                  WHERE ROWNUM BETWEEN ? and ? and p.TITLE like '%?%'
-                  ORDER BY p.id DESC
-                """;
+        SELECT * FROM (
+            SELECT ROWNUM AS rn, inner_query.*
+            FROM (
+                SELECT p.id, c.name AS category_name, p.title, m.NICKNAME, 
+                       p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT
+                FROM POSTS p
+                JOIN members m ON p.member_id = m.id
+                JOIN CATEGORY c ON p.CATEGORY_ID = c.id
+                WHERE p.TITLE LIKE ?
+                ORDER BY p.id DESC
+            ) inner_query
+            WHERE ROWNUM <= ?
+        )
+        WHERE rn > ?
+    """;
         return jdbc.query(
                 sql,
                 new PostSummaryResRowMapper(),
-                offset,
+                "%" + query + "%",
                 offset + rowNum,
-                query);
+                offset
+        );
     }
 
-    // 게시판별 검색
-    public List<PostSummaryRes> findByCategoryIdAndQuery(Long categoryId, String query, int offset, int rowNum) {
-        String sql = """
-                SELECT p.id, c.name AS category_name, p.title, m.NICKNAME, p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT
-                  FROM POSTS p
-                  JOIN members m ON p.member_id = m.id
-                  JOIN CATEGORY c ON p.CATEGORY_ID = c.id
-                  WHERE p.CATEGORY_ID = ? and ROWNUM BETWEEN ? and ? and p.TITLE like '%?%'
-                  ORDER BY p.id DESC
-                """;
-        return jdbc.query(
-                sql,
-                new PostSummaryResRowMapper(),
-                categoryId,
-                offset,
-                offset + rowNum,
-                query);
+
+
+    public List<PostSummaryRes> findSummaries(
+            Long mainCategoryId,
+            Long categoryId,
+            String query,
+            int offset,
+            int rowNum
+    ) {
+        StringBuilder sql = new StringBuilder("""
+        SELECT * FROM (
+            SELECT ROWNUM AS rn, inner_query.*
+            FROM (
+                SELECT p.id, c.name AS category_name, p.title, m.NICKNAME,
+                       p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT
+                FROM POSTS p
+                JOIN members m ON p.member_id = m.id
+                JOIN CATEGORY c ON p.CATEGORY_ID = c.id
+                JOIN MAIN_CATEGORY mc ON c.main_category_id = mc.id
+                WHERE 1=1
+    """);
+
+        List<Object> params = new ArrayList<>();
+
+        if (mainCategoryId != null) {
+            sql.append(" AND c.MAIN_CATEGORY_ID = ?");
+            params.add(mainCategoryId);
+        }
+
+        else if (categoryId != null) {
+            sql.append(" AND p.CATEGORY_ID = ?");
+            params.add(categoryId);
+        }
+
+        if (query != null && !query.isBlank()) {
+            sql.append(" AND p.TITLE LIKE ?");
+            params.add("%" + query + "%");
+        }
+
+        sql.append("""
+                ORDER BY p.id DESC
+            ) inner_query
+            WHERE ROWNUM <= ?
+        )
+        WHERE rn > ?
+    """);
+
+        params.add(offset + rowNum);
+        params.add(offset);
+
+        return jdbc.query(sql.toString(), new PostSummaryResRowMapper(), params.toArray());
     }
+
 
     public List<PostSummaryRes> findPopular(int offset, int rowNum) {
         @Language("SQL")
@@ -171,7 +178,21 @@ public class PostDao {
                 offset,
                 offset + rowNum);
     }
-
+    // 조회수 증가
+    public void increaseViewCount(Long postId) {
+        String sql = "UPDATE posts SET view_count = view_count + 1 WHERE id = ?";
+        jdbc.update(sql, postId);
+    }
+    // 추천수 증가
+    public void increaseRecommendationsCount(Long postId) {
+        String sql = "UPDATE posts SET recommendations_count = recommendations_count + 1 WHERE id = ?";
+        jdbc.update(sql, postId);
+    }
+    // 🔥 추천수 조회
+    public int getRecommendationsCount(Long postId) {
+        String sql = "SELECT recommendations_count FROM posts WHERE id = ?";
+        return jdbc.queryForObject(sql, Integer.class, postId);
+    }
     // mapper 메서드 생성(수정)
     static class PostResPowMapper implements RowMapper<PostRes> {
         @Override

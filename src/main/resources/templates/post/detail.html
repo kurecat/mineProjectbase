@@ -148,9 +148,23 @@
             </tbody>
         </table>
     </div>
+
+    <script th:inline="javascript">
+        const postId = [[${post.id}]];
+
+        document.getElementById("recommendBtn").addEventListener("click", function () {
+            fetch(`/board/detail/${postId}/recommend`, { method: "POST" })
+                .then(res => res.json())
+                .then(newCount => {
+                    document.getElementById("recommendCount").innerText = newCount;
+                });
+        });
+    </script>
+
 </main>
 
 <!-- 푸터 -->
 <div th:replace="fragments/footer :: footer"></div>
 </body>
+
 </html>

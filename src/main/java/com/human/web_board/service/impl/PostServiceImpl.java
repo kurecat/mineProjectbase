@@ -60,48 +60,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostSummaryRes> list(int offset, int rowNum) {
+    public List<PostSummaryRes> listSummaries(Long mainCategoryId, Long categoryId, String query, int offset, int rowNum) {
         List<PostSummaryRes> res;
         try {
-            res = postDao.findAll(offset, rowNum);
-        } catch (IllegalArgumentException e) {
+            res = postDao.findSummaries(mainCategoryId, categoryId, query, offset, rowNum);
+        } catch (DataAccessException e) {
             log.error("게시판 불러오기 에러 발생: {}", e);
-            res = Collections.emptyList();
-        }
-        return res;
-    }
-
-    @Override
-    public List<PostSummaryRes> list(Long boardId, int offset, int rowNum) {
-        List<PostSummaryRes> res;
-        try {
-            res = postDao.findByCategoryId(boardId, offset, rowNum);
-        } catch (IllegalArgumentException e) {
-            log.error("게시판 불러오기 에러 발생: {}", e);
-            res = Collections.emptyList();
-        }
-        return res;
-    }
-
-    @Override
-    public List<PostSummaryRes> searchList(String query, int offset, int rowNum) {
-        List<PostSummaryRes> res;
-        try {
-            res = postDao.findByQuery(query, offset, rowNum);
-        } catch (IllegalArgumentException e) {
-            log.error("게시글 검색 에러 발생: {}", e);
-            res = Collections.emptyList();
-        }
-        return res;
-    }
-
-    @Override
-    public List<PostSummaryRes> searchList(Long boardId, String query, int offset, int rowNum) {
-        List<PostSummaryRes> res;
-        try {
-            res = postDao.findByCategoryIdAndQuery(boardId, query, offset, rowNum);
-        } catch (IllegalArgumentException e) {
-            log.error("게시글 검색 에러 발생: {}", e);
             res = Collections.emptyList();
         }
         return res;
@@ -112,7 +76,7 @@ public class PostServiceImpl implements PostService {
         List<PostSummaryRes> res;
         try {
             res = postDao.findPopular(offset, rowNum);
-        } catch (IllegalArgumentException e) {
+        } catch (DataAccessException e) {
             log.error("게시판 불러오기 에러 발생: {}", e);
             res = Collections.emptyList();
         }
@@ -124,11 +88,24 @@ public class PostServiceImpl implements PostService {
         List<PostSummaryRes> res;
         try {
             res = postDao.findRecommended(offset, rowNum);
-        } catch (IllegalArgumentException e) {
+        } catch (DataAccessException e) {
             log.error("게시판 불러오기 에러 발생: {}", e);
             res = Collections.emptyList();
         }
         return res;
     }
+    @Override
+    public void increaseView(Long postId) {
+        postDao.increaseViewCount(postId);
+    }
 
+    @Override
+    public int increaseRecommendations(Long postId) {
+        postDao.increaseRecommendationsCount(postId);
+        return postDao.getRecommendationsCount(postId);
+    }
+    @Override
+    public List<PostSummaryRes> searchList(String query, int offset, int rowNum) {
+        return postDao.findByQuery(query, offset, rowNum);
+    }
 }

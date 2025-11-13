@@ -1,5 +1,7 @@
 package com.human.web_board.controller;
 
+import com.human.web_board.dto.PostSummaryRes;
+import com.human.web_board.service.MemberService;
 import com.human.web_board.service.PostService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -11,16 +13,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 
 @Controller
 @RequiredArgsConstructor
 @Slf4j
 public class MainPageController {
     private final PostService postService;
+    private final MemberService memberService;
 
     @GetMapping("/")
     public String mainPage() {
-        return "redirect:/boards/posts";
+        return "redirect:/main";
     }
 
     // 로그인 기능
@@ -30,91 +35,70 @@ public class MainPageController {
 //        return "redirect:/";
 //    }
 
-    // 전체 게시판
-    @GetMapping("/boards/posts")
-    public String selectBoard(
-            @RequestParam(defaultValue = "1") int offset,
+    // 전체 or 특정 게시판
+    @GetMapping("/main")
+    public String listPosts(
+            @RequestParam(required = false) Long mainCategoryId,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "20") int rowNum,
+            Model model, HttpSession session) {
+        // 서비스에서 전체 목록 가져와서 모델에 추가
+        model.addAttribute(
+                "postSummaries",
+                postService.listSummaries(
+                        mainCategoryId,
+                        categoryId,
+                        null,
+                        offset,
+                        rowNum));
+        model.addAttribute(
+            "popularPosts",
+            postService.listPopular(1, 5)
+        );
+        model.addAttribute(
+            "recommendedPosts",
+            postService.listRecommended(1, 5)
+        );
+        model.addAttribute(
+            "highScores",
+            memberService.listHighScores(1, 5)
+        );
+        return "main/main";
+    }
+
+    // 게시물 검색 기능
+    @GetMapping("/main/search")
+    public String searchPosts(
+            @RequestParam(required = false) Long mainCategoryId,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) String query,
+            @RequestParam(defaultValue = "0") int offset,
             @RequestParam(defaultValue = "10") int rowNum,
             Model model, HttpSession session) {
         // 서비스에서 전체 목록 가져와서 모델에 추가
         model.addAttribute(
                 "postSummaries",
-                postService.list(offset, rowNum)
-        );
-        return "main/main";
-    }
-
-    // 게시판 이동 기능
-    @GetMapping("/boards/{id}/posts")
-    public String selectBoard(
-            @PathVariable Long id,
-            @RequestParam(defaultValue = "1") int offset,
-            @RequestParam(defaultValue = "10") int rowNum,
-            Model model, HttpSession session) {
-        // 서비스에서 지정 게시판 정보 & 기타정보 가져와서 모델에 추가
+                postService.listSummaries(
+                        mainCategoryId,
+                        categoryId,
+                        query,
+                        offset,
+                        rowNum));
         model.addAttribute(
-                "postSummaries",
-                postService.list(id, offset, rowNum)
+                "popularPosts",
+                postService.listPopular(1, 10)
         );
-        return "main/main";
-    }
-    // 게시물 검색 기능
-    @GetMapping("/boards/search")
-    public String searchPosts(
-            @RequestParam(defaultValue = "") String query,
-            @RequestParam(defaultValue = "1") int offset,
-            @RequestParam(defaultValue = "10") int rowNum,
-            Model model, HttpSession session) {
-        // text가 포함된 게시물들 찾아서 모델에 추가
         model.addAttribute(
-                "postSummaries",
-                postService.searchList(query, offset, rowNum)
+                "recommendedPosts",
+                postService.listRecommended(1, 10)
         );
-        return "main/main";
-    }
-
-    // 게시판 내에서 게시물 검색 기능
-    @GetMapping("/boards/{id}/search")
-    public String searchPosts(
-            @PathVariable Long id,
-            @RequestParam(defaultValue = "") String query,
-            @RequestParam(defaultValue = "1") int offset,
-            @RequestParam(defaultValue = "10") int rowNum,
-            Model model, HttpSession session) {
-        // 지정 게시판 내 text가 포함된 게시물들 찾아서 모델에 추가
         model.addAttribute(
-                "postSummaries",
-                postService.searchList(id, query, offset, rowNum)
+                "highScores",
+                memberService.listHighScores(1, 10)
         );
         return "main/main";
     }
-
-    @GetMapping("/boards/popular")
-    public String getPopularPosts(
-            @RequestParam(defaultValue = "1") int offset,
-            @RequestParam(defaultValue = "10") int rowNum,
-            Model model, HttpSession session) {
-        model.addAttribute(
-                "postSummaries",
-                postService.listPopular(offset, rowNum)
-        );
-        return "main/main";
-    }
-
-    @GetMapping("/boards/recommended")
-    public String getRecommendedPosts(
-            @RequestParam(defaultValue = "1") int offset,
-            @RequestParam(defaultValue = "10") int rowNum,
-            Model model, HttpSession session) {
-        model.addAttribute(
-                "postSummaries",
-                postService.listRecommended(offset, rowNum)
-        );
-        return "main/main";
-    }
-
-
-
 }
 
 
