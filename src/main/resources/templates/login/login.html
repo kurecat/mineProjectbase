@@ -9,42 +9,27 @@
 <div class="container">
     <div th:replace="~{fragments/header :: header}"></div>
     <div class="login-wrapper">
-        <form action="/">
+        <form action="/login">
             <h2>Please Sign in</h2>
 
             <div class="form-group">
-                <input
-                        type="email"
-                        class="form-control"
-                        id="email"
-                        name="email"
-                        placeholder="Email address"
-                        required
-                />
+                <input type="email" class="form-control" id="email" name="email" placeholder="Email address" required>
             </div>
 
             <div class="form-group">
-                <input
-                        type="password"
-                        class="form-control"
-                        id="password"
-                        name="password"
-                        placeholder="Password"
-                        required
-                />
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
             </div>
 
             <div class="options">
                 <label>
-                    <input
-                            type="checkbox"
-                            name="remember-me"
-                            id="remember-me"
-                    />Remember me
+                    <input type="checkbox" name="remember-me" id="remember-me">Remember me
                 </label>
-                <a href="/signup">Sign Up</a>
-            </div>
 
+                <div class="right-links">
+                    <a href="/find-pw">Find/Pw</a>
+                    <span class="separator">|</span> <a href="/signup">Sign Up</a>
+                </div>
+            </div>
             <button type="submit" class="btn-signin">Sign in</button>
         </form>
     </div>

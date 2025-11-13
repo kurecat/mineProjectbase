@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <title>회원가입</title>
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="signup-form">
+        <form id="signup-form-element"
+              th:action="@{/members/signup}"
+              method="post"
+              th:object="${memberForm}"
+              enctype="multipart/form-data" novalidate>
+
+            <div class="signup-form__group">
+                <label for="email" class="signup-form__label">Email*</label>
+                <input type="email" id="email" name="email" class="signup-form__input" placeholder="Email address" required>
+                <div class="signup-form__error-message" id="email-error"></div>
+            </div>
+
+            <div class="signup-form__group">
+                <label for="password" class="signup-form__label">Password*</label>
+                <input type="password" id="password" name="pwd" class="signup-form__input" placeholder="Password" required>
+                <div class="signup-form__error-message" id="password-error"></div>
+            </div>
+
+            <div class="signup-form__group">
+                <label for="password-check" class="signup-form__label">Password check*</label>
+                <input type="password" id="password-check" name="password-check" class="signup-form__input" placeholder="Password check" required>
+                <div class="signup-form__error-message" id="password-check-error"></div>
+            </div>
+
+            <div class="signup-form__group">
+                <label for="nickname" class="signup-form__label">Nickname*</label>
+                <input type="text" id="nickname" name="nickname" class="signup-form__input" placeholder="Nickname" required>
+                <div class="signup-form__error-message" id="nickname-error"></div>
+            </div>
+
+
+            <div class="signup-form__group">
+                <label for="profile-image" class="signup-form__label">Profile Image Upload</label>
+                <input type="file" id="profile-image" name="profile-image" class="signup-form__input" accept="image/*">
+            </div>
+
+            <button type="submit" class="signup-form__button">Create account ></button>
+
+        </form>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</div>
+
+</body>
+</html>
