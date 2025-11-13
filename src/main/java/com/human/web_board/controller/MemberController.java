@@ -21,21 +21,26 @@ public class MemberController {
     @GetMapping("/signup")
     public String signupForm(Model model) {
         model.addAttribute("memberForm", new MemberSignupReq());
-        return "members/new";
+        return "signup"; // 파일명과 일치
     }
 
+
     // 회원 가입 처리
-    @PostMapping("/new")
+    @PostMapping("/signup")
     public String signup(MemberSignupReq req, Model model) {
+        System.out.println("PWD 확인: " + req.getPwd());
+
         log.info("회원가입 요청 들어옴: {}", req);
         try {
             memberService.signup(req);
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
-            return "members/new";
+            return "signup"; // 파일명과 일치
         }
         return "redirect:/login";
     }
+
+
 
     // 회원 목록
     @GetMapping("/memberlist")
