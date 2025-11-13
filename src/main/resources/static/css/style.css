@@ -303,7 +303,6 @@ footer-Copyright {
   내부의 모든 이미지는 100% 채우도록 수정 (img 태그 사용 시)
 */
 .swiper-slide {
-  position: relative
   overflow: hidden; /* (중요) 튀어나가는 iframe 숨기기 */
 }
 .swiper-slide img {
@@ -369,8 +368,20 @@ footer-Copyright {
 .postlistbox {
   width: 800px;
   height: 1000px;
-  border-radius: 5px;
+  /* border-top: 1px solid black;
+  border-bottom: 1px solid black; */
   border: 1px solid black;
+  padding: 5px;
+}
+
+.postlistbox button {
+  width: 55px;
+  height: 40px;
+  background-color: #d9d9d9;
+  font-size: 16px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  margin-right: 10px;
 }
 
 .pistlistrightbox {
@@ -397,3 +408,882 @@ footer-Copyright {
   margin-top: 30px;
   margin-left: 30px;
 }
+
+.postbox {
+  width: 800px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.col-number {
+  width: 60px;
+}
+.col-title {
+  width: 440px;
+}
+.col-author {
+  width: 100px;
+}
+.col-date {
+  width: 80px;
+}
+.col-views {
+  width: 60px;
+}
+.col-likes {
+  width: 60px;
+}
+
+.row-height {
+  height: 50px;
+}
+
+/* 테이블 헤더 스타일 */
+.table-header th {
+  border-top: 2px solid #333;
+  border-bottom: 1px solid #ddd;
+  background-color: #fdfdfd;
+  font-weight: 600;
+}
+
+/* 테이블 바디 스타일 */
+.table-body tr {
+  border-bottom: 1px solid #eee;
+}
+.table-body tr:hover {
+  background-color: #f5f5f5;
+}
+
+/* 클릭 가능한 요소 */
+.clickable {
+  cursor: pointer;
+}
+.clickable:hover {
+  text-decoration: underline;
+  color: #007bff;
+}
+
+/* 페이지네이션 활성 스타일 */
+.pagination .active {
+  font-weight: bold;
+  color: #ef4444; /* 이미지의 빨간색과 유사하게 */
+}
+
+/* --- 하단 게시물 섹션 (수정됨) --- */
+
+/* W555, H400 (사용자 요청) */
+.bottom-section-box {
+  width: 555px;
+  height: 400px; /* 6 lines * 50px = 300px. H400은 여유 공간을 둡니다. */
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 0.375rem; /* rounded-md */
+  overflow: hidden;
+  /* 메인 컨텐츠(W800) 중앙 정렬 */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 헤더: H50, flex, padding */
+.hot-post-header {
+  background-color: #333;
+  color: white;
+  padding: 0 12px;
+  font-size: 0.9rem;
+  /* "HOT..." 타이틀만 bold */
+  /* font-weight: bold; */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px; /* 줄당 H50 */
+  box-sizing: border-box;
+}
+
+/* 헤더의 "제목" + "댓글/추천" 래퍼 */
+.hot-post-header .header-columns {
+  display: flex;
+  flex-shrink: 0;
+  font-weight: normal; /* 헤더 열은 normal 굵기 */
+}
+
+/* 본문 리스트 아이템: H50, flex */
+.hot-post-body li {
+  border-bottom: 1px solid #eee;
+  padding: 0; /* 패딩은 열(column)에서 처리 */
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  height: 50px; /* 줄당 H50 */
+  box-sizing: border-box;
+}
+.hot-post-body li:last-child {
+  border-bottom: none;
+}
+.hot-post-body li:hover {
+  background-color: #f9f9f9;
+}
+
+/* "제목" 열 (W475) */
+.bottom-title-col {
+  width: 475px;
+  padding: 0 1rem; /* 16px 내부 패딩 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  height: 100%; /* 부모(li, header)의 높이를 채움 */
+}
+
+/* "댓글/추천" 열 (W80) */
+.bottom-count-col {
+  width: 80px;
+  padding: 0 1rem;
+  text-align: right;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* 우측 정렬 */
+  height: 100%;
+}
+
+/* 헤더 텍스트 정렬 */
+.hot-post-header .bottom-title-col {
+  justify-content: center; /* 이미지의 '제목'처럼 중앙 정렬 */
+  text-align: center;
+}
+.hot-post-header .bottom-count-col {
+  justify-content: center; /* 이미지의 '추천'처럼 중앙 정렬 */
+  text-align: center;
+}
+
+/* 본문(li) 텍스트 정렬 */
+.hot-post-body .bottom-title-col {
+  justify-content: flex-start; /* 좌측 정렬 */
+  text-align: left;
+}
+.hot-post-body .bottom-count-col {
+  justify-content: flex-end; /* 우측 정렬 */
+  text-align: right;
+}
+
+.postlist {
+  width: 800px;
+  height: 1000px;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+.postlist button {
+  width: 55px;
+  height: 40px;
+  margin: 5px;
+}
+
+.postlistright {
+  width: 310px;
+  height: 1000px;
+  border: 1px solid black;
+  margin-left: 30px;
+}
+
+.bastpostlist {
+  width: 555px;
+  height: 400px;
+  border: 1px solid black;
+  margin-top: 30px;
+}
+
+.goodpostlist {
+  width: 555px;
+  height: 400px;
+  border: 1px solid black;
+  margin-top: 30px;
+  margin-left: 30px;
+}
+
+.ntwrvsbox {
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.numberbox {
+  width: 60px;
+}
+
+.titlebox {
+  width: 440px;
+}
+
+.writer {
+  width: 100px;
+}
+
+.regdate {
+  width: 80px;
+}
+
+.views {
+  width: 60px;
+}
+
+.suggest {
+  width: 60px;
+}
+
+.postlistnumber {
+}
+
+/* 로그인페이지 스타일 */
+
+.loginbox {
+  border: 1px solid black;
+  width: 360px;
+  height: 272px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 16px;
+}
+
+.loginboxsub1 {
+  border: 1px solid black;
+}
+
+.loginboxsub1 input {
+  width: 300px;
+  height: 55px;
+}
+
+.signbox {
+  width: 300px;
+  height: 55px;
+  border: 1px solid black;
+}
+
+.signuptext {
+  background: none;
+  border: none;
+  width: 230px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.checkbox {
+  width: 12px;
+  height: 12px;
+}
+
+.login-wrapper {
+  width: 400px;
+  height: 300px;
+
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  margin-top: 100px;
+  margin-bottom: 70px;
+}
+
+.login-wrapper h2 {
+  font-size: 22px; /* 제목 폰트는 기본 16px보다 크게 설정 */
+  font-weight: 500;
+  text-align: left;
+  margin: 0 0 15px; /* 상단 0, 하단 15px 마진 */
+}
+
+/* 이메일, 패스워드 입력창 */
+.form-control {
+  /* 요청: W300px H55px */
+  width: 100%; /* 부모 패딩(30px*2) 제외 300px */
+  height: 55px;
+
+  /* 요청: 폰트 사이즈 16px */
+  font-size: 16px;
+
+  padding: 0 15px;
+  border: 1px solid #ced4da;
+}
+
+/* 이미지처럼 두 입력창이 붙어있도록 스타일링 */
+.form-control[type="email"] {
+  border-bottom: none; /* 이메일 하단 테두리 제거 */
+  border-radius: 8px 8px 0 0; /* 위쪽 모서리만 둥글게 */
+}
+
+.form-control[type="password"] {
+  border-radius: 0 0 8px 8px; /* 아래쪽 모서리만 둥글게 */
+}
+
+.form-control::placeholder {
+  color: #6c757d;
+}
+
+/* Remember me / Sign Up 영역 */
+.options {
+  width: 100%; /* 300px */
+  display: flex;
+  justify-content: space-between; /* 양쪽 끝으로 정렬 */
+  align-items: center;
+  margin: 12px 0; /* 위아래 간격 */
+}
+
+.options label {
+  display: flex;
+  align-items: center;
+  color: #333;
+}
+
+.options input[type="checkbox"] {
+  /* 요청: W12px, H12px */
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+}
+
+.options a {
+  color: #333; /* 이미지에서는 파란색이 아니므로 검은색 계열로 설정 */
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.options a:hover {
+  text-decoration: underline;
+}
+
+.btn-signin {
+  width: 100%;
+  height: 55px;
+  background-color: #0d6efd;
+  font-size: 16px;
+
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-signin:hover {
+  background-color: #0b5ed7; /* 호버 시 약간 더 어두운 파란색 */
+}
+
+.right-links {
+  display: flex;
+  align-items: center; /* 세로 중앙 정렬 */
+}
+
+/* 링크 구분선 스타일 */
+.right-links .separator {
+  color: #ccc; /* 구분선 색상 */
+  font-size: 14px; /* 구분선 폰트 크기 */
+  margin: 0 8px; /* 구분선 좌우 간격 */
+}
+
+.signup-form {
+  /* 요청: W590 H547(min) Padding 20px */
+  width: 590px;
+  min-height: 547px;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  /* .container 내부에서의 상하 여백 */
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+/* * Element: .signup-form__group
+ * (기존 .form-group 역할)
+*/
+.signup-form__group {
+  margin-bottom: 20px;
+}
+
+.signup-form__group:last-of-type {
+  margin-bottom: 0;
+}
+
+/* * Element: .signup-form__label
+ * (폼 라벨 스타일)
+*/
+.signup-form__label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 6px;
+  font-size: 16px; /* 폰트 크기 16px */
+}
+
+/* * Element: .signup-form__input
+ * (기존 .form-control 역할)
+*/
+.signup-form__input {
+  /* 요청: W550 H50 */
+  width: 100%;
+  height: 50px;
+  font-size: 16px;
+  padding: 0 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* 패딩 포함 크기 계산 */
+}
+
+.signup-form__input::placeholder {
+  color: #aaa;
+}
+
+/* 파일 업로드 input 스타일링 */
+.signup-form__input[type="file"] {
+  padding: 0;
+  line-height: 48px;
+}
+
+.signup-form__input[type="file"]::file-selector-button {
+  height: 48px;
+  padding: 0 15px;
+  margin-right: 10px;
+  background-color: #eceeef;
+  border: none;
+  border-right: 1px solid #ccc;
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+}
+
+.signup-form__input[type="file"]::file-selector-button:hover {
+  background-color: #e2e6ea;
+}
+
+/* * Element: .signup-form__error-message
+ * (기존 .error-message 역할)
+*/
+.signup-form__error-message {
+  color: #dc3545;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 5px;
+  display: none; /* 평소에는 숨김 */
+}
+
+/* * * Modifier: .signup-form__input--error
+ * (기존 .form-control.error 역할)
+*/
+.signup-form__input--error {
+  border-color: #dc3545;
+  background-color: #fef7f7;
+}
+
+/* * * Modifier: .signup-form__input--success
+ * (기존 .form-control.success 역할)
+*/
+.signup-form__input--success {
+  border-color: #198754;
+}
+
+/* * Element: .signup-form__button
+ * (기존 .btn-submit 역할)
+*/
+.signup-form__button {
+  /* 요청: W550 H50, color 0D6EFD */
+  width: 100%;
+  height: 50px;
+  background-color: #0D6EFD;
+  font-size: 16px;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 20px;
+}
+
+.signup-form__button:hover {
+  background-color: #0b5ed7;
+}
+
+.reset-form {
+            /* 요청: W590 H415 */
+            width: 590px;
+            height: auto;
+
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+            /* W 590 - (Padding 20*2) =
+               내부 콘텐츠 550px */
+            padding: 20px;
+
+            margin-top:30px;
+            margin-bottom:30px;
+        }
+
+        /* 폼 제목 (Reset Password) */
+        .reset-form__title {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 0 5px;
+        }
+
+        /* 폼 부제목 (Enter your Email address) */
+        .reset-form__subtitle {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        /* 폼 그룹 (라벨 + 인풋) */
+        .reset-form__group {
+            margin-bottom: 20px;
+        }
+
+        .reset-form__label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        /* 폼 입력창 (이메일, 비밀번호 등) */
+        .reset-form__input {
+            /* 요청: W550 H50 */
+            width: 100%; /* 550px */
+            height: 50px;
+
+            /* 요청: 폰트 사이즈 16px */
+            font-size: 16px;
+
+            padding: 0 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .reset-form__input::placeholder {
+            color: #aaa;
+        }
+
+        /* 폼 제출 버튼 */
+        .reset-form__button {
+            /* 요청: W550 H50, color 0D6EFD */
+            width: 100%; /* 550px */
+            height: 50px;
+            background-color: #0D6EFD;
+
+            /* 요청: 폰트 사이즈 16px */
+            font-size: 16px;
+
+            color: #fff;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px; /* 버튼 상단 여백 */
+        }
+
+        .reset-form__button:hover {
+            background-color: #0b5ed7;
+        }
+
+        /* * ----------------------------------------
+         * 🎨 동적 UI를 위한 유틸리티 클래스
+         * ----------------------------------------
+        */
+
+        /* [핵심]
+           JavaScript로 이 클래스를 제거하여
+           숨겨진 필드를 보여줍니다.
+        */
+        .hidden {
+            display: none;
+        }
+
+        .profile-container {
+                    display: flex;
+                    gap: 20px; /* 각 섹션 사이의 간격 */
+                    max-width: 1200px;
+                    margin: 0 auto; /* 중앙 정렬 */
+                    padding: 20px;
+                    background-color: #fff;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+                }
+
+                /* * ----------------------------------------
+                 * 👤 왼쪽 프로필 정보 섹션
+                 * ----------------------------------------
+                */
+                .profile-info {
+                    flex-basis: 280px; /* 고정 너비 */
+                    flex-shrink: 0;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+
+                .profile-info__avatar-wrapper {
+                    /* 요청: W280 H280 */
+                    width: 280px;
+                    height: 280px;
+                    border-radius: 50%; /* 원형 */
+                    overflow: hidden; /* 이미지가 원형 밖으로 나가지 않도록 */
+                    background-color: #e0e0e0; /* 이미지 없을 때 배경 */
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin-bottom: 15px;
+                    border: 1px solid #ddd;
+                }
+
+                .profile-info__avatar {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover; /* 이미지가 비율 유지하며 꽉 채우도록 */
+                }
+
+                .profile-info__username {
+                    font-size: 24px;
+                    font-weight: bold;
+                    margin-bottom: 5px;
+                    color: #222;
+                }
+
+                .profile-info__points {
+                    font-size: 18px;
+                    color: #666;
+                    margin-bottom: 20px;
+                }
+
+                /* Edit Profile 버튼 */
+                .profile-info__edit-button {
+                    /* 요청: W280 H30 */
+                    width: 280px;
+                    height: 30px;
+                    background-color: #f0f0f0;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                    font-size: 16px;
+                    cursor: pointer;
+                    transition: background-color 0.2s;
+                    margin-bottom: 20px; /* Enter Password와의 간격 */
+                }
+
+                .profile-info__edit-button:hover {
+                    background-color: #e0e0e0;
+                }
+
+                /* * ----------------------------------------
+                 * 🔒 비밀번호 입력 및 수정 필드 섹션
+                 * ----------------------------------------
+                */
+                .auth-section {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+
+                /* Enter Password 필드 */
+                .auth-section__password-input-group {
+                    width: 280px; /* 프로필 정보와 동일 너비 */
+                    margin-bottom: 15px;
+                }
+
+                .auth-section__label {
+                    display: block;
+                    font-size: 14px;
+                    margin-bottom: 5px;
+                    font-weight: bold;
+                }
+
+                .auth-section__input {
+                    width: 100%;
+                    height: 35px;
+                    padding: 0 10px;
+                    border: 1px solid #ccc;
+                    border-radius: 4px;
+                    font-size: 14px;
+                }
+
+                /* 수정 필드 그룹 */
+                .edit-fields-section {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+
+                .edit-fields-section__group {
+                    width: 280px; /* 프로필 정보와 동일 너비 */
+                    margin-bottom: 15px;
+                }
+
+                .edit-fields-section__upload-label {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 100%;
+                    height: 35px;
+                    background-color: #f0f0f0;
+                    border: 1px solid #ccc;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    color: #555;
+                    transition: background-color 0.2s;
+                }
+
+                .edit-fields-section__upload-label:hover {
+                    background-color: #e0e0e0;
+                }
+
+                .edit-fields-section__upload-input {
+                    display: none; /* 실제 파일 인풋 숨김 */
+                }
+
+
+                /* 하단 버튼 그룹 */
+                .edit-fields-section__buttons {
+                    display: flex;
+                    justify-content: space-between;
+                    width: 280px;
+                    margin-top: 10px;
+                }
+
+                .edit-fields-section__button {
+                    height: 35px;
+                    padding: 0 15px;
+                    border: none;
+                    border-radius: 5px;
+                    font-size: 14px;
+                    cursor: pointer;
+                    transition: background-color 0.2s;
+                }
+
+                .edit-fields-section__button--save {
+                    background-color: #007bff;
+                    color: white;
+                }
+
+                .edit-fields-section__button--save:hover {
+                    background-color: #0056b3;
+                }
+
+                .edit-fields-section__button--cancel {
+                    background-color: #6c757d;
+                    color: white;
+                }
+
+                .edit-fields-section__button--cancel:hover {
+                    background-color: #5a6268;
+                }
+
+                .edit-fields-section__button--delete {
+                    background-color: #dc3545;
+                    color: white;
+                }
+
+                .edit-fields-section__button--delete:hover {
+                    background-color: #c82333;
+                }
+
+
+                /* * ----------------------------------------
+                 * 📜 오른쪽 게시물/댓글 리스트 섹션
+                 * ----------------------------------------
+                */
+                .content-lists {
+                    flex-grow: 1; /* 남은 공간 모두 차지 */
+                    display: flex;
+                    gap: 20px;
+                }
+
+                .content-list__section {
+                    flex-basis: calc(50% - 10px); /* 전체 공간의 절반 - 간격 */
+                    flex-shrink: 0;
+
+                    /* 요청: W370 H345 */
+                    width: 370px;
+                    height: 345px;
+
+                    background-color: #f8f9fa;
+                    border: 1px solid #eee;
+                    border-radius: 8px;
+                    padding: 15px;
+                    box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .content-list__title {
+                    font-size: 20px;
+                    font-weight: bold;
+                    margin-bottom: 10px;
+                    color: #222;
+                }
+
+                .content-list__placeholder {
+                    flex-grow: 1;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    color: #aaa;
+                    font-style: italic;
+                }
+
+                /* * ----------------------------------------
+                 * 👻 유틸리티: 숨김/보임
+                 * ----------------------------------------
+                */
+                .hidden {
+                    display: none !important; /* !important로 강제 */
+                }
+
+                .edit-fields-section__input{
+                width:280px;
+                height:30px;
+                }
+
+                .signout-btn {
+                    display: inline-block; /* <a> 태그를 버튼처럼 만들기 위해 필수 */
+
+                    /* 님의 기존 버튼 스타일과 맞춤 (추정) */
+                    width: 65px;
+                    height: 30px;
+                    border-radius: 5px;
+                    border: 1px solid #ccc;
+                    background-color: #ffffff;
+                    font-size: 12px;
+                    font-weight: bold;
+                    cursor: pointer;
+
+                    /* * ⬇️ <a> 태그 스타일링을 위한 핵심 속성 ⬇️
+                     */
+                    color: #333 !important;           /* <a> 태그의 파란색/보라색 글씨 덮어쓰기 */
+                    text-decoration: none !important;  /* <a> 태그의 밑줄 제거 (필수!) */
+                    text-align: center;                /* 글자 중앙 정렬 */
+                    line-height: 28px;               /* (height - border*2) = 28px. 세로 중앙 정렬 */
+                    box-sizing: border-box;            /* 패딩/테두리가 크기를 밀어내지 않도록 */
+                }
+
+                /* 마우스를 올렸을 때 효과 (공통) */
+                .signout-btn:hover {
+                    background-color: #f5f5f5;
+                    text-decoration: none !important; /* 호버 시에도 밑줄 금지 */
+                }

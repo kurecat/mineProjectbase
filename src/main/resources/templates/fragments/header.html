@@ -17,18 +17,16 @@
             /></a>
         </div>
 
-        <div class="user-container">
-            <div th:if="${session.loginMember != null}">
-                <div class="user-icon"></div>
-                <div class="message-icon">✉️</div>
-                <a class="signout-btn" th:href="@{/}">Sign Out</a>
-            </div>
-
-            <div th:if="${session.loginMember == null}">
-                <a th:href="@{/login}" class="signout-btn">Sign In</a>
-            </div>
-
+        <div class="user-container" th:if="${session.loginMember != null}">
+            <div class="user-icon"></div>
+            <div class="message-icon">✉️</div>
+            <a class="signout-btn" th:href="@{/logout}">Sign Out</a>
         </div>
+
+        <div class="user-container" th:if="${session.loginMember == null}">
+            <a th:href="@{/login}" class="signout-btn">Sign In</a>
+        </div>
+
     </div>
 
     <nav class="header-nav">
