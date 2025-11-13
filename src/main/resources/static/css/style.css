@@ -114,14 +114,23 @@ header {
 }
 
 .signout-btn {
-  /* 요청사항: W 65, H 30, 모서리 반경 5 */
+  /* 크기 및 모양 */
   width: 65px;
   height: 30px;
   border-radius: 5px;
   border: 1px solid #ccc;
   background-color: #ffffff;
+
+  /* 텍스트 스타일 */
   font-size: 12px;
   font-weight: bold;
+  color: #000; /* 링크 색상 지정 */
+
+  /* 버튼처럼 보이게 */
+  display: inline-block;
+  text-align: center;
+  line-height: 30px; /* 높이에 맞춰 수직 정렬 */
+  text-decoration: none;
   cursor: pointer;
 }
 
@@ -294,6 +303,7 @@ footer-Copyright {
   내부의 모든 이미지는 100% 채우도록 수정 (img 태그 사용 시)
 */
 .swiper-slide {
+  position: relative
   overflow: hidden; /* (중요) 튀어나가는 iframe 숨기기 */
 }
 .swiper-slide img {

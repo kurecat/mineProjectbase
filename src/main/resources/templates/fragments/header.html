@@ -5,8 +5,10 @@
 <header class="main-header" th:fragment="header">
     <div class="header-top">
         <div class="search-container">
-            <input type="search" placeholder="검색" />
-            <button class="search-icon">⚲</button>
+            <form th:action="@{/main/search}">
+                <input type="search" placeholder="검색" name="query"/>
+                <button type="submit" class="search-icon">⚲</button>
+            </form>
         </div>
 
         <div class="logo-container">
@@ -16,9 +18,16 @@
         </div>
 
         <div class="user-container">
-            <!-- <div class="user-icon"></div>
-              <div class="message-icon">✉️</div> -->
-            <button class="signout-btn">Sign In</button>
+            <div th:if="${session.loginMember != null}">
+                <div class="user-icon"></div>
+                <div class="message-icon">✉️</div>
+                <a class="signout-btn" th:href="@{/}">Sign Out</a>
+            </div>
+
+            <div th:if="${session.loginMember == null}">
+                <a th:href="@{/login}" class="signout-btn">Sign In</a>
+            </div>
+
         </div>
     </div>
 
