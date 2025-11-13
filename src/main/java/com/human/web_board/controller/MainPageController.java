@@ -87,15 +87,15 @@ public class MainPageController {
                         rowNum));
         model.addAttribute(
                 "popularPosts",
-                postService.listPopular(1, 10)
+                postService.listPopular(1, 5)
         );
         model.addAttribute(
                 "recommendedPosts",
-                postService.listRecommended(1, 10)
+                postService.listRecommended(1, 5)
         );
         model.addAttribute(
                 "highScores",
-                memberService.listHighScores(1, 10)
+                memberService.listHighScores(1, 5)
         );
         return "main/main";
     }
