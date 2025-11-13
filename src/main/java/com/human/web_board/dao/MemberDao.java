@@ -66,14 +66,21 @@ public class MemberDao {
     }
 
 
-    public List<MemberSummaryRes> findHighScores() {
+    public List<MemberSummaryRes> findHighScores(int offset, int rowNum) {
         @Language("SQL")
         String sql = """
-            select NICKNAME, POINT
-            from members
-            ORDER By POINT DESC
+        SELECT * FROM (
+            SELECT ROWNUM AS rn, NICKNAME, POINT
+            FROM (
+                SELECT NICKNAME, POINT
+                FROM members
+                ORDER BY POINT DESC
+            )
+            WHERE ROWNUM <= ?
+        )
+        WHERE rn > ?
         """;
-        return jdbc.query(sql, new MemberSummaryResRowMapper());
+        return jdbc.query(sql, new MemberSummaryResRowMapper(), offset + rowNum, offset);
     }
 
     // Mapper 메서드  DB -> Member

@@ -7,6 +7,7 @@ import com.human.web_board.dto.MemberSummaryRes;
 import com.human.web_board.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -65,9 +66,16 @@ public class MemberServiceImpl implements MemberService {
         return true;
     }
 
+
     @Override
     public List<MemberSummaryRes> listHighScores(int offset, int rowNum) {
-        return List.of();
+        List<MemberSummaryRes> list = null;
+        try {
+            list = memberDao.findHighScores(offset, rowNum);
+        } catch (DataAccessException e) {
+            log.error("회원 목록 조회 중 DB 예외 발생: {}", e.getMessage());
+            throw new IllegalArgumentException("회원 목록을 조회 할 수 없습니다.");
+        }
+        return list;
     }
-
 }

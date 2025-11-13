@@ -1,118 +1,304 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<html lang="ko">
-  <head>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>main</title>
-    <link rel="stylesheet" th:href="@{/css/main.css}" />
-  </head>
-  <body>
-    <div class="container">
-      <header>
-        <div class="header-top">
-          <h1 class="logo">AjiteU</h1>
-          <div class="top-center-box">(W 300 H 50)</div>
-        </div>
-        <nav class="main-nav">
-          <ul>
-            <li><a href="#">게시판</a></li>
-            <li><a href="#">설문조사</a></li>
-          </ul>
-        </nav>
-      </header>
 
-      <main class="main-content">
-        <section class="content-area">
-          <div class="board-list"></div>
+    <link rel="stylesheet" src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
 
-          <div class="pagination">
-            <span>&lt;&lt;</span>
-            <span>&lt;</span>
-            <span class="current">1</span>
-            <span>2</span>
-            <span>3</span>
-            <span>4</span>
-            <span>5</span>
-            <span>6</span>
-            <span>7</span>
-            <span>8</span>
-            <span>9</span>
-            <span>10</span>
-            <span>&gt;</span>
-            <span>&gt;&gt;</span>
-          </div>
-        </section>
-        <aside class="sidebar">
-          <!-- 로그인 박스 -->
-          <div class="login-box">
-            <h3>로그인</h3>
-            <form action="#">
-              <div class="login-inputs">
-                <div class="input-group">
-                  <label for="id">id</label>
-                  <input type="text" id="id" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+
+<div class="container">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="main-content">
+        <div class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide video-slide">
+                    <div id="player1" class="youtube-player-background"></div>
+                    <div class="slide-content">
+                        <h1>자취의 교과서 같은 집</h1>
+                        <p>신림 4평 원룸 월세</p>
+                        <button class="slide-btn">자세히 보기 &gt;</button>
+                    </div>
                 </div>
-                <div class="input-group">
-                  <label for="pwd">pwd</label>
-                  <input type="password" id="pwd" />
+
+                <div class="swiper-slide video-slide">
+                    <div id="player2" class="youtube-player-background"></div>
+                    <div class="slide-content">
+                        <h1>자취요리 전문가의 집</h1>
+                        <p>"집에서 3끼 다 해먹어요"</p>
+                        <button class="slide-btn">자세히 보기 &gt;</button>
+                    </div>
                 </div>
-              </div>
-              <button type="submit" class="login-button">로그인</button>
-            </form>
-            <div class="login-links">
-              <a href="#">ID/PW 찾기</a> | <a th:href="@{/members/signup}">회원가입</a>
+
+                <div class="swiper-slide video-slide">
+                    <div id="player3" class="youtube-player-background"></div>
+                    <div class="slide-content">
+                        <h1>고물가 시대에서 살아남기</h1>
+                        <p>-자취쿠팡 필수템편-</p>
+                        <a
+                                href="https://www.youtube.com/watch?v=zzBu5eSM7bU&t"
+                                target="_blank"
+                        ><button class="slide-btn">자세히 보기 &gt;</button></a
+                        >
+                    </div>
+                </div>
+
+                <div class="swiper-slide">
+                    <img
+                            src="https://placehold.co/1140x400/2ecc71/ffffff?text=Slide+3"
+                            alt="Slide 3"
+                    />
+                </div>
             </div>
-          </div>
 
-          <div class="sidebar-ad-box">(W 402 H 505)</div>
-        </aside>
-      </main>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-pagination"></div>
+        </div>
+        <div class="postlistbox">
+            <table th:each="postSummary : ${postSummaries}">
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>카테고리</th>
+                    <th>닉네임</th>
+                    <th>조회수</th>
+                    <th>추천수</th>
+                    <th>작성일자</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td th:text="${postSummary.id}"></td>
+                    <td th:text="${postSummary.title}"></td>
+                    <td th:text="${postSummary.categoryName}"></td>
+                    <td th:text="${postSummary.nickname}"></td>
+                    <td th:text="${postSummary.viewCount}"></td>
+                    <td th:text="${postSummary.recommendationsCount}"></td>
+                    <td th:text="${postSummary.createdAt}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <nav class="pistlistrightbox">
+            <table th:each="highScore : ${highScores}">
+                <thead>
+                <tr>
+                    <th>닉네임</th>
+                    <th>포인트</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td th:text="${highScore.nickname}"></td>
+                    <td th:text="${highScore.point}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </nav>
+        <div class="bastpostbox">
+            <table th:each="popularPost : ${popularPosts}">
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>카테고리</th>
+                    <th>닉네임</th>
+                    <th>조회수</th>
+                    <th>추천수</th>
+                    <th>작성일자</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td th:text="${popularPost.id}"></td>
+                    <td th:text="${popularPost.title}"></td>
+                    <td th:text="${popularPost.categoryName}"></td>
+                    <td th:text="${popularPost.nickname}"></td>
+                    <td th:text="${popularPost.viewCount}"></td>
+                    <td th:text="${popularPost.recommendationsCount}"></td>
+                    <td th:text="${popularPost.createdAt}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="suggestpostbox">
+            <table th:each="recommendedPost : ${recommendedPosts}">
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>카테고리</th>
+                    <th>닉네임</th>
+                    <th>조회수</th>
+                    <th>추천수</th>
+                    <th>작성일자</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td th:text="${recommendedPost.id}"></td>
+                    <td th:text="${recommendedPost.title}"></td>
+                    <td th:text="${recommendedPost.categoryName}"></td>
+                    <td th:text="${recommendedPost.nickname}"></td>
+                    <td th:text="${recommendedPost.viewCount}"></td>
+                    <td th:text="${recommendedPost.recommendationsCount}"></td>
+                    <td th:text="${recommendedPost.createdAt}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</div>
 
-      <footer>Footer</footer>
-    </div>
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+    // 모든 YouTube 플레이어를 관리할 객체
+    var players = {};
+    // Swiper 인스턴스
+    var mySwiper;
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const paginationContainer = document.querySelector(".pagination");
-        const boardListContainer = document.querySelector(".board-list");
+    // 1. YouTube API가 준비되면 자동으로 호출됨
+    function onYouTubeIframeAPIReady() {
+      // --- 1번 영상 (player1) 생성 ---
+      players["player1"] = new YT.Player("player1", {
+        /* 👇👇👇 1번 영상 ID (예: 'S-N4a1A-TqE') 👇👇👇
+         */
+        videoId: "oMeYMLRwKrY",
+        playerVars: {
+          autoplay: 1,
+          mute: 1,
+          controls: 0,
+          loop: 1,
+          playlist: "oMeYMLRwKrY", // 1번 영상 ID와 동일하게
+          modestbranding: 1,
+          showinfo: 0,
+          rel: 0,
+        },
+        events: {
+          // 1번 플레이어가 준비되면 'onPlayerReady' 함수 호출
+          onReady: onPlayerReady,
+        },
+      });
 
-        function renderBoard(page) {
-          boardListContainer.innerHTML = "";
+      // --- 2번 영상 (player2) 생성 ---
+      players["player2"] = new YT.Player("player2", {
+        videoId: "XJ8b9sWVFb0",
+        playerVars: {
+          autoplay: 1,
+          mute: 1,
+          controls: 0,
+          loop: 1,
+          playlist: "XJ8b9sWVFb0", // 2번 영상 ID와 동일하게
+          modestbranding: 1,
+          showinfo: 0,
+          rel: 0,
+        },
+        events: {
+          // 2번 플레이어가 준비되면 'onPlayerReady' 함수 호출
+          onReady: onPlayerReady,
+        },
+      });
 
-          const postsPerPage = 15;
-          const startPostNumber = (page - 1) * postsPerPage + 1;
-          const endPostNumber = page * postsPerPage;
+      // (영상이 3개라면 여기에 players['player3'] = new YT.Player(...) 추가)
+      players["player3"] = new YT.Player("player3", {
+        videoId: "zzBu5eSM7bU",
+        playerVars: {
+          autoplay: 1,
+          mute: 1,
+          controls: 0,
+          loop: 1,
+          playlist: "zzBu5eSM7bU", // 2번 영상 ID와 동일하게
+          modestbranding: 1,
+          showinfo: 0,
+          rel: 0,
+        },
+        events: {
+          // 2번 플레이어가 준비되면 'onPlayerReady' 함수 호출
+          onReady: onPlayerReady,
+        },
+      });
+    }
 
-          for (let i = startPostNumber; i <= endPostNumber; i++) {
-            const item = document.createElement("div");
-            item.className = "board-item";
-            item.textContent = `게시글 제목 ${i}`;
+    // 2. 플레이어 준비 상태 확인 및 Swiper 초기화
 
-            boardListContainer.appendChild(item);
-          }
-        }
+    // (수정) 준비된 플레이어 수를 체크하기 위한 변수
+    var playersReadyCount = 0;
+    var totalPlayers = 3; // (중요) 생성할 총 플레이어 수 (지금은 2개)
 
-        if (paginationContainer) {
-          paginationContainer.addEventListener("click", function (event) {
-            if (event.target.tagName === "SPAN") {
-              const pageText = event.target.textContent;
-              const pageNumber = parseInt(pageText);
+    function onPlayerReady(event) {
+      // (수정) 모든 플레이어가 준비될 때까지 카운트 증가
+      playersReadyCount++;
 
-              if (!isNaN(pageNumber)) {
-                const currentActive =
-                  paginationContainer.querySelector(".current");
-                if (currentActive) {
-                  currentActive.classList.remove("current");
+      // (중요) 모든 플레이어가 준비되었을 때만 Swiper를 1번 초기화
+      if (playersReadyCount === totalPlayers) {
+        initializeSwiper();
+      }
+    }
+
+    // 3. Swiper 초기화 및 슬라이드 제어 함수
+    function initializeSwiper() {
+      if (mySwiper) return; // 중복 실행 방지
+
+      mySwiper = new Swiper(".mySwiper", {
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+        pagination: {
+          el: ".swiper-pagination",
+          clickable: true,
+        },
+        loop: true,
+
+        on: {
+          // (중요) 슬라이드가 바뀔 때마다 실행
+          slideChange: function () {
+            var currentSlide = this.slides[this.activeIndex];
+
+            // 현재 활성화된 슬라이드에 있는 플레이어 ID 찾기
+            var activePlayerId = null;
+            if (currentSlide.querySelector(".youtube-player-background")) {
+              activePlayerId = currentSlide.querySelector(
+                ".youtube-player-background"
+              ).id; // 예: "player1"
+            }
+
+            // 모든 플레이어를 순회
+            for (var playerId in players) {
+              if (players.hasOwnProperty(playerId)) {
+                var player = players[playerId];
+
+                // 현재 활성화된 슬라이드의 플레이어라면 -> 재생
+                if (playerId === activePlayerId) {
+                  player.playVideo();
                 }
-                event.target.classList.add("current");
-                renderBoard(pageNumber);
+                // 활성화되지 않은 (다른 슬라이드의) 플레이어라면 -> 정지
+                else {
+                  player.pauseVideo();
+                }
               }
             }
-          });
-        }
-        renderBoard(1);
+          },
+
+          // (추가) Swiper가 처음 초기화될 때 실행
+          init: function () {
+            // 1번 슬라이드(첫 화면)가 아닌 다른 영상 플레이어들은 모두 정지시킴
+            // (loop 모드에서는 첫 슬라이드가 0번이 아닐 수 있으므로
+            //  slideChange 이벤트를 수동으로 한번 호출하는 것이 더 안전함)
+            this.emit("slideChange"); // slideChange 이벤트를 강제로 실행
+          },
+        },
       });
-    </script>
-  </body>
+    }
+</script>
+</body>
 </html>
