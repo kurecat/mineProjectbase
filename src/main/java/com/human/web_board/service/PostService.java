@@ -27,4 +27,9 @@ public interface PostService {
     List<PostSummaryRes> listPopular(int offset, int rowNum);
 
     List<PostSummaryRes> listRecommended(int offset, int rowNum);
+    // 조회수, 추천수 증가 기능
+    void increaseView(Long postId);
+    int increaseRecommendations(Long postId);
+
+    List<PostSummaryRes> searchList(String query, int i, int i1);
 }

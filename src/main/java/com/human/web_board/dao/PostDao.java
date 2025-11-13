@@ -64,6 +64,34 @@ public class PostDao {
         List<PostRes> list = jdbc.query(sql, new PostResPowMapper(), id);
         return list.isEmpty() ? null : list.get(0);
     }
+    // 전체 게시판에서 검색
+    public List<PostSummaryRes> findByQuery(String query, int offset, int rowNum) {
+        String sql = """
+        SELECT * FROM (
+            SELECT ROWNUM AS rn, inner_query.*
+            FROM (
+                SELECT p.id, c.name AS category_name, p.title, m.NICKNAME, 
+                       p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT
+                FROM POSTS p
+                JOIN members m ON p.member_id = m.id
+                JOIN CATEGORY c ON p.CATEGORY_ID = c.id
+                WHERE p.TITLE LIKE ?
+                ORDER BY p.id DESC
+            ) inner_query
+            WHERE ROWNUM <= ?
+        )
+        WHERE rn > ?
+    """;
+        return jdbc.query(
+                sql,
+                new PostSummaryResRowMapper(),
+                "%" + query + "%",
+                offset + rowNum,
+                offset
+        );
+    }
+
+
 
     public List<PostSummaryRes> findSummaries(
             Long mainCategoryId,
@@ -150,7 +178,21 @@ public class PostDao {
                 offset,
                 offset + rowNum);
     }
-
+    // 조회수 증가
+    public void increaseViewCount(Long postId) {
+        String sql = "UPDATE posts SET view_count = view_count + 1 WHERE id = ?";
+        jdbc.update(sql, postId);
+    }
+    // 추천수 증가
+    public void increaseRecommendationsCount(Long postId) {
+        String sql = "UPDATE posts SET recommendations_count = recommendations_count + 1 WHERE id = ?";
+        jdbc.update(sql, postId);
+    }
+    // 🔥 추천수 조회
+    public int getRecommendationsCount(Long postId) {
+        String sql = "SELECT recommendations_count FROM posts WHERE id = ?";
+        return jdbc.queryForObject(sql, Integer.class, postId);
+    }
     // mapper 메서드 생성(수정)
     static class PostResPowMapper implements RowMapper<PostRes> {
         @Override

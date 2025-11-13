@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<header class="main-header" th:fragment="header">
+    <div class="header-top">
+        <div class="search-container">
+            <input type="search" placeholder="검색" />
+            <button class="search-icon">⚲</button>
+        </div>
+
+        <div class="logo-container">
+            <a th:href="@{/}"
+            ><img th:src="@{/Image/logo.png}" alt="Agit 로고"
+            /></a>
+        </div>
+
+        <div class="user-container">
+            <div class="user-icon"></div>
+            <div class="message-icon">✉️</div>
+            <button class="signout-btn">Sign In</button>
+        </div>
+    </div>
+
+    <nav class="header-nav">
+        <ul>
+            <li><a href="#">꿀팁</a></li>
+            <li><a href="#">질문</a></li>
+            <li><a href="#">후기</a></li>
+            <li><a href="#">잡담</a></li>
+        </ul>
+    </nav>
+</header>
+</body>
+</html>

@@ -94,5 +94,18 @@ public class PostServiceImpl implements PostService {
         }
         return res;
     }
+    @Override
+    public void increaseView(Long postId) {
+        postDao.increaseViewCount(postId);
+    }
 
+    @Override
+    public int increaseRecommendations(Long postId) {
+        postDao.increaseRecommendationsCount(postId);
+        return postDao.getRecommendationsCount(postId);
+    }
+    @Override
+    public List<PostSummaryRes> searchList(String query, int offset, int rowNum) {
+        return postDao.findByQuery(query, offset, rowNum);
+    }
 }
