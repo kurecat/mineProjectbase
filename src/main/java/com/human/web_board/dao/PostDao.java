@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.intellij.lang.annotations.Language;
 
@@ -64,113 +65,57 @@ public class PostDao {
         return list.isEmpty() ? null : list.get(0);
     }
 
-    // 전체 게시글 리스트 가져오기
-    public List<PostSummaryRes> findAll(int offset, int rowNum) {
-        String sql = """
+    public List<PostSummaryRes> findSummaries(
+            Long mainCategoryId,
+            Long categoryId,
+            String query,
+            int offset,
+            int rowNum
+    ) {
+        StringBuilder sql = new StringBuilder("""
         SELECT * FROM (
             SELECT ROWNUM AS rn, inner_query.*
             FROM (
-                SELECT p.id, c.name AS category_name, p.title, m.NICKNAME, 
+                SELECT p.id, c.name AS category_name, p.title, m.NICKNAME,
                        p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT
                 FROM POSTS p
                 JOIN members m ON p.member_id = m.id
                 JOIN CATEGORY c ON p.CATEGORY_ID = c.id
+                JOIN MAIN_CATEGORY mc ON c.main_category_id = mc.id
+                WHERE 1=1
+    """);
+
+        List<Object> params = new ArrayList<>();
+
+        if (mainCategoryId != null) {
+            sql.append(" AND c.MAIN_CATEGORY_ID = ?");
+            params.add(mainCategoryId);
+        }
+
+        else if (categoryId != null) {
+            sql.append(" AND p.CATEGORY_ID = ?");
+            params.add(categoryId);
+        }
+
+        if (query != null && !query.isBlank()) {
+            sql.append(" AND p.TITLE LIKE ?");
+            params.add("%" + query + "%");
+        }
+
+        sql.append("""
                 ORDER BY p.id DESC
             ) inner_query
             WHERE ROWNUM <= ?
         )
         WHERE rn > ?
-    """;
-        return jdbc.query(
-                sql,
-                new PostSummaryResRowMapper(),
-                offset + rowNum,
-                offset
-        );
+    """);
+
+        params.add(offset + rowNum);
+        params.add(offset);
+
+        return jdbc.query(sql.toString(), new PostSummaryResRowMapper(), params.toArray());
     }
 
-
-    // 게시판별 게시글 리스트 가져오기
-    public List<PostSummaryRes> findByCategoryId(Long categoryId, int offset, int rowNum) {
-        String sql = """
-        SELECT * FROM (
-            SELECT ROWNUM AS rn, inner_query.*
-            FROM (
-                SELECT p.id, c.name AS category_name, p.title, m.NICKNAME, 
-                       p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT
-                FROM POSTS p
-                JOIN members m ON p.member_id = m.id
-                JOIN CATEGORY c ON p.CATEGORY_ID = c.id
-                WHERE p.CATEGORY_ID = ?
-                ORDER BY p.id DESC
-            ) inner_query
-            WHERE ROWNUM <= ?
-        )
-        WHERE rn > ?
-    """;
-        return jdbc.query(
-                sql,
-                new PostSummaryResRowMapper(),
-                categoryId,
-                offset + rowNum,
-                offset
-        );
-    }
-
-    // 전체 게시판에서 검색
-    public List<PostSummaryRes> findByQuery(String query, int offset, int rowNum) {
-        String sql = """
-        SELECT * FROM (
-            SELECT ROWNUM AS rn, inner_query.*
-            FROM (
-                SELECT p.id, c.name AS category_name, p.title, m.NICKNAME, 
-                       p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT
-                FROM POSTS p
-                JOIN members m ON p.member_id = m.id
-                JOIN CATEGORY c ON p.CATEGORY_ID = c.id
-                WHERE p.TITLE LIKE ?
-                ORDER BY p.id DESC
-            ) inner_query
-            WHERE ROWNUM <= ?
-        )
-        WHERE rn > ?
-    """;
-        return jdbc.query(
-                sql,
-                new PostSummaryResRowMapper(),
-                "%" + query + "%",
-                offset + rowNum,
-                offset
-        );
-    }
-
-    // 게시판별 검색
-    public List<PostSummaryRes> findByCategoryIdAndQuery(Long categoryId, String query, int offset, int rowNum) {
-        String sql = """
-        SELECT * FROM (
-            SELECT ROWNUM AS rn, inner_query.*
-            FROM (
-                SELECT p.id, c.name AS category_name, p.title, m.NICKNAME, 
-                       p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT
-                FROM POSTS p
-                JOIN members m ON p.member_id = m.id
-                JOIN CATEGORY c ON p.CATEGORY_ID = c.id
-                WHERE p.CATEGORY_ID = ? AND p.TITLE LIKE ?
-                ORDER BY p.id DESC
-            ) inner_query
-            WHERE ROWNUM <= ?
-        )
-        WHERE rn > ?
-    """;
-        return jdbc.query(
-                sql,
-                new PostSummaryResRowMapper(),
-                categoryId,
-                "%" + query + "%",
-                offset + rowNum,
-                offset
-        );
-    }
 
     public List<PostSummaryRes> findPopular(int offset, int rowNum) {
         @Language("SQL")

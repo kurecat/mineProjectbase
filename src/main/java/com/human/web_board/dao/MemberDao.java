@@ -64,7 +64,6 @@ public class MemberDao {
         return affected > 0;
     }
 
-
     public List<MemberSummaryRes> findHighScores(int offset, int rowNum) {
         @Language("SQL")
         String sql = """

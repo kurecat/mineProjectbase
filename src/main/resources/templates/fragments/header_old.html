@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Header</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<header th:fragment="header">
+  <div class="container header-inner">
+    <h1 class="logo"><a th:href="@{/posts}">Web Board</a></h1>
+    <nav class="nav">
+      <a th:href="@{/posts}" th:classappend="${active}=='posts' ? ' active'">게시글</a>
+      <a th:href="@{/members/memberlist}" th:classappend="${active}=='members/memberlist' ? ' active'">회원 목록</a>
+      <a th:href="@{/members/memberUpdate}" th:classappend="${active}=='/members/memberUpdate' ? 'active'">회원 정보 수정</a>
+      <a th:href="@{/logout}">로그아웃</a>
+    </nav>
+  </div>
+</header>
+</body>
+</html>

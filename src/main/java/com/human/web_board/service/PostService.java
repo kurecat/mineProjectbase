@@ -18,13 +18,11 @@ public interface PostService {
     // 게시글 삭제
     boolean delete(Long id);
 
-    List<PostSummaryRes> list(int offset, int rowNum);
-
-    List<PostSummaryRes> list(Long boardId, int offset, int rowNum);
-
-    List<PostSummaryRes> searchList(String query, int offset, int rowNum);
-
-    List<PostSummaryRes> searchList(Long boardId, String query, int offset, int rowNum);
+    List<PostSummaryRes> listSummaries(Long mainCategoryId,
+                                       Long categoryId,
+                                       String query,
+                                       int offset,
+                                       int rowNum);
 
     List<PostSummaryRes> listPopular(int offset, int rowNum);
 

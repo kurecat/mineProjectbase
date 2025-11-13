@@ -37,27 +37,32 @@ public class MainPageController {
 
     // 전체 or 특정 게시판
     @GetMapping("/main")
-    public String selectBoard(
-            @RequestParam(required = false) Long id,
+    public String listPosts(
+            @RequestParam(required = false) Long mainCategoryId,
+            @RequestParam(required = false) Long categoryId,
             @RequestParam(defaultValue = "0") int offset,
-            @RequestParam(defaultValue = "10") int rowNum,
+            @RequestParam(defaultValue = "20") int rowNum,
             Model model, HttpSession session) {
         // 서비스에서 전체 목록 가져와서 모델에 추가
-        List<PostSummaryRes> postSummaries = (id == null)
-            ? postService.list(offset, rowNum)
-            : postService.list(id, offset, rowNum);
-        model.addAttribute("postSummaries", postSummaries);
+        model.addAttribute(
+                "postSummaries",
+                postService.listSummaries(
+                        mainCategoryId,
+                        categoryId,
+                        null,
+                        offset,
+                        rowNum));
         model.addAttribute(
             "popularPosts",
-            postService.listPopular(1, 10)
+            postService.listPopular(1, 5)
         );
         model.addAttribute(
             "recommendedPosts",
-            postService.listRecommended(1, 10)
+            postService.listRecommended(1, 5)
         );
         model.addAttribute(
             "highScores",
-            memberService.listHighScores(1, 10)
+            memberService.listHighScores(1, 5)
         );
         return "main/main";
     }
@@ -65,16 +70,21 @@ public class MainPageController {
     // 게시물 검색 기능
     @GetMapping("/main/search")
     public String searchPosts(
-            @RequestParam(required = false) Long id,
-            @RequestParam(defaultValue = "") String query,
+            @RequestParam(required = false) Long mainCategoryId,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) String query,
             @RequestParam(defaultValue = "0") int offset,
             @RequestParam(defaultValue = "10") int rowNum,
             Model model, HttpSession session) {
-        // 지정 게시판 내 text가 포함된 게시물들 찾아서 모델에 추가
-        List<PostSummaryRes> postSummaries = (id == null)
-                ? postService.searchList(query, offset, rowNum)
-                : postService.searchList(id, query, offset, rowNum);
-        model.addAttribute("postSummaries", postSummaries);
+        // 서비스에서 전체 목록 가져와서 모델에 추가
+        model.addAttribute(
+                "postSummaries",
+                postService.listSummaries(
+                        mainCategoryId,
+                        categoryId,
+                        query,
+                        offset,
+                        rowNum));
         model.addAttribute(
                 "popularPosts",
                 postService.listPopular(1, 10)
@@ -82,6 +92,10 @@ public class MainPageController {
         model.addAttribute(
                 "recommendedPosts",
                 postService.listRecommended(1, 10)
+        );
+        model.addAttribute(
+                "highScores",
+                memberService.listHighScores(1, 10)
         );
         return "main/main";
     }

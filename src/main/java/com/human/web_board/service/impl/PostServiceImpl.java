@@ -60,48 +60,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostSummaryRes> list(int offset, int rowNum) {
+    public List<PostSummaryRes> listSummaries(Long mainCategoryId, Long categoryId, String query, int offset, int rowNum) {
         List<PostSummaryRes> res;
         try {
-            res = postDao.findAll(offset, rowNum);
+            res = postDao.findSummaries(mainCategoryId, categoryId, query, offset, rowNum);
         } catch (DataAccessException e) {
             log.error("게시판 불러오기 에러 발생: {}", e);
-            res = Collections.emptyList();
-        }
-        return res;
-    }
-
-    @Override
-    public List<PostSummaryRes> list(Long boardId, int offset, int rowNum) {
-        List<PostSummaryRes> res;
-        try {
-            res = postDao.findByCategoryId(boardId, offset, rowNum);
-        } catch (DataAccessException e) {
-            log.error("게시판 불러오기 에러 발생: {}", e);
-            res = Collections.emptyList();
-        }
-        return res;
-    }
-
-    @Override
-    public List<PostSummaryRes> searchList(String query, int offset, int rowNum) {
-        List<PostSummaryRes> res;
-        try {
-            res = postDao.findByQuery(query, offset, rowNum);
-        } catch (DataAccessException e) {
-            log.error("게시글 검색 에러 발생: {}", e);
-            res = Collections.emptyList();
-        }
-        return res;
-    }
-
-    @Override
-    public List<PostSummaryRes> searchList(Long boardId, String query, int offset, int rowNum) {
-        List<PostSummaryRes> res;
-        try {
-            res = postDao.findByCategoryIdAndQuery(boardId, query, offset, rowNum);
-        } catch (DataAccessException e) {
-            log.error("게시글 검색 에러 발생: {}", e);
             res = Collections.emptyList();
         }
         return res;

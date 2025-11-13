@@ -1,0 +1,389 @@
+.container {
+  width: 1200px;
+  height: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+header {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  background-color: #f9f9f9; /* 배경 확인용 */
+}
+
+/* --- 전체 헤더 --- */
+.main-header {
+  width: 1140px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* --- 1. 상단 헤더 (H70) --- */
+.header-top {
+  display: flex;
+  justify-content: space-between; /* 요소들을 양쪽 끝과 중앙에 배치 */
+  align-items: center;
+  height: 70px; /* 이미지에서 H70 */
+  padding: 0 20px; /* 좌우 여백 */
+}
+
+/* --- 좌측: 검색창 --- */
+.search-container {
+  position: relative; /* 아이콘 위치 기준 */
+}
+
+.search-container input {
+  /* 요청사항: W 250, H 30, 모서리 반경 5 */
+  width: 250px;
+  height: 30px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  padding-left: 10px;
+  padding-right: 30px; /* 아이콘 자리 확보 */
+  font-size: 14px;
+}
+
+.search-container .search-icon {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  font-size: 18px;
+  color: #888;
+  cursor: pointer;
+}
+
+/* --- 중앙: 로고 --- */
+.logo-container {
+  flex: 1;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-container img {
+  height: 100%;
+  max-height: 50px;
+  width: auto;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
+/* --- 우측: 사용자 메뉴 --- */
+.user-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 아이템 사이 간격 */
+}
+
+.user-icon {
+  /* 요청사항: 원 W30 H30 */
+  width: 30px;
+  height: 30px;
+  border-radius: 50%; /* 원으로 만들기 */
+  background-color: #d9d9d9; /* 임시 배경색 */
+  /* 실제로는 background-image: url('user-avatar.jpg'); 사용 */
+  background-size: cover;
+  background-position: center;
+}
+
+.message-icon {
+  /* 요청사항: 편지지 박스 W30 H30 */
+  width: 30px;
+  height: 30px;
+  border: 1px solid #ccc;
+  border-radius: 3px; /* 이미지와 유사하게 살짝 둥글게 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.signout-btn {
+  /* 요청사항: W 65, H 30, 모서리 반경 5 */
+  width: 65px;
+  height: 30px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.signout-btn:hover {
+  background-color: #f5f5f5;
+}
+
+/* --- 2. 하단 네비게이션 (H35) --- */
+.header-nav {
+  height: 35px; /* 이미지에서 H35 */
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  padding: 0 20px; /* 상단과 동일한 좌측 여백 */
+  border-top: 1px solid #e0e0e0; /* 상단 영역과의 구분선 */
+}
+
+.header-nav ul {
+  display: flex;
+  list-style: none;
+  gap: 50px; /* 메뉴 간 간격 */
+}
+
+.header-nav ul li a {
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.header-nav ul li a:hover {
+  color: #000;
+  font-weight: bold;
+}
+
+/*
+========================================
+ Footer (푸터) 스타일
+========================================
+*/
+
+/* --- 푸터 전체 래퍼 --- */
+.main-footer {
+  width: 1140px;
+  background-color: #f9f9f9; /* 이미지의 옅은 회색 배경 */
+  border-top: 1px solid #e0e0e0; /* 상단 구분선 */
+  margin-top: 30px;
+  padding-left: 20px;
+}
+
+.footer-content {
+  width: 1140px;
+  height: 70px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 40px;
+}
+
+/* --- 푸터 좌측: 네비게이션 --- */
+.footer-nav ul {
+  display: flex;
+  list-style: none; /* ul의 기본 점 제거 */
+  gap: 50px; /* 메뉴 아이템 간격 */
+}
+
+.footer-nav ul li a {
+  text-decoration: none; /* a 태그의 밑줄 제거 */
+  color: #333;
+  /* 요청사항: 폰트 사이즈 16px */
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.footer-nav ul li a:hover {
+  color: #000;
+  text-decoration: underline;
+}
+
+footer-Copyright {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-info {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* 저작권 문구와 로고 사이 간격 */
+}
+
+.copyright {
+  /* 저작권 문구는 보통 네비게이션보다 작게 설정합니다 */
+  font-size: 14px;
+  color: #777; /* 눈에 덜 띄는 회색 */
+}
+
+.footer-logo img {
+  max-height: 50px; /* 푸터의 H70에 맞춰 50px 정도로 제한 */
+  width: auto; /* 비율 유지를 위해 너비는 자동으로 */
+  object-fit: contain; /* 이미지가 비율을 유지하면서 요소 내부에 포함되도록 함 */
+  vertical-align: middle; /* 이미지 정렬을 깔끔하게 */
+}
+
+/*
+========================================
+ Swiper 캐러셀 스타일
+========================================
+*/
+.main-content {
+  width: 1140px;
+  display: flex;
+  height: auto;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+.mySwiper {
+  width: 100%; /* 부모 너비(1140px)를 꽉 채움 */
+  height: 641px;
+  background-color: #eee; /* 로딩 중 배경색 */
+  border-radius: 8px; /* 모서리 둥글게 */
+  margin-bottom: 30px; /* 캐러셀과 하단 컨텐츠 사이 여백 */
+}
+
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+
+  /* (중요) 실제 이미지 배경으로 교체하는 예시 */
+  /* 실제로는 각 .swiper-slide에
+      다른 배경 이미지를 주는 것이 좋습니다.
+      우선은 임시 스타일입니다.
+    */
+  background-size: cover;
+  background-position: center;
+}
+
+/* 임시 슬라이드 배경 (나중에 이미지로 교체하세요) */
+.swiper-slide:nth-child(1) {
+  background-image: url("https://via.placeholder.com/1140x400/3498db/ffffff?text=Slide+1");
+}
+.swiper-slide:nth-child(2) {
+  background-image: url("https://via.placeholder.com/1140x400/e74c3c/ffffff?text=Slide+2");
+}
+.swiper-slide:nth-child(3) {
+  background-image: url("https://via.placeholder.com/1140x400/2ecc71/ffffff?text=Slide+3");
+}
+
+/* (선택) 화살표/페이지네이션 색상 변경 */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #ffffff; /* 화살표 색상 */
+}
+
+.swiper-pagination-bullet-active {
+  background: #ffffff; /* 활성화된 점 색상 */
+}
+
+/*
+========================================
+ Swiper 영상 슬라이드 스타일
+========================================
+*/
+
+/* 슬라이드 자체는 position의 기준(relative)이 됩니다.
+  내부의 모든 이미지는 100% 채우도록 수정 (img 태그 사용 시)
+*/
+.swiper-slide {
+  overflow: hidden; /* (중요) 튀어나가는 iframe 숨기기 */
+}
+.swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지가 꽉 차도록 */
+}
+
+/* 1. YouTube 플레이어 배경 스타일 */
+.youtube-player-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%; /* 너비 100% (1140px) */
+  height: 100%; /* 높이 100% (641px) */
+
+  z-index: 1;
+  pointer-events: none; /* 클릭 방지 */
+}
+
+/* (이것도 확인) iframe 스타일 */
+.youtube-player-background iframe {
+  /* iframe도 부모를 100% 채우도록 합니다. */
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* 2. 영상 위 컨텐츠 스타일 (라프텔 예시) */
+.slide-content {
+  position: relative; /* 배경보다 위에 있도록 */
+  z-index: 2; /* z-index 2 */
+  color: white; /* 텍스트 색상 */
+  text-align: left; /* 좌측 정렬 */
+  padding: 50px; /* 안쪽 여백 */
+
+  /* (선택) 텍스트가 영상에 묻히지 않게 그림자 효과 */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.slide-content h1 {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+.slide-content p {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+.slide-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* 메인 게시글 리스트 박스 */
+.postlistbox {
+  width: 800px;
+  height: 1000px;
+  border-radius: 5px;
+  border: 1px solid black;
+}
+
+.pistlistrightbox {
+  width: 310px;
+  height: 1000px;
+  border-radius: 5px;
+  border: 1px solid black;
+  margin-left: 30px;
+}
+
+.bastpostbox {
+  width: 555px;
+  height: 270px;
+  border-radius: 5px;
+  border: 1px solid black;
+  margin-top: 30px;
+}
+
+.suggestpostbox {
+  width: 555px;
+  height: 270px;
+  border-radius: 5px;
+  border: 1px solid black;
+  margin-top: 30px;
+  margin-left: 30px;
+}
