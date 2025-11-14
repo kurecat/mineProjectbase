@@ -79,6 +79,8 @@ public class MemberController {
             }
         }
 
+        req.setProfileImg(newImagePath);
+
         try {
             memberService.update(id, req);
         } catch (IllegalArgumentException e) {
