@@ -6,6 +6,8 @@ import com.human.web_board.service.PostService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,6 +45,9 @@ public class MainPageController {
             @RequestParam(defaultValue = "0") int offset,
             @RequestParam(defaultValue = "20") int rowNum,
             Model model, HttpSession session) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(auth.getName());
         // 서비스에서 전체 목록 가져와서 모델에 추가
         model.addAttribute(
                 "postSummaries",

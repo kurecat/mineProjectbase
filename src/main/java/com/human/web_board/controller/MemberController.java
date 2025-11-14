@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 @Controller
 @RequiredArgsConstructor
 @Slf4j
@@ -18,29 +19,30 @@ public class MemberController {
     private final MemberService memberService;
 
     // 회원 가입 폼
-    @GetMapping("/signup")
+    @GetMapping("/signup")  // 수정: 클래스 레벨 /members와 합쳐서 /members/signup
     public String signupForm(Model model) {
         model.addAttribute("memberForm", new MemberSignupReq());
-        return "signup"; // 파일명과 일치
+        return "members/signup"; // templates/members/signup.html
     }
 
-
     // 회원 가입 처리
-    @PostMapping("/signup")
+    @PostMapping("/signup")  // 수정: /members/signup
     public String signup(MemberSignupReq req, Model model) {
-        System.out.println("PWD 확인: " + req.getPwd());
+        log.info("회원가입 요청: {}", req);
 
-        log.info("회원가입 요청 들어옴: {}", req);
+        if (!req.getPwd().equals(req.getPasswordCheck())) {
+            model.addAttribute("error", "비밀번호와 확인이 일치하지 않습니다.");
+            return "members/signup";
+        }
+
         try {
             memberService.signup(req);
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
-            return "signup"; // 파일명과 일치
+            return "members/signup";
         }
         return "redirect:/login";
     }
-
-
 
     // 회원 목록
     @GetMapping("/memberlist")
@@ -74,6 +76,7 @@ public class MemberController {
         memberService.delete(id);
         return "redirect:/members/memberlist";
     }
+
     // 회원 상세
     @GetMapping("/{id}")
     public String detail(@PathVariable Long id, Model model) {
