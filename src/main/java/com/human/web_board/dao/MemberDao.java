@@ -3,6 +3,7 @@ package com.human.web_board.dao;
 import com.human.web_board.dto.MemberSignupReq;
 import com.human.web_board.dto.MemberRes;
 import com.human.web_board.dto.MemberSummaryRes;
+import com.human.web_board.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.intellij.lang.annotations.Language;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 // DB와 정보를 주고 받기 위한 SQL 작성 구간
@@ -59,10 +61,30 @@ public class MemberDao {
         return affected > 0;
     }
 
-    public boolean update(MemberSignupReq req, Long id) {
-        String sql = "UPDATE members SET email=?, pwd=?, nickname=? WHERE id=?";
-        int affected = jdbc.update(sql, req.getEmail(), req.getPwd(), req.getNickname(), id);
-        return affected > 0;
+//    public boolean update(MemberSignupReq req, Long id) {
+//        String sql = "UPDATE members SET email=?, pwd=?, nickname=? WHERE id=?";
+//        int affected = jdbc.update(sql, req.getEmail(), req.getPwd(), req.getNickname(), id);
+//        return affected > 0;
+//    }
+
+    public int update(Long id, MemberSignupReq req) {
+        StringBuilder sql = new StringBuilder("UPDATE members SET nickname = ?");
+        List<Object> args = new ArrayList<>();
+        args.add(req.getNickname());
+
+        if (req.getPwd() != null && !req.getPwd().isEmpty()) {
+            sql.append(", pwd = ?");
+            args.add(req.getPwd());
+        }
+        if (req.getProfileImg() != null && !req.getProfileImg().isEmpty()) {
+            sql.append(", profile_img = ?");
+            args.add(req.getProfileImg());
+        }
+
+        sql.append(" WHERE id = ?");
+        args.add(id);
+
+        return jdbc.update(sql.toString(), args.toArray());
     }
 
 
@@ -93,11 +115,11 @@ public class MemberDao {
                     rs.getString("pwd"),
                     rs.getString("nickname"),   // nickname
                     rs.getString("grade"),      // grade 추가
-                    rs.getTimestamp("reg_date").toLocalDateTime() // regDate
+                    rs.getTimestamp("reg_date").toLocalDateTime(), // regDate
+                    rs.getString("profile_img")
             );
         }
     }
-
 
     static class MemberSummaryResRowMapper implements RowMapper<MemberSummaryRes> {
 

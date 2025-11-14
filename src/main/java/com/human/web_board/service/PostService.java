@@ -32,4 +32,5 @@ public interface PostService {
     int increaseRecommendations(Long postId);
 
     List<PostSummaryRes> searchList(String query, int i, int i1);
+
 }

@@ -60,9 +60,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public boolean update(MemberSignupReq req, Long id){
-        boolean success = memberDao.update(req, id);
-        if(!success) throw new IllegalArgumentException("회원 수정 실패");
+    public boolean update(Long id, MemberSignupReq req){
+        int success = memberDao.update(id, req);
+        if(success == 0) throw new IllegalArgumentException("회원 수정 실패");
         return true;
     }
 

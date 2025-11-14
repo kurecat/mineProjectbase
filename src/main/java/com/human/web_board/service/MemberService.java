@@ -25,7 +25,7 @@ public interface MemberService {
 
     boolean delete(Long id);
 
-    boolean update(MemberSignupReq req, Long id);
+    boolean update(Long id, MemberSignupReq req);
 
     List<MemberSummaryRes> listHighScores(int offset, int rowNum);
 }

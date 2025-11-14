@@ -90,14 +90,19 @@ header {
 }
 
 .user-icon {
-  /* 요청사항: 원 W30 H30 */
-  width: 30px;
-  height: 30px;
-  border-radius: 50%; /* 원으로 만들기 */
-  background-color: #d9d9d9; /* 임시 배경색 */
-  /* 실제로는 background-image: url('user-avatar.jpg'); 사용 */
-  background-size: cover;
-  background-position: center;
+    display: inline-block;  /* ⬅️ [필수] <a> 태그가 크기를 갖도록 함 */
+    vertical-align: middle; /* ⬅️ [추천] 옆의 Sign Out 버튼과 세로 정렬을 맞춤 */
+
+    /* --- 님께서 제공해주신 기존 스타일 --- */
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #d9d9d9;
+    background-size: cover;
+    background-position: center;
+
+    /* (참고) Sign Out 버튼과의 간격을 위해 */
+    margin-right: 10px;
 }
 
 .message-icon {
@@ -114,23 +119,14 @@ header {
 }
 
 .signout-btn {
-  /* 크기 및 모양 */
+  /* 요청사항: W 65, H 30, 모서리 반경 5 */
   width: 65px;
   height: 30px;
   border-radius: 5px;
   border: 1px solid #ccc;
   background-color: #ffffff;
-
-  /* 텍스트 스타일 */
   font-size: 12px;
   font-weight: bold;
-  color: #000; /* 링크 색상 지정 */
-
-  /* 버튼처럼 보이게 */
-  display: inline-block;
-  text-align: center;
-  line-height: 30px; /* 높이에 맞춰 수직 정렬 */
-  text-decoration: none;
   cursor: pointer;
 }
 

@@ -11,4 +11,5 @@ public class MemberRes {
     private String nickname;  // name → nickname
     private String grade;     // grade 추가
     private LocalDateTime regDate; //날짜
+    private String profileImg; // 이미지 추가
 }
