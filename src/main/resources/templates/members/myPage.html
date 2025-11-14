@@ -97,7 +97,8 @@
         // 초기 사용자 정보 표시
         displayUsername.textContent = user.username;
         displayPoints.textContent = `P : ${user.points}`;
-        profileImg.src = user.profileImg;
+        uploadBaseUrl = /*[@{'/uploads/'}]*/ "/uploads/";
+        profileImg.src = uploadBaseUrl + user.profileImg;
         editUsernameInput.value = user.username;
 
         // --- 2. 이벤트 리스너 설정 ---
