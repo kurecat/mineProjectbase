@@ -7,83 +7,70 @@ import com.human.web_board.service.CommentService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.plaf.PanelUI;
-
-@Controller @RequiredArgsConstructor @RequestMapping("comments")
+@Controller
+@RequiredArgsConstructor
+@RequestMapping("/comments")
 public class CommentController {
+
     private final CommentService commentService;
 
-    // 댓글 등록
-    @PostMapping("{postId}")
-    public String create(@PathVariable Long postId, CommentCreateReq req, HttpSession session){
-        MemberRes member = (MemberRes) session.getAttribute("loginMember");
-        if (session.getAttribute("loginMember") == null) return "redirect:/";
-        req.setPost_Id(postId);
-        req.setMember_Id(member.getId());
-        commentService.write(req);
-        return "redirect:/posts/" + postId;
-    }
-    // 댓글 삭제
-    //<input type="hidden" name="postId" value="3" /> 삭제버튼 폼에 삽입
-    @PostMapping("/{commentId}/delete")
-    public String delete(@PathVariable("commentId") Long commentId, @RequestParam("postId") Long postId, HttpSession session){
-        MemberRes member = (MemberRes) session.getAttribute("loginMember");
-        if (member == null) {
-            return "redirect:/login"; // 로그인 안 했으면 로그인 페이지로
-        }
-        CommentRes comment = commentService.findById(commentId);
-//        if (comment == null) {
-//            return "redirect:/posts/" + postId + "?error=댓글이 존재하지 않습니다."; // 댓글 없으면
-//        }
-        if (!member.getId().equals(comment.getMember_Id())) {
-            return "redirect:/posts/" + postId + "?error=작성자가 아닙니다."; // 작성자가 아니면 접근 금지
-        }
-        commentService.delete(commentId);
-        return "redirect:/posts/" + postId;
-    }
-    // 댓글 수정
-    @GetMapping("/{commentId}/edit")
-    public String showEditForm(@PathVariable("commentId") Long commentId, Model model, HttpSession session) {
-        MemberRes member = (MemberRes) session.getAttribute("loginMember");
-        if (member == null) {
-            return "redirect:/"; // 로그인 안 했으면 홈으로
-        }
-          CommentRes comment = commentService.findById(commentId);
-//        if (comment == null) {
-//            return "redirect:/?error=notfound"; // 댓글 없으면 홈으로
-//        }
-        if (!member.getId().equals(comment.getMember_Id())) {
-            return "redirect:/?error=forbidden"; // 작성자가 아니면 접근 금지
-        }
-        model.addAttribute("comment", comment);
-        return "post/edit";
-    }
-
-    @PostMapping("/{commentId}/edit")
-    public String processEditForm(
-            @PathVariable("commentId") Long commentId,
-            @ModelAttribute("comment") CommentCreateReq req,
+    /**
+     * 댓글 등록
+     * - URL 예: POST /comments/5   (5번 게시글에 대한 댓글)
+     * - form action: th:action="@{|/comments/${post.id}|}"
+     */
+    @PostMapping("/{postId}")
+    public String create(
+            @PathVariable Long postId,
+            CommentCreateReq req,
             HttpSession session
     ) {
-        MemberRes member = (MemberRes) session.getAttribute("loginMember"); // 로그인 여부 체크
-        if (member == null) {
-            return "redirect:/";
+        MemberRes loginMember = (MemberRes) session.getAttribute("loginMember");
+        if (loginMember == null) {
+            // 비로그인 → 로그인 페이지로 이동
+            return "redirect:/login";
         }
-        CommentRes comment = commentService.findById(commentId);
-//        if (comment == null) {
-//            return "redirect:/?error=notfound"; // 댓글 없으면 홈으로
-//        }
 
-        if (session.getAttribute("loginMember") == null) {
-            return "redirect:/";
+        // 어떤 게시글에, 누가 쓴 댓글인지 세팅
+        req.setPostId(postId);
+        req.setMemberId(loginMember.getId());
+
+        commentService.write(req);
+
+        // 댓글 작성 후 해당 게시글 상세로 리다이렉트
+        return "redirect:/board/detail/" + postId;
+    }
+
+    /**
+     * 댓글 삭제
+     * - URL 예: POST /comments/10/delete
+     * - form 에서 postId 를 hidden 으로 같이 넘겨줘야 함
+     */
+    @PostMapping("/{commentId}/delete")
+    public String delete(
+            @PathVariable Long commentId,
+            @RequestParam("postId") Long postId,
+            HttpSession session
+    ) {
+        MemberRes loginMember = (MemberRes) session.getAttribute("loginMember");
+        if (loginMember == null) {
+            return "redirect:/login";
         }
-        if (!member.getId().equals(comment.getMember_Id())) {
-            return "redirect:/?error=forbidden"; // 작성자가 아니면 접근 금지
+
+        // 댓글 정보 조회
+        CommentRes comment = commentService.findById(commentId);
+
+        // 작성자 본인인지 확인
+        if (!loginMember.getId().equals(comment.getMemberId())) {
+            // 본인이 아니면 접근 불가 → 그냥 상세 페이지로 돌려보냄 (에러 메시지 붙이고 싶으면 쿼리스트링 사용)
+            return "redirect:/board/detail/" + postId + "?error=noPermission";
         }
-        commentService.update(req, commentId);  // 댓글 수정
-        return "redirect:/posts/" + req.getPost_Id();
+
+        // 삭제 수행
+        commentService.delete(commentId);
+
+        return "redirect:/board/detail/" + postId;
     }
 }
