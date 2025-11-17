@@ -2,7 +2,6 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
-
 <header class="main-header" th:fragment="header">
     <div class="header-top">
         <div class="search-container">
@@ -14,35 +13,29 @@
 
         <div class="logo-container">
             <a th:href="@{/}"
-            ><img th:src="@{/Image/logo.png}" alt="Agit 로고"
+            ><img th:src="@{/image/logo.png}" alt="Agit 로고"
             /></a>
         </div>
+        <div class="user-container" sec:authorize="isAuthenticated()">
+            <a class="user-icon" th:href="@{|/|}"></a>
+            <div class="message-icon">✉️</div>
+            <form th:action="@{/logout}" method="post" style="display: inline;">
+                <button class="signout-btn" type="submit">Sign Out</button>
+            </form>
+        </div>
 
-        <div class="user-container">
-
-            <div sec:authorize="isAnonymous()">
-                <a th:href="@{login/login}" class="signout-btn">Sign In</a>
-            </div>
-
-            <div sec:authorize="isAuthenticated()">
-                <a th:href="@{/mypage}" class="user-icon">
-                </a>
-
-                <form th:action="@{/logout}" method="post" style="display: inline;">
-                    <button class="signout-btn" type="submit">Sign Out</button>
-                </form>
-            </div>
-
+        <div class="user-container" sec:authorize="isAnonymous()">
+            <a th:href="@{login/login}" class="signout-btn">Sign In</a>
         </div>
 
     </div>
 
     <nav class="header-nav">
         <ul>
-            <li><a href="#">꿀팁</a></li>
-            <li><a href="#">질문</a></li>
-            <li><a href="#">후기</a></li>
-            <li><a href="#">잡담</a></li>
+            <li><a th:href="@{/main?mainCategoryId=1}">꿀팁</a></li>
+            <li><a th:href="@{/main?mainCategoryId=2}">질문</a></li>
+            <li><a th:href="@{/main?mainCategoryId=3}">후기</a></li>
+            <li><a th:href="@{/main?mainCategoryId=4}">잡담</a></li>
         </ul>
     </nav>
 </header>

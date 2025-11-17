@@ -36,7 +36,7 @@ public class MainPageController {
             @RequestParam(required = false) Long mainCategoryId,
             @RequestParam(required = false) Long categoryId,
             @RequestParam(defaultValue = "0") int offset,
-            @RequestParam(defaultValue = "20") int rowNum,
+            @RequestParam(defaultValue = "10") int rowNum,
             Model model, HttpSession session) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
