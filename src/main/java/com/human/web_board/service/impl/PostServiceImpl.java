@@ -3,6 +3,7 @@ package com.human.web_board.service.impl;
 import com.human.web_board.dao.MemberDao;
 import com.human.web_board.dao.PostDao;
 import com.human.web_board.dto.PostCreateReq;
+import com.human.web_board.dto.PostFormDto;
 import com.human.web_board.dto.PostRes;
 import com.human.web_board.dto.PostSummaryRes;
 import com.human.web_board.service.PostService;
@@ -22,6 +23,17 @@ public class PostServiceImpl implements PostService {
     private final PostDao postDao;
 
     private final MemberDao memberDao;
+
+    @Override
+    public Long save(PostFormDto form) {
+        return 0L;
+    }
+
+    @Override
+    public List<PostRes> findAll() {
+        return List.of();
+    }
+
     @Override
     @Transactional
     public Long write(PostCreateReq req) {
@@ -104,8 +116,5 @@ public class PostServiceImpl implements PostService {
         postDao.increaseRecommendationsCount(postId);
         return postDao.getRecommendationsCount(postId);
     }
-    @Override
-    public List<PostSummaryRes> searchList(String query, int offset, int rowNum) {
-        return postDao.findSummaries(null, null, query, offset, rowNum);
-    }
+
 }
