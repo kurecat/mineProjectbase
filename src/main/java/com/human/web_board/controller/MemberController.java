@@ -97,7 +97,7 @@ public class MemberController {
         req.setProfileImg(newImagePath);
 
         try {
-            memberService.update(id, req);
+            memberService.update(req, id);
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
             return "members/edit";

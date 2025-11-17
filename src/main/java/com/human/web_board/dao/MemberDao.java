@@ -74,7 +74,7 @@ public class MemberDao {
 //        return affected > 0;
 //    }
 
-    public int update(Long id, MemberSignupReq req) {
+    public boolean update(Long id, MemberSignupReq req) {
         StringBuilder sql = new StringBuilder("UPDATE members SET nickname = ?");
         List<Object> args = new ArrayList<>();
         args.add(req.getNickname());
@@ -91,7 +91,7 @@ public class MemberDao {
         sql.append(" WHERE id = ?");
         args.add(id);
 
-        return jdbc.update(sql.toString(), args.toArray());
+        return jdbc.update(sql.toString(), args.toArray()) > 0;
     }
 
 
