@@ -6,8 +6,10 @@
 <header class="main-header" th:fragment="header">
     <div class="header-top">
         <div class="search-container">
-            <input type="search" placeholder="검색" />
-            <button class="search-icon">⚲</button>
+            <form th:action="@{/main/search}">
+                <input type="search" placeholder="검색" name="query"/>
+                <button type="submit" class="search-icon">⚲</button>
+            </form>
         </div>
 
         <div class="logo-container">
@@ -32,6 +34,7 @@
             </div>
 
         </div>
+
     </div>
 
     <nav class="header-nav">
@@ -43,6 +46,5 @@
         </ul>
     </nav>
 </header>
-
 </body>
 </html>

@@ -1,11 +1,16 @@
 package com.human.web_board.controller;
 
+import com.human.web_board.dto.MemberRes;
+import com.human.web_board.service.FileStorageService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 import com.human.web_board.dto.MemberSignupReq;
 import com.human.web_board.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/members")
 public class MemberController {
     private final MemberService memberService;
+    private final FileStorageService fileStorageService;
 
     // 회원 가입 폼
     @GetMapping("/signup")  // 수정: 클래스 레벨 /members와 합쳐서 /members/signup
@@ -21,6 +27,7 @@ public class MemberController {
         model.addAttribute("memberForm", new MemberSignupReq());
         return "members/signup"; // templates/members/signup.html
     }
+
 
     // 회원 가입 처리
     @PostMapping("/signup")  // 수정: /members/signup
@@ -51,6 +58,8 @@ public class MemberController {
         return "redirect:/login";
     }
 
+
+
     // 회원 목록
     @GetMapping("/memberlist")
     public String list(Model model) {
@@ -67,9 +76,28 @@ public class MemberController {
 
     // 회원 수정 처리
     @PostMapping("/{id}/edit")
-    public String edit(@PathVariable Long id, MemberSignupReq req, Model model) {
+    public String edit(@PathVariable Long id,
+                       @ModelAttribute MemberSignupReq req,
+                       @RequestParam(value = "profileImage", required = false) MultipartFile profileImage,
+                       Model model) {
+
+        MemberRes member = memberService.getById(id);
+        //업로드(선택) : 이미지가 있으면 저장 후 상대 경로 확보
+        String currentImagePath = member.getProfileImg(); // 💡 기존 이미지 경로
+        String newImagePath = currentImagePath; // 기본값은 기존 경로로 설정
+        if (profileImage != null && !profileImage.isEmpty()) {
+            newImagePath = fileStorageService.saveImage(profileImage, "members");
+
+            // 2. 💡 기존 파일 삭제 로직 추가 (새 파일이 성공적으로 저장된 경우)
+            if (currentImagePath != null && !currentImagePath.isEmpty()) {
+                fileStorageService.deleteIfExists(currentImagePath);
+            }
+        }
+
+        req.setProfileImg(newImagePath);
+
         try {
-            memberService.update(req, id);
+            memberService.update(id, req);
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
             return "members/edit";
@@ -88,7 +116,7 @@ public class MemberController {
     @GetMapping("/{id}")
     public String detail(@PathVariable Long id, Model model) {
         model.addAttribute("member", memberService.getById(id));
-        return "members/memberS";
+        return "members/myPage";
     }
     //닉네임 중복 검사
     @GetMapping("/api/members/check-nickname")

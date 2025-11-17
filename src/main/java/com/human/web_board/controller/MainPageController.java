@@ -30,13 +30,6 @@ public class MainPageController {
         return "redirect:/main";
     }
 
-    // 로그인 기능
-//    @PostMapping("/login")
-//    public String login(Model monel, HttpSession session) {
-//        // 로그인 서비스
-//        return "redirect:/";
-//    }
-
     // 전체 or 특정 게시판
     @GetMapping("/main")
     public String listPosts(
@@ -92,15 +85,15 @@ public class MainPageController {
                         rowNum));
         model.addAttribute(
                 "popularPosts",
-                postService.listPopular(1, 10)
+                postService.listPopular(1, 5)
         );
         model.addAttribute(
                 "recommendedPosts",
-                postService.listRecommended(1, 10)
+                postService.listRecommended(1, 5)
         );
         model.addAttribute(
                 "highScores",
-                memberService.listHighScores(1, 10)
+                memberService.listHighScores(1, 5)
         );
         return "main/main";
     }
