@@ -123,7 +123,7 @@ public class MemberDao {
                     rs.getString("nickname"),   // nickname
                     rs.getString("grade"),      // grade 추가
                     rs.getTimestamp("reg_date").toLocalDateTime(), // regDate
-                    rs.getString("profile_img")
+                    null
             );
         }
     }
@@ -138,6 +138,14 @@ public class MemberDao {
             );
         }
     }
-
+    //비밀번호 찾기
+    public boolean updatePassword(Long id, String encodedPassword) {
+        String sql = "UPDATE members SET pwd = ? WHERE id = ?";
+        return jdbc.update(sql, encodedPassword, id) > 0;
+    }
 
 }
+
+
+
+
