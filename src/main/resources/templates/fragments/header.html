@@ -17,7 +17,7 @@
             /></a>
         </div>
         <div class="user-container" sec:authorize="isAuthenticated()">
-            <a class="user-icon" th:href="@{|/|}"></a>
+            <a class="user-icon" th:href="@{|/members/${#authentication.principal.id}|}"></a>
             <div class="message-icon">✉️</div>
             <form th:action="@{/logout}" method="post" style="display: inline;">
                 <button class="signout-btn" type="submit">Sign Out</button>

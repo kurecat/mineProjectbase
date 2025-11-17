@@ -2,7 +2,7 @@ package com.human.web_board.controller;
 
 import com.human.web_board.dto.MemberRes;
 import com.human.web_board.service.FileStorageService;
-import jakarta.servlet.http.HttpSession;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import com.human.web_board.dto.MemberSignupReq;
 import com.human.web_board.service.MemberService;
@@ -12,6 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
     private final MemberService memberService;
     private final FileStorageService fileStorageService;
+    private final PasswordEncoder passwordEncoder;
 
     // 회원 가입 폼
     @GetMapping("/signup")  // 수정: 클래스 레벨 /members와 합쳐서 /members/signup
@@ -114,7 +118,13 @@ public class MemberController {
 
     // 회원 상세
     @GetMapping("/{id}")
-    public String detail(@PathVariable Long id, Model model) {
+    public String detail(@PathVariable Long id, Model model, Principal principal) {
+        if (principal != null) {
+            String email = principal.getName();
+            MemberRes memberRes = memberService.getByEmail(email);
+            System.out.println(memberRes);
+            model.addAttribute("loginMember", memberRes);
+        }
         model.addAttribute("member", memberService.getById(id));
         return "members/myPage";
     }
@@ -132,6 +142,17 @@ public class MemberController {
         boolean exists = memberService.isEmailExists(email);
         log.info("이메일 중복 체크: {}, 존재 여부: {}", email, exists);
         return exists;
+    }
+
+    @PostMapping("/{id}/verify-password")
+    @ResponseBody
+    public boolean verifyPassword(@PathVariable Long id,
+                                  @RequestParam String pwd,
+                                 Principal principal,
+                                 RedirectAttributes redirectAttributes) {
+        String email = principal.getName();
+        MemberRes memberRes = memberService.getByEmail(email);
+        return passwordEncoder.matches(pwd, memberRes.getPwd());
     }
 
 }

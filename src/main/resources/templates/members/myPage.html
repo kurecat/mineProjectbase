@@ -12,21 +12,26 @@
     <div class="profile-container">
         <div class="profile-info">
             <div class="profile-info__avatar-wrapper">
-                <img id="profile-image" src="https://placehold.co/280x280.png?text=Profile" alt="User Avatar" class="profile-info__avatar">
+                <img id="profile-image"
+                     th:src="@{/image/emptyProfile.png}"
+                     onerror="this.onerror=null; this.src='/image/emptyProfile.png';"
+                     alt="User Avatar"
+                     class="profile-info__avatar">
             </div>
             <p id="display-username" class="profile-info__username">username</p>
             <p id="display-points" class="profile-info__points">P : 1530</p>
 
             <button id="edit-profile-button" class="profile-info__edit-button">Edit Profile</button>
 
-            <div id="auth-section" class="auth-section hidden">
+            <form id="auth-section" class="auth-section hidden" th:action="@{|/members/${#authentication.principal.id}/verify-password|}" method="post">
                 <div class="auth-section__password-input-group">
                     <label for="enter-password" class="auth-section__label">Enter Password</label>
-                    <input type="password" id="enter-password" class="auth-section__input" placeholder="Enter Password">
+                    <input type="password" id="enter-password" class="auth-section__input" placeholder="Enter Password" name="pwd" required>
                 </div>
-            </div>
+            </form>
 
-            <form id="edit-fields-section" class="edit-fields-section hidden" th:action="@{|/members/${member.id}/edit|}"
+            <form id="edit-fields-section" class="edit-fields-section hidden"
+                  th:action="@{|/members/${member.id}/edit|}"
                   method="post" enctype="multipart/form-data">
                 <div class="edit-fields-section__group">
                     <label for="edit-username" class="edit-fields-section__label">Edit username</label>
@@ -48,6 +53,11 @@
                     <button id="delete-button" class="edit-fields-section__button edit-fields-section__button--delete">Delete</button>
                 </div>
             </form>
+
+            <div th:if="${error}" class="error-message">
+                <p th:text="${error}"></p>
+            </div>
+
         </div>
 
         <div class="content-lists">
@@ -67,13 +77,34 @@
 </div>
 
 <script th:inline="javascript">
+    document.getElementById("auth-section").addEventListener("submit", function(e) {
+        e.preventDefault(); // 기본 제출 막기
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: form.method,
+            body: formData
+        })
+        .then(response => response.text())
+        .then(result => {
+            if (result === "true") {
+                document.getElementById("edit-fields-section").classList.remove("hidden");
+                document.getElementById("auth-section").classList.add("hidden");
+            } else {
+                alert("비밀번호가 일치하지 않습니다.");
+            }
+        });
+    });
+
     // ⭐️⭐️⭐️ 동적 기능 JavaScript ⭐️⭐️⭐️
 
     // 이 줄(DOMContentLoaded)이 빠지면 오류가 발생할 수 있습니다.
     document.addEventListener('DOMContentLoaded', function() {
         // --- 1. 초기 UI 상태 및 데이터 설정 ---
         const user = {
-            username: /*[[${member.id}]]*/ "default",
+            username: /*[[${member.nickname}]]*/ "default",
             points: 1231,
             password: /*[[${member.pwd}]]*/ "default", // 비밀번호 시뮬레이션
             profileImg: /*[[${member.profileImg}]]*/ "default" // ⭐️ 이미지 URL도 올바른지 확인
@@ -114,14 +145,14 @@
                  editFieldsSection.classList.add('hidden'); // 수정 필드는 다시 숨김
             }
         });
-
+        /*
         // B. "Enter Password" 입력 후 포커스 아웃 시 (또는 Enter 키)
         enterPasswordInput.addEventListener('blur', checkPassword);
         enterPasswordInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 checkPassword();
             }
-        });
+        });*/
 
         // B-2. "Upload profile Image"
         uploadProfileImageInput.addEventListener('change', function() {
@@ -134,26 +165,6 @@
                 reader.readAsDataURL(newImageFile);
         });
 
-
-
-        function checkPassword() {
-            const enteredPassword = enterPasswordInput.value;
-            // ⭐️⭐️⭐️ 비밀번호 일치 시뮬레이션 ⭐️⭐️⭐️
-            if (enteredPassword === user.password) {
-                editFieldsSection.classList.remove('hidden'); // 수정 필드 섹션 보이기
-                // 현재 값으로 수정 필드 초기화
-                editUsernameInput.value = user.username;
-                editPasswordInput.value = ''; // 비밀번호는 보안상 초기화
-                authSection.classList.add('hidden'); // Enter Password 필드 숨기기
-            } else if (enteredPassword !== '') {
-                alert("비밀번호가 일치하지 않습니다.");
-                enterPasswordInput.value = ''; // 틀리면 입력값 지우기
-                editFieldsSection.classList.add('hidden'); // 수정 필드 다시 숨김
-            } else { // 입력값이 비어있을 경우 (지웠을 경우)
-                editFieldsSection.classList.add('hidden'); // 수정 필드 다시 숨김
-                authSection.classList.add('hidden'); // Enter Password 필드 숨기기
-            }
-        }
 
         // C. "Save" 버튼 클릭 시
         saveButton.addEventListener('click', function() {

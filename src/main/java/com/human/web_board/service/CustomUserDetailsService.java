@@ -2,6 +2,7 @@ package com.human.web_board.service;
 
 import com.human.web_board.dao.MemberDao;
 import com.human.web_board.dto.MemberRes;
+import com.human.web_board.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,10 +25,6 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + email);
         }
 
-        return User.builder()
-                .username(member.getEmail())
-                .password(member.getPwd())
-                .roles("USER")
-                .build();
+        return new CustomUserDetails(member);
     }
 }
