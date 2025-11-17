@@ -22,10 +22,19 @@ public interface MemberService {
 
     // 회원 목록 보기
     List<MemberRes> list();
-
+    // 회원 삭제 도 넣어놓음
     boolean delete(Long id);
-
+    //  혹시 모르니 멤버 수정도 넣음
     boolean update(MemberSignupReq req, Long id);
+    // 닉네임 존재 여부 체크
+    boolean isNicknameExists(String nickname);
+
+    // 이메일 존재 여부 체크 추가
+    boolean isEmailExists(String email);
+
+
 
     List<MemberSummaryRes> listHighScores(int offset, int rowNum);
+
+
 }

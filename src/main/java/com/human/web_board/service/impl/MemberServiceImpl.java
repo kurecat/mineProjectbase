@@ -20,6 +20,19 @@ public class MemberServiceImpl implements MemberService {
     private final MemberDao memberDao;
     private final PasswordEncoder passwordEncoder;
 
+    @Override
+    public boolean isNicknameExists(String nickname) {
+        boolean exists = memberDao.existsByNickname(nickname);
+        log.info("서비스 - 닉네임 존재 여부 확인: {} -> {}", nickname, exists);
+        return exists;
+    }
+    @Override
+    public boolean isEmailExists(String email) {
+        boolean exists = memberDao.findByEmail(email) != null;
+        log.info("서비스 - 이메일 존재 여부 확인: {} -> {}", email, exists);
+        return exists;
+    }
+
     // 회원가입
     @Override
     public Long signup(MemberSignupReq req) {

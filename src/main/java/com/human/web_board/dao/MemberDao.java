@@ -28,6 +28,13 @@ public class MemberDao {
         jdbc.update(sql, m.getEmail(), m.getPwd(), m.getNickname(), m.getGrade());
         return jdbc.queryForObject("SELECT MEMBERS_SEQ.CURRVAL FROM dual", Long.class);
     }
+    // 닉네임 존재 여부 확인
+    public boolean existsByNickname(String nickname) {
+        String sql = "SELECT COUNT(*) FROM members WHERE nickname = ?";
+        Integer count = jdbc.queryForObject(sql, Integer.class, nickname);
+        return count != null && count > 0;
+    }
+
 
 
     // 이메일로 회원 조회

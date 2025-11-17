@@ -6,10 +6,7 @@ import com.human.web_board.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,6 +29,16 @@ public class MemberController {
 
         if (!req.getPwd().equals(req.getPasswordCheck())) {
             model.addAttribute("error", "비밀번호와 확인이 일치하지 않습니다.");
+            return "members/signup";
+        }
+        if (memberService.isEmailExists(req.getEmail())) {
+            model.addAttribute("error", "이미 사용 중인 이메일입니다.");
+            log.warn("중복 이메일 시도: {}", req.getEmail());
+            return "members/signup";
+        }
+        if (memberService.isNicknameExists(req.getNickname())) {
+            model.addAttribute("error", "이미 사용 중인 닉네임입니다.");
+            log.warn("중복 닉네임 시도: {}", req.getNickname());
             return "members/signup";
         }
 
@@ -83,4 +90,20 @@ public class MemberController {
         model.addAttribute("member", memberService.getById(id));
         return "members/memberS";
     }
+    //닉네임 중복 검사
+    @GetMapping("/api/members/check-nickname")
+    @ResponseBody
+    public boolean checkNickname(@RequestParam String nickname) {
+        boolean exists = memberService.isNicknameExists(nickname);
+        log.info("닉네임 중복 체크: {}, 존재 여부: {}", nickname, exists);
+        return exists;
+    }
+    @GetMapping("/api/members/check-email")
+    @ResponseBody
+    public boolean checkEmail(@RequestParam String email) {
+        boolean exists = memberService.isEmailExists(email);
+        log.info("이메일 중복 체크: {}, 존재 여부: {}", email, exists);
+        return exists;
+    }
+
 }
