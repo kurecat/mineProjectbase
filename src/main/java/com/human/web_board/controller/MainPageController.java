@@ -28,13 +28,6 @@ public class MainPageController {
         return "redirect:/main";
     }
 
-    // 로그인 기능
-//    @PostMapping("/login")
-//    public String login(Model monel, HttpSession session) {
-//        // 로그인 서비스
-//        return "redirect:/";
-//    }
-
     // 전체 or 특정 게시판
     @GetMapping("/main")
     public String listPosts(

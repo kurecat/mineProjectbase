@@ -1,4 +1,4 @@
-package com.human.web_board.controller;
+package com.human.web_board.controller.api;
 
 import com.human.web_board.dto.MemberRes;
 import com.human.web_board.dto.MemberSignupReq;

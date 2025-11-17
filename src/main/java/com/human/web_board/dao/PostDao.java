@@ -82,36 +82,6 @@ public class PostDao {
     }
 
     // 전체 게시판에서 검색
-    public List<PostSummaryRes> findByQuery(String query, int offset, int rowNum) {
-        String sql = """
-                SELECT * FROM (
-                    SELECT ROWNUM AS rn, inner_query.*
-                    FROM (
-                        SELECT p.id,
-                               c.name AS category_name,
-                               p.title,
-                               m.NICKNAME,
-                               p.VIEW_COUNT,
-                               p.RECOMMENDATIONS_COUNT,
-                               p.CREATED_AT
-                        FROM POSTS p
-                        JOIN members m ON p.member_id = m.id
-                        JOIN CATEGORY c ON p.CATEGORY_ID = c.id
-                        WHERE p.TITLE LIKE ?
-                        ORDER BY p.id DESC
-                    ) inner_query
-                    WHERE ROWNUM <= ?
-                )
-                WHERE rn > ?
-                """;
-        return jdbc.query(
-                sql,
-                new PostSummaryResRowMapper(),
-                "%" + query + "%",
-                offset + rowNum,
-                offset
-        );
-    }
 
     public List<PostSummaryRes> findSummaries(
             Long mainCategoryId,

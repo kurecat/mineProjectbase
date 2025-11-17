@@ -106,6 +106,6 @@ public class PostServiceImpl implements PostService {
     }
     @Override
     public List<PostSummaryRes> searchList(String query, int offset, int rowNum) {
-        return postDao.findByQuery(query, offset, rowNum);
+        return postDao.findSummaries(null, null, query, offset, rowNum);
     }
 }

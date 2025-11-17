@@ -1,4 +1,4 @@
-package com.human.web_board.controller;
+package com.human.web_board.controller.api;
 import com.human.web_board.dto.CommentCreateReq;
 import com.human.web_board.dto.CommentRes;
 import com.human.web_board.service.CommentService;
