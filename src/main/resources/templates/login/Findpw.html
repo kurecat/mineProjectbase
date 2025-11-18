@@ -13,9 +13,10 @@
         <h2 class="reset-form__title">Reset Password</h2>
         <p class="reset-form__subtitle">Enter your Email address</p>
 
-        <form id="reset-form" action="/reset-password" method="post" novalidate>
+        <form id="resetForm" method="post" action="/reset-password">
 
-            <div class="reset-form__group">
+
+        <div class="reset-form__group">
                 <label for="email" class="reset-form__label">Email*</label>
                 <input type="email" id="email" name="email" class="reset-form__input" placeholder="Email address" required>
             </div>
@@ -39,6 +40,7 @@
     <div th:replace="~{fragments/footer :: footer}"></div>
 </div>
 <script>
+
     const urlParams = new URLSearchParams(window.location.search);
 
     // 로그인 성공/실패
@@ -64,11 +66,16 @@
     }
 
     // 비밀번호 재설정 성공/실패
-    if (urlParams.get("resetSuccess") === "true") {
-        alert("비밀번호 변경 완료!");
+    if (urlParams.get("resetFail") === "passwordMismatch") {
+        alert("비밀번호가 일치하지 않습니다!");
     }
-    if (urlParams.get("resetFail") === "true") {
-        alert("비밀번호 변경 실패!");
+
+    if (urlParams.get("resetFail") === "emailNotFound") {
+        alert("등록되지 않은 이메일입니다!");
+    }
+
+    if (urlParams.get("resetFail") === "updateError") {
+        alert("비밀번호 변경에 실패했습니다.");
     }
 
     // model.addAttribute("error")는 thymeleaf에서 alert 처리 가능
@@ -76,6 +83,16 @@
 
 
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("#resetForm"); // form id
+
+        form.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();  // 엔터 입력 막기
+            }
+        });
+    });
+
     document.addEventListener('DOMContentLoaded', function() {
         const emailInput = document.getElementById('email');
         const passwordGroups = document.querySelectorAll('.password-group');
