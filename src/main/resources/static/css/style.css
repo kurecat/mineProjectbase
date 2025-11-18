@@ -1413,3 +1413,48 @@ footer-Copyright {
   font-weight: bold;        /* 굵은 글씨 */
   text-decoration: underline; /* 밑줄 */
 }
+.postlist-header > a.category-link,
+.postlist-header > a.write-button {
+  display: inline-block;
+  width: 60px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  background-color: #f0f0f0;
+  color: #333;
+  text-decoration: none;
+  border-radius: 5px;
+  margin: 5px 3px 5px 3px;
+  font-size: 0.9em;
+  font-weight: 500;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* [수정]
+ 마우스 오버(hover) 스타일에도 .write-button 선택자를 추가합니다.
+*/
+.postlist-header > a.category-link:hover,
+.postlist-header > a.write-button:hover {
+  background-color: #e0e0e0;
+  color: #000;
+}
+
+/* [수정]
+ .active 스타일은 카테고리 링크에만 필요하므로,
+ .write-button 선택자는 여기(active)에 추가하지 않습니다.
+*/
+.postlist-header > a.category-link.active {
+  background-color: #f0f0f0;
+  color: rebeccapurple;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+/* [추가]
+ .write-button에만 별도의 스타일을 주고 싶다면 여기에 추가합니다.
+ (예: 글쓰기 버튼만 배경색을 다르게)
+*/
+.postlist-header > a.write-button {
+   /* background-color: #007bff; */
+   /* color: white; */
+}
