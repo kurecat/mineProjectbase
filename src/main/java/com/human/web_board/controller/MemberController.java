@@ -37,9 +37,7 @@ public class MemberController {
     }
 
     // 회원 가입 처리
-    @PostMapping("/signup")
-    public String signup(MemberSignupReq req) {
-    @PostMapping("/signup")  // 수정: /members/signup
+    @PostMapping("/signup")// 수정: /members/signup
     public String signup(MemberSignupReq req, Model model,
                          @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) {
         log.info("회원가입 요청: {}", req);
