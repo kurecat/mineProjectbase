@@ -67,16 +67,16 @@
                 <!-- 댓글 리스트 -->
                 <div id="comment-list" class="mt-4">
 
-                    <!-- 댓글이 없을 때 -->
+                    <!-- 댓글 없음 -->
                     <div th:if="${#lists.isEmpty(comments)}"
                          class="text-center text-gray-500 py-10">등록된 댓글이 없습니다.</div>
 
                     <!-- 댓글 반복 -->
                     <div th:each="c : ${comments}"
-                         th:with="isEditing=${param.editId != null and param.editId == c.id}"
+                         th:with="isEditing=${param.editId != null and T(java.lang.Long).valueOf(param.editId[0]) == c.id}"
                          class="py-4 border-b border-gray-100">
 
-                        <!-- 일반 모드 -->
+                        <!-- ⭐ 일반 모드 -->
                         <div th:if="${!isEditing}">
                             <div class="flex items-center justify-between">
                                 <span class="font-semibold" th:text="${c.memberId}">작성자</span>
@@ -86,7 +86,7 @@
 
                             <p class="mt-2 text-gray-700" th:text="${c.content}">내용</p>
 
-                            <!-- 수정/삭제 버튼 -->
+                            <!-- 본인 댓글만 버튼 보임 -->
                             <div class="mt-2 flex gap-2"
                                  th:if="${loginMember != null and loginMember.id == c.memberId}">
 
@@ -104,12 +104,13 @@
                             </div>
                         </div>
 
-                        <!-- 수정 모드 -->
+                        <!-- ⭐ 수정 모드 (인라인 편집) -->
                         <div th:if="${isEditing}">
                             <form th:action="@{|/comments/${c.id}/edit|}" method="post">
-        <textarea name="content"
-                  class="w-full p-2 border rounded mb-2"
-                  th:text="${c.content}" required></textarea>
+
+                                <textarea name="content"
+                                          class="w-full p-2 border rounded mb-2"
+                                          th:text="${c.content}" required></textarea>
 
                                 <input type="hidden" name="postId" th:value="${post.id}">
 
@@ -123,6 +124,7 @@
                                         취소
                                     </a>
                                 </div>
+
                             </form>
                         </div>
 
@@ -134,9 +136,9 @@
                 <form th:action="@{/comments/{postId}(postId=${post.id})}" method="post"
                       class="mt-6 p-4 bg-gray-50 rounded-lg">
 
-    <textarea name="content"
-              class="w-full p-3 border border-gray-300 rounded mb-3"
-              placeholder="댓글을 입력하세요..." required></textarea>
+                    <textarea name="content"
+                              class="w-full p-3 border border-gray-300 rounded mb-3"
+                              placeholder="댓글을 입력하세요..." required></textarea>
 
                     <input type="hidden" name="postId" th:value="${post.id}">
 
@@ -145,14 +147,17 @@
                     </button>
                 </form>
 
-            </div> <!-- 댓글 전체 영역 끝 -->
+            </div> <!-- 댓글 영역 끝 -->
 
         </main>
+
+        <!-- 사이드 광고 -->
         <aside class="w-full lg:w-80 lg:flex-shrink-0 mt-8 lg:mt-0">
             <div class="bg-white rounded-lg shadow-md h-[960px] flex items-center justify-center border">
                 <span class="text-gray-500 text-2xl">광고 (W310)</span>
             </div>
         </aside>
+
     </div>
 
     <!-- 푸터 -->
@@ -160,7 +165,7 @@
 
 </div>
 
-<!-- 메시지 알람 -->
+<!-- 🔔 메시지 알림 -->
 <script th:if="${param.msg}">
     const msg = /*[[${param.msg}]]*/ null;
     if (msg === 'created') alert('댓글이 등록되었습니다.');
@@ -170,4 +175,3 @@
 
 </body>
 </html>
-
