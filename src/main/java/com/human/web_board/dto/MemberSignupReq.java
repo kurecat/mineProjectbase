@@ -3,10 +3,12 @@ package com.human.web_board.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class MemberSignupReq {
     private int grade = 1;
     private String email;

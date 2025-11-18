@@ -10,6 +10,7 @@ public class PostSummaryRes {
     private Long id;
     private String title;
     private String categoryName; // 카테고리 테이블에 있는 정보를 조인해서 가져 옴
+    private Long memberId;
     private String nickname;  // 회원 테이블에 있는 정보를 조인해서 가져 옴
     private Long viewCount;
     private Long recommendationsCount;
