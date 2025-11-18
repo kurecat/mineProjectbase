@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico").permitAll()
                         .requestMatchers("/", "/main", "/login", "/members/signup/**","/reset-password" ,"/api/**","/posts/**","/comments/**","/board/detail/**").permitAll()
-                        .requestMatchers("/image/*", "/main/search").permitAll()
+                        .requestMatchers("/image/*", "/ajax/post-list","/main/search").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -50,15 +50,16 @@ public class SecurityConfig {
                                     user.getPoint(),
                                     user.getProfileImg()
                             );
+
                             request.getSession().setAttribute("loginMember", loginMember);
 
                             response.sendRedirect("/main");
                         })
-                        .failureUrl("/login?error")
-                        .defaultSuccessUrl("/main", true)
-                        .failureUrl("/login?loginFail=true")
+                        .failureUrl("/login?error")  // 실패 시
                         .permitAll()
-                        .defaultSuccessUrl("/main?loginSuccess=true", true)
+
+
+               .defaultSuccessUrl("/main?loginSuccess=true", true)
 
                 )
                 .logout(logout -> logout

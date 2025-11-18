@@ -18,7 +18,6 @@
         </div>
         <div class="user-container" sec:authorize="isAuthenticated()">
             <a class="user-icon" th:href="@{|/members/${#authentication.principal.id}|}"></a>
-            <div class="message-icon">✉️</div>
             <form th:action="@{/logout}" method="post" style="display: inline;">
                 <button class="signout-btn" type="submit">Sign Out</button>
             </form>
@@ -35,7 +34,7 @@
             <li><a th:href="@{/main?mainCategoryId=1}">꿀팁</a></li>
             <li><a th:href="@{/main?mainCategoryId=2}">질문</a></li>
             <li><a th:href="@{/main?mainCategoryId=3}">후기</a></li>
-            <li><a th:href="@{/main?mainCategoryId=4}">잡담</a></li>
+            <li><a th:href="@{/board/detail/4}">잡담</a></li>
         </ul>
     </nav>
 </header>

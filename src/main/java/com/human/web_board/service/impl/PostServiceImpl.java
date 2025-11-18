@@ -117,4 +117,31 @@ public class PostServiceImpl implements PostService {
         return postDao.getRecommendationsCount(postId);
     }
 
+    @Override
+    public List<PostSummaryRes> searchList(String query, int offset, int rowNum) {
+        return postDao.findSummaries(null, null, query, offset, rowNum);
+    }
+
+    @Override
+    public List<PostSummaryRes> listSummaries(String category, int offset, int rowNum) {
+        try {
+            // [수정] DAO 호출 시 3개의 파라미터 전달 (이 부분이 117번째 줄 근처)
+            return postDao.findSummaries(category, offset, rowNum);
+        } catch (Exception e) {
+            log.error("게시판 불러오기 에러 발생 (category: {}): {}", category, e.getMessage());
+            return Collections.emptyList(); // 에러 시 빈 리스트 반환
+        }
+    }
+
+    @Override
+    public int countSummaries(String category) {
+        try {
+            return postDao.countSummaries(category);
+        } catch (Exception e) {
+            log.error("게시물 개수 세기 에러 발생 (category: {}): {}", category, e.getMessage());
+            return 0;
+        }
+    }
+
+
 }

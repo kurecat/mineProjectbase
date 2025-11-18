@@ -247,4 +247,68 @@ public class PostDao {
             );
         }
     }
+    // ==================================================================
+    // [수정된 메소드]
+    // AJAX용 (String category) findSummaries
+    // ==================================================================
+    public List<PostSummaryRes> findSummaries(String category, int offset, int rowNum) {
+        StringBuilder sql = new StringBuilder();
+
+        // 파라미터를 순서대로 담을 List 생성
+        List<Object> params = new ArrayList<>();
+
+        // 1. SQL문 조립 (Oracle 페이지네이션)
+        sql.append("SELECT * FROM ( ");
+        sql.append("  SELECT ROWNUM AS rn, inner_query.* FROM ( ");
+        sql.append("    SELECT p.id, c.name AS category_name, p.title, m.NICKNAME, ");
+        sql.append("           p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT ");
+        sql.append("    FROM POSTS p ");
+
+        // [수정] JOIN members m ON p.member_id = m.id (다른 쿼리와 통일)
+        sql.append("    JOIN members m ON p.member_id = m.id ");
+
+        sql.append("    JOIN CATEGORY c ON p.CATEGORY_ID = c.id ");
+        sql.append("    JOIN MAIN_CATEGORY mc ON c.main_category_id = mc.id ");
+        sql.append("    WHERE 1=1 ");
+
+        // [수정] 필터 기준을 c.name -> mc.NAME 으로 변경 (예: '꿀팁')
+        if (category != null && !category.isEmpty()) {
+            sql.append(" AND mc.NAME = ? "); // MAIN_CATEGORY의 이름으로 검색
+            params.add(category);            // 파라미터 List에 값 추가
+        }
+
+        // [수정] ORDER BY p.id DESC (최신순 정렬)
+        sql.append("    ORDER BY p.id DESC ");
+
+        sql.append("  ) inner_query ");
+        sql.append("  WHERE ROWNUM <= ? "); // 페이지 처리 파라미터
+        sql.append(") WHERE rn > ? ");      // 페이지 처리 파라미터
+
+        // [수정] 파라미터 순서 및 변수 적용
+        params.add(offset + rowNum); // endRow
+        params.add(offset);          // startRow
+
+        // 3. 쿼리 실행
+        // [수정] PostSummaryResRowMapper 사용
+        return jdbc.query(
+                sql.toString(),           // 동적으로 완성된 SQL문
+                new PostSummaryResRowMapper(),
+                params.toArray()          // 파라미터 List를 배열로 변환
+        );
+    }
+
+    public int countSummaries(String category) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM POSTS p ");
+        sql.append("JOIN CATEGORY c ON p.CATEGORY_ID = c.id ");
+        sql.append("JOIN MAIN_CATEGORY mc ON c.main_category_id = mc.id ");
+        sql.append("WHERE 1=1 ");
+
+        List<Object> params = new ArrayList<>();
+        if (category != null && !category.isEmpty()) {
+            sql.append(" AND mc.NAME = ? ");
+            params.add(category);
+        }
+
+        return jdbc.queryForObject(sql.toString(), Integer.class, params.toArray());
+    }
 }
