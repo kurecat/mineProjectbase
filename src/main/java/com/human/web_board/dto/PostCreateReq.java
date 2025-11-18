@@ -5,8 +5,9 @@ import lombok.*;
 // 게시글 생성 요청 DTO
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @ToString
 public class PostCreateReq {
-    private Long member_Id;
+    private Long memberId;
     private String title;
     private String content;
-    public Long Category_id;    // 추가
+    public Long CategoryId;    // 추가
+
 }
