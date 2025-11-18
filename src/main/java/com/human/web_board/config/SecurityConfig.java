@@ -38,8 +38,7 @@ public class SecurityConfig {
                                 "/", "/main", "/login",
                                 "/members/signup/**", "/reset-password",
                                 "/api/**", "/posts/**", "/comments/**",
-                                "/board/detail/**","/board/**","/board/write"
-                                "/board/detail/**","/board/**",
+                                "/board/detail/**","/board/**","/board/write",
                                 "/upload-images-dragdrop"
                         ).permitAll()
                         .requestMatchers("/image/*", "/ajax/post-list", "/main/search").permitAll()
