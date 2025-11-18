@@ -9,6 +9,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const usernameRegex = /^[a-zA-Z0-9_-]{3,16}$/;
 
     form.addEventListener('submit', function(event) {
+        // 어떤 버튼으로 제출됐는지 확인
+        const submitter = event.submitter;
+
+        // Delete 버튼이면 검사 없이 통과
+        if (submitter && submitter.id === 'delete-button') {
+            return; // 유효성 검사 생략
+        }
+
     event.preventDefault();
 
     const isPasswordValid = validatePassword();

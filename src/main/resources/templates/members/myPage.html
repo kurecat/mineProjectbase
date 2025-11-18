@@ -65,8 +65,6 @@
                     <button type="submit" id="delete-button" class="edit-fields-section__button edit-fields-section__button--delete">Delete</button>
                 </div>
 
-
-
             </form>
 
             <div th:if="${error}" class="error-message">
@@ -178,12 +176,20 @@
             uploadProfileImageInput.value = '';
         });
 
-        // E. "Delete" 버튼 클릭 시 (시뮬레이션)
-        deleteButton.addEventListener('submit', function() {
+        // E. "Delete" 버튼 클릭 시
+
+        deleteButton.addEventListener('click', function (e) {
             if (!confirm("정말로 계정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
                 e.preventDefault();
+                return;
             }
+
+            const form = document.getElementById("edit-fields-section");
+            const memberId = [[${member.id}]]; // Thymeleaf에서 member.id 삽입
+            form.action = `/members/${memberId}/delete`; // action 변경
         });
+
+
 
     // ⭐️⭐️⭐️ 이 '}'(닫는 중괄호)가 document.addEventListener의 짝입니다.
     // ⭐️⭐️⭐️ 이 부분이 누락되거나, 이 뒤에 }가 더 있으면 오류가 발생합니다.

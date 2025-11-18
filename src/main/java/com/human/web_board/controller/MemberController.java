@@ -124,7 +124,7 @@ public class MemberController {
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable Long id) {
         memberService.delete(id);
-        return "redirect:/members/memberlist";
+        return "redirect:/logout";
     }
 
     // 회원 상세
