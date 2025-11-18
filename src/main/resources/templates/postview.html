@@ -4,120 +4,135 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title th:text="${title}">게시글 상세보기</title>
+    <title th:text="${post.title}">게시글 상세보기</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
-
-    <style>
-        .prose img {
-            max-width: 100%; /* 이미지가 부모 영역을 넘어가지 않도록 */
-        }
-
-body { background:red!important; }
-    </style>
 </head>
 <body class="bg-gray-100">
 
 <div class="w-[1200px] mx-auto mt-8 mb-8 p-4 md:p-8 bg-white rounded-lg shadow-lg">
-    <div class="w-[1140px] mx-auto">
-        <div th:replace="~{fragments/header::header}"></div>
-        <div class="flex flex-col lg:flex-row lg:space-x-8">
 
-            <main class="flex-1">
+    <div th:replace="~{fragments/header :: header}"></div>
 
-                <div class="flex justify-between items-center h-16 border-b border-gray-300">
-                    <span class="font-semibold text-lg" th:text="${nickname}">kurecat</span>
+    <div class="w-[1140px] mx-auto flex flex-col lg:flex-row lg:space-x-8">
 
-                    <div class="flex items-center text-sm text-gray-500 space-x-4">
-                        <span th:text="${#temporals.format(createdAt, 'yyyy-MM-dd HH:mm')}">2025-11-11 13:37</span>
-                        <span th:text="|조회 : ${view_count}|">조회 : 0</span>
-                        <span th:text="|추천 : ${RECOMMENDATIONS_COUNT}|">추천 : 0</span>
+        <!-- ========================
+              메인 영역
+        ========================= -->
+        <main class="flex-1">
+
+            <!-- 게시글 헤더 -->
+            <div class="flex justify-between items-center h-16 border-b border-gray-300">
+                <span class="font-semibold text-lg" th:text="${post.nickname}">작성자</span>
+
+                <div class="flex items-center text-sm text-gray-500 space-x-4">
+                    <span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">2025-11-11</span>
+                    <span th:text="|조회 : ${post.viewCount}|">조회 : 0</span>
+                    <span th:text="|추천 : ${post.recommendations}|">추천 : 0</span>
+                </div>
+            </div>
+
+            <!-- 제목 + 내용 -->
+            <div class="py-6 min-h-[500px]">
+                <div class="mb-6">
+                    <span class="text-blue-600 font-semibold" th:text="|\[${post.categoryName}\]|">[카테고리]</span>
+                    <h1 class="text-3xl font-bold mt-2" th:text="${post.title}">제목 입력</h1>
+                </div>
+
+                <div class="prose max-w-none min-h-[300px]" th:utext="${post.content}">
+                    게시글 내용
+                </div>
+            </div>
+
+            <!-- 버튼 영역 -->
+            <div class="flex justify-between items-center border-t border-gray-300 pt-6">
+                <a href="#" class="text-sm text-gray-500 hover:underline">신고하기</a>
+
+                <div class="flex gap-2">
+                    <a th:href="@{/board/list}" class="w-32 h-12 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-lg transition-colors">
+                        돌아가기
+                    </a>
+                    <a th:href="@{/board/write}" class="w-32 h-12 flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors">
+                        글쓰기
+                    </a>
+                </div>
+            </div>
+
+            <!-- ========================
+                  댓글 영역
+            ========================= -->
+            <div class="mt-10 min-h-[300px]">
+
+                <!-- 댓글 카운트 -->
+                <div class="flex items-center gap-2 border-b border-gray-300 pb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 21l1.178-3.536A9.954 9.954 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                    <span class="font-semibold" th:text="|댓글 (${#lists.size(comments)})|">댓글 (0)</span>
+                    <span class="ml-2 text-sm text-gray-500">| 최신순</span>
+                </div>
+
+                <!-- 댓글 리스트 -->
+                <div id="comment-list" class="mt-4">
+                    <div th:if="${#lists.isEmpty(comments)}" class="text-center text-gray-500 py-10">
+                        등록된 댓글이 없습니다.
+                    </div>
+
+                    <div th:each="c : ${comments}" class="py-4 border-b border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <span class="font-semibold" th:text="${c.memberId}">작성자</span>
+                            <span class="text-xs text-gray-400" th:text="${#temporals.format(c.createdAt, 'yyyy-MM-dd HH:mm')}">
+                                2025-11-11
+                            </span>
+                        </div>
+                        <p class="mt-2 text-gray-700" th:text="${c.content}">댓글 내용</p>
                     </div>
                 </div>
 
-                <div class="py-6 min-h-[500px]">
-                    <div class="mb-6">
-                        <span class="text-blue-600 font-semibold" th:text="|\[${categoryName}\]|">[자취요리레시피]</span>
-                        <h1 class="text-3xl font-bold mt-2" th:text="${title}">닭가슴살 맛있음</h1>
-                    </div>
+                <!-- 댓글 작성 폼 -->
+                <form id="comment-form"
+                      th:action="@{/comments/{postId}(postId=${post.id})}"
+                      method="post"
+                      class="mt-6 p-4 bg-gray-50 rounded-lg">
 
-                    <div class="prose max-w-none min-h-[300px]"
-                         th:utext="${content}">
-                        <p>닭가슴살 마셨음.</p>
-                    </div>
+                    <div class="flex items-start space-x-3">
+                        <span class="font-semibold pt-2" th:text="${currentUserNickname}">
+                            작성자닉네임
+                        </span>
 
-                    <div class="flex justify-center items-center gap-4 my-10">
-                        <button class="flex items-center justify-center w-24 h-12 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21H9.136a2 2 0 01-1.789-2.894l3.5-7A2 2 0 0112.737 9H14v1zM4 21V10a2 2 0 012-2h1v11H4z" /></svg>
-                            <span class="ml-2 text-lg" th:text="${likes}">0</span>
+                        <textarea name="content"
+                                  class="flex-1 p-2 border border-gray-300 rounded-md min-h-[80px]
+                                         focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                  placeholder="댓글을 입력하세요..."
+                                  required></textarea>
+
+                        <input type="hidden" name="postId" th:value="${post.id}">
+
+                        <button type="submit"
+                                class="w-20 h-20 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg transition-colors">
+                            등록
                         </button>
-                        <button class="flex items-center justify-center w-24 h-12 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.737 3h2.127a2 2 0 011.789 2.894l-3.5 7A2 2 0 0110.737 15H10v-1zM20 3v11a2 2 0 01-2 2h-1V3h3z" /></svg>
-                            <span class="ml-2 text-lg">0</span>
-                        </button>
                     </div>
-                </div>
+                </form>
 
-                <div class="flex justify-between items-center border-t border-gray-300 pt-6">
-                    <a href="#" class="text-sm text-gray-500 hover:underline">신고하기</a>
+            </div>
 
-                    <div class="flex gap-2">
-                        <a th:href="@{/board/list}" class="w-32 h-12 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-lg transition-colors">
-                            돌아가기
-                        </a>
-                        <a th:href="@{/board/write}" class="w-32 h-12 flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors">
-                            글쓰기
-                        </a>
-                    </div>
-                </div>
+        </main>
 
-                <div class="mt-10 min-h-[300px]">
-                    <div class="flex items-center gap-2 border-b border-gray-300 pb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 21l1.178-3.536A9.954 9.954 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
-                        <span class="font-semibold" th:text="|댓글 (${#lists.size(comments)})|">댓글 (1)</span>
-                        <span class="ml-2 text-sm text-gray-500">| 최신순</span>
-                    </div>
+        <!-- 오른쪽 광고 -->
+        <aside class="w-full lg:w-80 lg:flex-shrink-0 mt-8 lg:mt-0">
+            <div class="bg-white rounded-lg shadow-md h-[960px] flex items-center justify-center border">
+                <span class="text-gray-500 text-2xl">광고 영역</span>
+            </div>
+        </aside>
 
-                    <div id="comment-list" class="mt-4">
-                        <div th:if="${#lists.isEmpty(comments)}" class="text-center text-gray-500 py-10">
-                            등록된 댓글이 없습니다.
-                        </div>
-
-                        <div th:each="comment : ${comments}" class="py-4 border-b border-gray-100">
-                            <div class="flex items-center justify-between">
-                                <span class="font-semibold" th:text="${comment.authorNickname}">TestUser</span>
-                                <span class="text-xs text-gray-400" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2025-11-11 13:37:00</span>
-                            </div>
-                            <p class="mt-2 text-gray-700" th:text="${comment.content}">
-                                그건 아닌거 같음.
-                            </p>
-                        </div>
-                    </div>
-
-                    <form id="comment-form" th:action="@{/comment/save}" method="post" class="mt-6 p-4 bg-gray-50 rounded-lg">
-                        <div class="flex items-start space-x-3">
-                            <span class="font-semibold pt-2" th:text="${currentUserNickname}">TestUser2</span>
-                            <textarea name="content" class="flex-1 p-2 border border-gray-300 rounded-md min-h-[80px] focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="댓글을 입력하세요..."></textarea>
-                            <input type="hidden" name="postId" th:value="${id}">
-                            <button type="submit" class="w-20 h-20 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg transition-colors">
-                                등록
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-            </main>
-
-            <aside class="w-full lg:w-80 lg:flex-shrink-0 mt-8 lg:mt-0">
-                <div class="bg-white rounded-lg shadow-md h-[960px] flex items-center justify-center border">
-                    <span class="text-gray-500 text-2xl">광고 (W310)</span>
-                </div>
-            </aside>
-
-        </div>
-        <div th:replace="~{fragments/footer::footer}"></div>
     </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
 </div>
 
 </body>

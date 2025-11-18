@@ -27,7 +27,18 @@ public class CommentController {
             CommentCreateReq req,
             HttpSession session
     ) {
+//        System.out.println(1);
+//        System.out.println(session.getAttribute("loginMember"));
+//        System.out.println(postId);
+//        System.out.println(req.getMemberId());
+//        System.out.println(req.getPostId());
+//        System.out.println(req.getContent());
         MemberRes loginMember = (MemberRes) session.getAttribute("loginMember");
+        Long memberId = loginMember.getId();
+        req.setMemberId(memberId);
+        req.setPostId(postId);
+        System.out.println(memberId);
+
         if (loginMember == null) {
             // 비로그인 → 로그인 페이지로 이동
             return "redirect:/login";
