@@ -5,32 +5,29 @@
 <header class="main-header" th:fragment="header">
     <div class="header-top">
         <div class="search-container">
-            <input type="search" placeholder="검색" />
-            <button class="search-icon">⚲</button>
+            <form th:action="@{/main/search}">
+                <input type="search" placeholder="검색" name="query"/>
+                <button type="submit" class="search-icon">⚲</button>
+            </form>
         </div>
 
         <div class="logo-container">
             <a th:href="@{/}"
-            ><img th:src="@{/Image/logo.png}" alt="Agit 로고"
+            ><img th:src="@{/image/logo.png}" alt="Agit 로고"
             /></a>
         </div>
-
-        <div class="user-container">
-
-            <div sec:authorize="isAnonymous()">
-                <a th:href="@{/login}" class="signout-btn">Sign In</a>
-            </div>
-
-            <div sec:authorize="isAuthenticated()">
-                <a th:href="@{/mypage}" class="user-icon">
-                </a>
-
-                <form th:action="@{/logout}" method="post" style="display: inline;">
-                    <button class="signout-btn" type="submit">Sign Out</button>
-                </form>
-            </div>
-
+        <div class="user-container" sec:authorize="isAuthenticated()">
+            <a class="user-icon" th:href="@{|/members/${#authentication.principal.id}|}"></a>
+            <div class="message-icon">✉️</div>
+            <form th:action="@{/logout}" method="post" style="display: inline;">
+                <button class="signout-btn" type="submit">Sign Out</button>
+            </form>
         </div>
+
+        <div class="user-container" sec:authorize="isAnonymous()">
+            <a th:href="@{login/login}" class="signout-btn">Sign In</a>
+        </div>
+
     </div>
 
     <nav class="header-nav">
@@ -39,7 +36,6 @@
             <li><a th:href="@{/main?mainCategoryId=2}">질문</a></li>
             <li><a th:href="@{/main?mainCategoryId=3}">후기</a></li>
             <li><a th:href="@{/main?mainCategoryId=4}">잡담</a></li>
-
         </ul>
     </nav>
 </header>

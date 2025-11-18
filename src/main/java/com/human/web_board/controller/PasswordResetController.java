@@ -48,12 +48,12 @@ public class PasswordResetController {
         boolean success = passwordResetService.resetPassword(member.getId(), password);
         if (success) {
             log.info("비밀번호 재설정 완료: ID={}, 이메일={}", member.getId(), email);
+            return "redirect:/login?resetSuccess=true";
         } else {
             log.error("비밀번호 재설정 실패: ID={}, 이메일={}", member.getId(), email);
+            return "redirect:/login?resetFail=true";
         }
 
-        model.addAttribute("message", "비밀번호가 성공적으로 변경되었습니다.");
-        return "redirect:/login";
 
 
     }

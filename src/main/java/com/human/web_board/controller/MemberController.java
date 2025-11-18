@@ -1,17 +1,24 @@
 package com.human.web_board.controller;
 
 import com.human.web_board.dto.MemberRes;
+import com.human.web_board.dto.MemberSignupReq;
 import com.human.web_board.service.FileStorageService;
+import com.human.web_board.service.MemberService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import com.human.web_board.dto.MemberSignupReq;
 import com.human.web_board.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
@@ -20,45 +27,57 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
     private final MemberService memberService;
     private final FileStorageService fileStorageService;
+    private final PasswordEncoder passwordEncoder;
 
     // 회원 가입 폼
-    @GetMapping("/signup")  // 수정: 클래스 레벨 /members와 합쳐서 /members/signup
+    @GetMapping("/signup")
     public String signupForm(Model model) {
         model.addAttribute("memberForm", new MemberSignupReq());
-        return "members/signup"; // templates/members/signup.html
+        return "members/signup";
     }
 
-
     // 회원 가입 처리
-    @PostMapping("/signup")  // 수정: /members/signup
-    public String signup(MemberSignupReq req, Model model) {
+    @PostMapping("/signup")// 수정: /members/signup
+    public String signup(MemberSignupReq req, Model model,
+                         @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) {
         log.info("회원가입 요청: {}", req);
 
+        // 비밀번호 확인
         if (!req.getPwd().equals(req.getPasswordCheck())) {
-            model.addAttribute("error", "비밀번호와 확인이 일치하지 않습니다.");
-            return "members/signup";
+            log.warn("회원가입 실패 - 비밀번호 불일치: {}", req.getEmail());
+            return "redirect:/members/signup?signupFail=passwordMismatch";
         }
+
+        // 이메일 중복 확인
         if (memberService.isEmailExists(req.getEmail())) {
-            model.addAttribute("error", "이미 사용 중인 이메일입니다.");
-            log.warn("중복 이메일 시도: {}", req.getEmail());
-            return "members/signup";
+            log.warn("회원가입 실패 - 이메일 중복: {}", req.getEmail());
+            return "redirect:/members/signup?signupFail=emailExists";
         }
+
+        // 닉네임 중복 확인
         if (memberService.isNicknameExists(req.getNickname())) {
-            model.addAttribute("error", "이미 사용 중인 닉네임입니다.");
-            log.warn("중복 닉네임 시도: {}", req.getNickname());
-            return "members/signup";
+            log.warn("회원가입 실패 - 닉네임 중복: {}", req.getNickname());
+            return "redirect:/members/signup?signupFail=nicknameExists";
         }
+
+        // 회원가입 시도
+        String newImagePath = "";
+        if (profileImage != null && !profileImage.isEmpty()) {
+            newImagePath = fileStorageService.saveImage(profileImage, "members");
+        }
+
+        req.setProfileImg(newImagePath);
 
         try {
             memberService.signup(req);
         } catch (IllegalArgumentException e) {
-            model.addAttribute("error", e.getMessage());
-            return "members/signup";
+            log.warn("회원가입 실패 - 예외 발생: {}", e.getMessage());
+            return "redirect:/members/signup?signupFail=exception";
         }
-        return "redirect:/login";
+
+        // 성공 시 로그인 페이지로 이동
+        return "redirect:/login?signupSuccess=true";
     }
-
-
 
     // 회원 목록
     @GetMapping("/memberlist")
@@ -82,18 +101,14 @@ public class MemberController {
                        Model model) {
 
         MemberRes member = memberService.getById(id);
-        //업로드(선택) : 이미지가 있으면 저장 후 상대 경로 확보
-        String currentImagePath = member.getProfileImg(); // 💡 기존 이미지 경로
-        String newImagePath = currentImagePath; // 기본값은 기존 경로로 설정
+        String currentImagePath = member.getProfileImg();
+        String newImagePath = currentImagePath;
         if (profileImage != null && !profileImage.isEmpty()) {
             newImagePath = fileStorageService.saveImage(profileImage, "members");
-
-            // 2. 💡 기존 파일 삭제 로직 추가 (새 파일이 성공적으로 저장된 경우)
             if (currentImagePath != null && !currentImagePath.isEmpty()) {
                 fileStorageService.deleteIfExists(currentImagePath);
             }
         }
-
         req.setProfileImg(newImagePath);
 
         try {
@@ -102,7 +117,7 @@ public class MemberController {
             model.addAttribute("error", e.getMessage());
             return "members/edit";
         }
-        return "redirect:/members/" + id;
+        return "redirect:/members/" + id + "?updateSuccess=true";
     }
 
     // 회원 삭제
@@ -114,11 +129,18 @@ public class MemberController {
 
     // 회원 상세
     @GetMapping("/{id}")
-    public String detail(@PathVariable Long id, Model model) {
+    public String detail(@PathVariable Long id, Model model, Principal principal) {
+        if (principal != null) {
+            String email = principal.getName();
+            MemberRes memberRes = memberService.getByEmail(email);
+            System.out.println(memberRes);
+            model.addAttribute("loginMember", memberRes);
+        }
         model.addAttribute("member", memberService.getById(id));
         return "members/myPage";
     }
-    //닉네임 중복 검사
+
+    // 닉네임 중복 검사
     @GetMapping("/api/members/check-nickname")
     @ResponseBody
     public boolean checkNickname(@RequestParam String nickname) {
@@ -126,6 +148,8 @@ public class MemberController {
         log.info("닉네임 중복 체크: {}, 존재 여부: {}", nickname, exists);
         return exists;
     }
+
+    // 이메일 중복 검사
     @GetMapping("/api/members/check-email")
     @ResponseBody
     public boolean checkEmail(@RequestParam String email) {
@@ -133,5 +157,17 @@ public class MemberController {
         log.info("이메일 중복 체크: {}, 존재 여부: {}", email, exists);
         return exists;
     }
+
+    @PostMapping("/{id}/verify-password")
+    @ResponseBody
+    public boolean verifyPassword(@PathVariable Long id,
+                                  @RequestParam String pwd,
+                                 Principal principal,
+                                 RedirectAttributes redirectAttributes) {
+        String email = principal.getName();
+        MemberRes memberRes = memberService.getByEmail(email);
+        return passwordEncoder.matches(pwd, memberRes.getPwd());
+    }
+
 
 }

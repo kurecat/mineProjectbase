@@ -7,7 +7,7 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
 
-    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
 <body>
 
@@ -22,7 +22,7 @@
                     <div class="slide-content">
                         <h1>자취의 교과서 같은 집</h1>
                         <p>신림 4평 원룸 월세</p>
-                        <button class="slide-btn">자세히 보기 &gt;</button>
+                        <button class="slide-btn">자세히 보기 ></button>
                     </div>
                 </div>
 
@@ -31,7 +31,7 @@
                     <div class="slide-content">
                         <h1>자취요리 전문가의 집</h1>
                         <p>"집에서 3끼 다 해먹어요"</p>
-                        <button class="slide-btn">자세히 보기 &gt;</button>
+                        <button class="slide-btn">자세히 보기 ></button>
                     </div>
                 </div>
 
@@ -40,19 +40,14 @@
                     <div class="slide-content">
                         <h1>고물가 시대에서 살아남기</h1>
                         <p>-자취쿠팡 필수템편-</p>
-                        <a
-                                href="https://www.youtube.com/watch?v=zzBu5eSM7bU&t"
-                                target="_blank"
-                        ><button class="slide-btn">자세히 보기 &gt;</button></a
-                        >
+                        <a href="https://www.youtube.com/watch?v=zzBu5eSM7bU&t" target="_blank">
+                            <button class="slide-btn">자세히 보기 ></button>
+                        </a>
                     </div>
                 </div>
 
                 <div class="swiper-slide">
-                    <img
-                            src="https://placehold.co/1140x400/2ecc71/ffffff?text=Slide+3"
-                            alt="Slide 3"
-                    />
+                    <img src="https://placehold.co/1140x400/2ecc71/ffffff?text=Slide+3" alt="Slide 3" />
                 </div>
             </div>
 
@@ -60,163 +55,150 @@
             <div class="swiper-button-prev"></div>
             <div class="swiper-pagination"></div>
         </div>
+
         <div class="postlistbox">
             <div th:replace="~{fragments/posts :: posts}"></div>
         </div>
+
         <nav class="pistlistrightbox">
             <div th:replace="~{fragments/side :: side}"></div>
         </nav>
+
         <div class="bastpostbox">
             <div th:replace="~{fragments/popular :: popular}"></div>
         </div>
+
         <div class="suggestpostbox">
             <div th:replace="~{fragments/recommended :: recommended}"></div>
         </div>
     </main>
+
     <div th:replace="~{fragments/footer :: footer}"></div>
 </div>
+<script>const urlParams = new URLSearchParams(window.location.search);
 
+if (urlParams.get("loginSuccess") === "true") {
+    alert("로그인 성공!");
+}
+
+if (urlParams.get("signupSuccess") === "true") {
+    alert("회원가입 완료!");
+}
+
+if (urlParams.get("resetSuccess") === "true") {
+    alert("비밀번호 변경 완료!");
+}</script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-    // 모든 YouTube 플레이어를 관리할 객체
     var players = {};
-    // Swiper 인스턴스
     var mySwiper;
 
-    // 1. YouTube API가 준비되면 자동으로 호출됨
     function onYouTubeIframeAPIReady() {
-      // --- 1번 영상 (player1) 생성 ---
-      players["player1"] = new YT.Player("player1", {
-        /* 👇👇👇 1번 영상 ID (예: 'S-N4a1A-TqE') 👇👇👇
-         */
-        videoId: "oMeYMLRwKrY",
-        playerVars: {
-          autoplay: 1,
-          mute: 1,
-          controls: 0,
-          loop: 1,
-          playlist: "oMeYMLRwKrY", // 1번 영상 ID와 동일하게
-          modestbranding: 1,
-          showinfo: 0,
-          rel: 0,
-        },
-        events: {
-          // 1번 플레이어가 준비되면 'onPlayerReady' 함수 호출
-          onReady: onPlayerReady,
-        },
-      });
+        players["player1"] = new YT.Player("player1", {
+            videoId: "oMeYMLRwKrY",
+            playerVars: {
+                autoplay: 1,
+                mute: 1,
+                controls: 0,
+                loop: 1,
+                playlist: "oMeYMLRwKrY",
+                modestbranding: 1,
+                showinfo: 0,
+                rel: 0,
+            },
+            events: {
+                onReady: onPlayerReady,
+            },
+        });
 
-      // --- 2번 영상 (player2) 생성 ---
-      players["player2"] = new YT.Player("player2", {
-        videoId: "XJ8b9sWVFb0",
-        playerVars: {
-          autoplay: 1,
-          mute: 1,
-          controls: 0,
-          loop: 1,
-          playlist: "XJ8b9sWVFb0", // 2번 영상 ID와 동일하게
-          modestbranding: 1,
-          showinfo: 0,
-          rel: 0,
-        },
-        events: {
-          // 2번 플레이어가 준비되면 'onPlayerReady' 함수 호출
-          onReady: onPlayerReady,
-        },
-      });
+        players["player2"] = new YT.Player("player2", {
+            videoId: "XJ8b9sWVFb0",
+            playerVars: {
+                autoplay: 1,
+                mute: 1,
+                controls: 0,
+                loop: 1,
+                playlist: "XJ8b9sWVFb0",
+                modestbranding: 1,
+                showinfo: 0,
+                rel: 0,
+            },
+            events: {
+                onReady: onPlayerReady,
+            },
+        });
 
-      // (영상이 3개라면 여기에 players['player3'] = new YT.Player(...) 추가)
-      players["player3"] = new YT.Player("player3", {
-        videoId: "zzBu5eSM7bU",
-        playerVars: {
-          autoplay: 1,
-          mute: 1,
-          controls: 0,
-          loop: 1,
-          playlist: "zzBu5eSM7bU", // 2번 영상 ID와 동일하게
-          modestbranding: 1,
-          showinfo: 0,
-          rel: 0,
-        },
-        events: {
-          // 2번 플레이어가 준비되면 'onPlayerReady' 함수 호출
-          onReady: onPlayerReady,
-        },
-      });
+        players["player3"] = new YT.Player("player3", {
+            videoId: "zzBu5eSM7bU",
+            playerVars: {
+                autoplay: 1,
+                mute: 1,
+                controls: 0,
+                loop: 1,
+                playlist: "zzBu5eSM7bU",
+                modestbranding: 1,
+                showinfo: 0,
+                rel: 0,
+            },
+            events: {
+                onReady: onPlayerReady,
+            },
+        });
     }
 
-    // 2. 플레이어 준비 상태 확인 및 Swiper 초기화
-
-    // (수정) 준비된 플레이어 수를 체크하기 위한 변수
     var playersReadyCount = 0;
-    var totalPlayers = 3; // (중요) 생성할 총 플레이어 수 (지금은 2개)
+    var totalPlayers = 3;
 
     function onPlayerReady(event) {
-      // (수정) 모든 플레이어가 준비될 때까지 카운트 증가
-      playersReadyCount++;
-
-      // (중요) 모든 플레이어가 준비되었을 때만 Swiper를 1번 초기화
-      if (playersReadyCount === totalPlayers) {
-        initializeSwiper();
-      }
+        playersReadyCount++;
+        if (playersReadyCount === totalPlayers) {
+            initializeSwiper();
+        }
     }
 
-    // 3. Swiper 초기화 및 슬라이드 제어 함수
     function initializeSwiper() {
-      if (mySwiper) return; // 중복 실행 방지
+        if (mySwiper) return;
 
-      mySwiper = new Swiper(".mySwiper", {
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
-        },
-        pagination: {
-          el: ".swiper-pagination",
-          clickable: true,
-        },
-        loop: true,
+        mySwiper = new Swiper(".mySwiper", {
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            loop: true,
 
-        on: {
-          // (중요) 슬라이드가 바뀔 때마다 실행
-          slideChange: function () {
-            var currentSlide = this.slides[this.activeIndex];
+            on: {
+                slideChange: function () {
+                    var currentSlide = this.slides[this.activeIndex];
+                    var activePlayerId = null;
+                    var playerElem = currentSlide.querySelector(".youtube-player-background");
 
-            // 현재 활성화된 슬라이드에 있는 플레이어 ID 찾기
-            var activePlayerId = null;
-            if (currentSlide.querySelector(".youtube-player-background")) {
-              activePlayerId = currentSlide.querySelector(
-                ".youtube-player-background"
-              ).id; // 예: "player1"
-            }
+                    if (playerElem) {
+                        activePlayerId = playerElem.id;
+                    }
 
-            // 모든 플레이어를 순회
-            for (var playerId in players) {
-              if (players.hasOwnProperty(playerId)) {
-                var player = players[playerId];
+                    for (var playerId in players) {
+                        var player = players[playerId];
 
-                // 현재 활성화된 슬라이드의 플레이어라면 -> 재생
-                if (playerId === activePlayerId) {
-                  player.playVideo();
-                }
-                // 활성화되지 않은 (다른 슬라이드의) 플레이어라면 -> 정지
-                else {
-                  player.pauseVideo();
-                }
-              }
-            }
-          },
+                        if (playerId === activePlayerId) {
+                            player.playVideo();
+                        } else {
+                            player.pauseVideo();
+                        }
+                    }
+                },
 
-          // (추가) Swiper가 처음 초기화될 때 실행
-          init: function () {
-            // 1번 슬라이드(첫 화면)가 아닌 다른 영상 플레이어들은 모두 정지시킴
-            // (loop 모드에서는 첫 슬라이드가 0번이 아닐 수 있으므로
-            //  slideChange 이벤트를 수동으로 한번 호출하는 것이 더 안전함)
-            this.emit("slideChange"); // slideChange 이벤트를 강제로 실행
-          },
-        },
-      });
+                init: function () {
+                    this.emit("slideChange");
+                },
+            },
+        });
     }
 </script>
+
 </body>
 </html>

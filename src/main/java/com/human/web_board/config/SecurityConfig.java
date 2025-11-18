@@ -27,6 +27,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico").permitAll()
                         .requestMatchers("/", "/main", "/login", "/members/signup/**","/reset-password" ,"/api/**","/posts/**","/comments/**","/board/detail/**").permitAll()
+                        .requestMatchers("/image/*", "/main/search").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -51,7 +52,11 @@ public class SecurityConfig {
                             response.sendRedirect("/main");
                         })
                         .failureUrl("/login?error")
+                        .defaultSuccessUrl("/main", true)
+                        .failureUrl("/login?loginFail=true")
                         .permitAll()
+                        .defaultSuccessUrl("/main?loginSuccess=true", true)
+
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")

@@ -12,30 +12,47 @@
     <div class="profile-container">
         <div class="profile-info">
             <div class="profile-info__avatar-wrapper">
-                <img id="profile-image" src="https://placehold.co/280x280.png?text=Profile" alt="User Avatar" class="profile-info__avatar">
+                <img id="profile-image"
+                     th:src="@{|${member.profileImg}|}"
+                     onerror="this.onerror=null; this.src='/image/emptyProfile.png';"
+                     alt="User Avatar"
+                     class="profile-info__avatar">
             </div>
-            <p id="display-username" class="profile-info__username">username</p>
-            <p id="display-points" class="profile-info__points">P : 1530</p>
+            <p id="display-username" class="profile-info__username" th:text="${member.nickname}">username</p>
+            <p id="display-points" class="profile-info__points" th:text="${member.point}">P : 1530</p>
 
             <button id="edit-profile-button" class="profile-info__edit-button">Edit Profile</button>
 
-            <div id="auth-section" class="auth-section hidden">
+            <form id="auth-section" class="auth-section hidden" th:action="@{|${member.id}/verify-password|}" method="post">
                 <div class="auth-section__password-input-group">
                     <label for="enter-password" class="auth-section__label">Enter Password</label>
-                    <input type="password" id="enter-password" class="auth-section__input" placeholder="Enter Password">
+                    <input type="password" id="enter-password" class="auth-section__input" placeholder="Enter Password" name="pwd" required>
                 </div>
-            </div>
+            </form>
 
-            <form id="edit-fields-section" class="edit-fields-section hidden" th:action="@{|/members/${member.id}/edit|}"
-                  method="post" enctype="multipart/form-data">
+            <form id="edit-fields-section" class="edit-fields-section hidden"
+                  th:action="@{|/members/${member.id}/edit|}"
+                  method="post"
+                  enctype="multipart/form-data">
+
                 <div class="edit-fields-section__group">
                     <label for="edit-username" class="edit-fields-section__label">Edit username</label>
-                    <input type="text" id="edit-username" class="edit-fields-section__input" name="nickname">
+                    <input type="text" id="edit-username" class="edit-fields-section__input" name="nickname"
+                           th:value="${member.nickname}">
+                    <div class="signup-form__error-message" id="nickname-error"></div>
                 </div>
                 <div class="edit-fields-section__group">
                     <label for="edit-password" class="edit-fields-section__label">Edit password</label>
                     <input type="password" id="edit-password" class="edit-fields-section__input" name="pwd">
+                    <div class="signup-form__error-message" id="password-error"></div>
                 </div>
+
+                <div class="edit-fields-section__group">
+                    <label for="password-check" class="edit-fields-section__label">Password check</label>
+                    <input type="password" id="password-check" class="edit-fields-section__input">
+                    <div class="signup-form__error-message" id="password-check-error"></div>
+                </div>
+
                 <div class="edit-fields-section__group">
                     <label for="upload-profile-image" class="edit-fields-section__label">Edit Profile Image</label>
                     <label for="upload-profile-image" class="edit-fields-section__upload-label">Upload Profile Image</label>
@@ -43,11 +60,19 @@
                 </div>
 
                 <div class="edit-fields-section__buttons">
-                    <button id="save-button" class="edit-fields-section__button edit-fields-section__button--save">Save</button>
-                    <button type="submit" id="cancel-button" class="edit-fields-section__button edit-fields-section__button--cancel">Cancel</button>
-                    <button id="delete-button" class="edit-fields-section__button edit-fields-section__button--delete">Delete</button>
+                    <button type="submit" id="save-button" class="edit-fields-section__button edit-fields-section__button--save">Save</button>
+                    <button type="reset" id="cancel-button" class="edit-fields-section__button edit-fields-section__button--cancel">Cancel</button>
+                    <button type="submit" id="delete-button" class="edit-fields-section__button edit-fields-section__button--delete">Delete</button>
                 </div>
+
+
+
             </form>
+
+            <div th:if="${error}" class="error-message">
+                <p th:text="${error}"></p>
+            </div>
+
         </div>
 
         <div class="content-lists">
@@ -65,19 +90,14 @@
 
     <div th:replace="~{fragments/footer :: footer}"></div>
 </div>
-
+<script th:src="@{/js/member-edit.validation.js}"></script>
 <script th:inline="javascript">
+
+
     // ⭐️⭐️⭐️ 동적 기능 JavaScript ⭐️⭐️⭐️
 
     // 이 줄(DOMContentLoaded)이 빠지면 오류가 발생할 수 있습니다.
     document.addEventListener('DOMContentLoaded', function() {
-        // --- 1. 초기 UI 상태 및 데이터 설정 ---
-        const user = {
-            username: /*[[${member.id}]]*/ "default",
-            points: 1231,
-            password: /*[[${member.pwd}]]*/ "default", // 비밀번호 시뮬레이션
-            profileImg: /*[[${member.profileImg}]]*/ "default" // ⭐️ 이미지 URL도 올바른지 확인
-        };
 
         // DOM 요소들 가져오기
         const editProfileButton = document.getElementById('edit-profile-button');
@@ -94,13 +114,6 @@
         const displayUsername = document.getElementById('display-username');
         const displayPoints = document.getElementById('display-points');
 
-        // 초기 사용자 정보 표시
-        displayUsername.textContent = user.username;
-        displayPoints.textContent = `P : ${user.points}`;
-        uploadBaseUrl = /*[@{'/uploads/'}]*/ "/uploads/";
-        profileImg.src = uploadBaseUrl + user.profileImg;
-        editUsernameInput.value = user.username;
-
         // --- 2. 이벤트 리스너 설정 ---
 
         // A. "Edit Profile" 버튼 클릭 시
@@ -115,96 +128,60 @@
             }
         });
 
-        // B. "Enter Password" 입력 후 포커스 아웃 시 (또는 Enter 키)
-        enterPasswordInput.addEventListener('blur', checkPassword);
-        enterPasswordInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                checkPassword();
-            }
+        // A-2. 비밀번호 입력 창 벗어날 시
+        enterPasswordInput.addEventListener('blur', function() {
+            authSection.classList.add('hidden');
         });
+
+        // B. 비밀번호 입력
+        document.getElementById("auth-section").addEventListener("submit", function(e) {
+            e.preventDefault(); // 기본 제출 막기
+
+            const form = e.target;
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: form.method,
+                body: formData
+            })
+            .then(response => response.text())
+            .then(result => {
+                if (result === "true") {
+                    document.getElementById("edit-fields-section").classList.remove("hidden");
+                    document.getElementById("auth-section").classList.add("hidden");
+                } else {
+                    alert("비밀번호가 일치하지 않습니다.");
+                }
+            });
+        });
+
 
         // B-2. "Upload profile Image"
         uploadProfileImageInput.addEventListener('change', function() {
                 const newImageFile = uploadProfileImageInput.files[0];
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    user.profileImg = e.target.result;
-                    profileImg.src = user.profileImg;
+                    profileImg.src = e.target.result;
                 };
                 reader.readAsDataURL(newImageFile);
         });
 
-
-
-        function checkPassword() {
-            const enteredPassword = enterPasswordInput.value;
-            // ⭐️⭐️⭐️ 비밀번호 일치 시뮬레이션 ⭐️⭐️⭐️
-            if (enteredPassword === user.password) {
-                editFieldsSection.classList.remove('hidden'); // 수정 필드 섹션 보이기
-                // 현재 값으로 수정 필드 초기화
-                editUsernameInput.value = user.username;
-                editPasswordInput.value = ''; // 비밀번호는 보안상 초기화
-                authSection.classList.add('hidden'); // Enter Password 필드 숨기기
-            } else if (enteredPassword !== '') {
-                alert("비밀번호가 일치하지 않습니다.");
-                enterPasswordInput.value = ''; // 틀리면 입력값 지우기
-                editFieldsSection.classList.add('hidden'); // 수정 필드 다시 숨김
-            } else { // 입력값이 비어있을 경우 (지웠을 경우)
-                editFieldsSection.classList.add('hidden'); // 수정 필드 다시 숨김
-                authSection.classList.add('hidden'); // Enter Password 필드 숨기기
-            }
-        }
-
         // C. "Save" 버튼 클릭 시
-        saveButton.addEventListener('click', function() {
-            let changed = false;
-
-            // 1. 사용자 이름 변경
-            if (editUsernameInput.value !== user.username) {
-                user.username = editUsernameInput.value;
-                displayUsername.textContent = user.username;
-                changed = true;
-            }
-
-            // 2. 비밀번호 변경 (입력된 경우에만)
-            if (editPasswordInput.value !== '') {
-                user.password = editPasswordInput.value;
-                alert("비밀번호가 변경되었습니다.");
-                changed = true;
-            }
-
-            // 3. 프로필 이미지 변경 (새로운 파일이 선택된 경우에만)
-            if (uploadProfileImageInput.files.length > 0) {
-                user.profileImg = uploadProfileImageInput.files[0];
-                changed = true;
-            }
-
-            if (changed) {
-                alert("프로필이 성공적으로 업데이트되었습니다!");
-            } else {
-                alert("변경된 내용이 없습니다.");
-            }
-
-            editFieldsSection.classList.add('hidden');
-            authSection.classList.add('hidden');
-            enterPasswordInput.value = '';
-        });
 
         // D. "Cancel" 버튼 클릭 시
         cancelButton.addEventListener('click', function() {
             editFieldsSection.classList.add('hidden');
             authSection.classList.add('hidden');
             enterPasswordInput.value = '';
-            editUsernameInput.value = user.username;
+            editUsernameInput.value = displayUsername.textContent;
             editPasswordInput.value = '';
             uploadProfileImageInput.value = '';
         });
 
         // E. "Delete" 버튼 클릭 시 (시뮬레이션)
-        deleteButton.addEventListener('click', function() {
-            if (confirm("정말로 계정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
-                alert("계정이 삭제되었습니다. (시뮬레이S이뮬레이션)");
-                window.location.href = "/login";
+        deleteButton.addEventListener('submit', function() {
+            if (!confirm("정말로 계정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
+                e.preventDefault();
             }
         });
 

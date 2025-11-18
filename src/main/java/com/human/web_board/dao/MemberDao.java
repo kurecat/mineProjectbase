@@ -25,9 +25,9 @@ public class MemberDao {
 
     // 회원 가입
     public Long save(MemberSignupReq m) {
-        String sql = "INSERT INTO MEMBERS(ID, EMAIL, PWD, NICKNAME, GRADE, REG_DATE, POINT) "
-                + "VALUES (MEMBERS_SEQ.NEXTVAL, ?, ?, ?, ?, SYSTIMESTAMP, 0)";
-        jdbc.update(sql, m.getEmail(), m.getPwd(), m.getNickname(), m.getGrade());
+        String sql = "INSERT INTO MEMBERS(ID, EMAIL, PWD, NICKNAME, GRADE, REG_DATE, POINT, PROFILE_IMG) "
+                + "VALUES (MEMBERS_SEQ.NEXTVAL, ?, ?, ?, ?, SYSTIMESTAMP, 0, ?)";
+        jdbc.update(sql, m.getEmail(), m.getPwd(), m.getNickname(), m.getGrade(), m.getProfileImg());
         return jdbc.queryForObject("SELECT MEMBERS_SEQ.CURRVAL FROM dual", Long.class);
     }
     // 닉네임 존재 여부 확인
@@ -36,8 +36,6 @@ public class MemberDao {
         Integer count = jdbc.queryForObject(sql, Integer.class, nickname);
         return count != null && count > 0;
     }
-
-
 
     // 이메일로 회원 조회
     public MemberRes findByEmail(String email) {
@@ -121,9 +119,10 @@ public class MemberDao {
                     rs.getString("email"),
                     rs.getString("pwd"),
                     rs.getString("nickname"),   // nickname
-                    rs.getString("grade"),      // grade 추가
+                    rs.getString("grade"),   // grade 추가
                     rs.getTimestamp("reg_date").toLocalDateTime(), // regDate
-                    null
+                    rs.getInt("point"),
+                    rs.getString("profile_img")
             );
         }
     }
