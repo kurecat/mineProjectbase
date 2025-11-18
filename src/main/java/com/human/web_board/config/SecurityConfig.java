@@ -6,6 +6,8 @@ import com.human.web_board.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,20 +24,16 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
 
-                .headers(headers -> headers
-                        .frameOptions(frameOptions -> frameOptions.sameOrigin())
-                )
-
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/css/**", "/js/**", "/images/**",
-                                "/webjars/**", "/favicon.ico", "/smarteditor2/**"
+                                "/webjars/**", "/favicon.ico"
                         ).permitAll()
                         .requestMatchers(
                                 "/", "/main", "/login",
                                 "/members/signup/**", "/reset-password",
                                 "/api/**", "/posts/**", "/comments/**",
-                                "/board/detail/**"
+                                "/board/detail/**","/board/**"
                         ).permitAll()
                         .requestMatchers("/image/*", "/ajax/post-list", "/main/search").permitAll()
                         .anyRequest().authenticated()
@@ -48,18 +46,24 @@ public class SecurityConfig {
                         .passwordParameter("pwd")
                         .successHandler((request, response, authentication) -> {
 
-                            // 로그인 세션 저장
                             CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-                            request.getSession().setAttribute("loginMember", new MemberRes(
-                                    user.getId(), user.getEmail(), user.getPassword(),
-                                    user.getNickname(), user.getGrade(),
-                                    user.getRegDate(), user.getPoint(), user.getProfileImg()
-                            ));
 
-                            // 성공 시 URL 파라미터 추가
-                            response.sendRedirect("/main?loginSuccess=true");
+                            MemberRes loginMember = new MemberRes(
+                                    user.getId(),
+                                    user.getEmail(),
+                                    user.getPassword(),
+                                    user.getNickname(),
+                                    user.getGrade(),
+                                    user.getRegDate(),
+                                    user.getPoint(),
+                                    user.getProfileImg()
+                            );
+
+                            request.getSession().setAttribute("loginMember", loginMember);
+
+                            response.sendRedirect("/main");
                         })
-                        .failureUrl("/login?loginFail=true") // JS와 동일하게 맞춤
+                        .failureUrl("/login?error=true")
                         .permitAll()
                 )
 
@@ -76,5 +80,16 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+
+        authBuilder.userDetailsService(customUserDetailsService)
+                .passwordEncoder(passwordEncoder());
+
+        return authBuilder.build();
     }
 }

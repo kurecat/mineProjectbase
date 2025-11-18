@@ -26,7 +26,7 @@ public class PostFormDto {
     // (참고: 폰트 크기 드롭다운(name="fontSize")도 DTO로 받으려면
     // 여기에 private String fontSize; 필드를 추가하고
     // write.html의 <select>에 th:field="*{fontSize}"를 추가하면 됩니다.)
-
+    private Long memberId;
     // 기본값 설정 (선택 사항)
     public PostFormDto() {
         this.allowComments = true; // '댓글 허용'이 기본으로 체크되도록 설정
