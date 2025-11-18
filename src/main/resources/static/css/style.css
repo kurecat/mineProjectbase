@@ -575,6 +575,11 @@ footer-Copyright {
   border-bottom: 1px solid black;
 }
 
+.postlist-header {
+  display: flex;
+  align-items: center; /* (선택사항) 링크들 세로 중앙 정렬 */
+}
+
 .postlist button {
   width: 55px;
   height: 40px;
@@ -1369,7 +1374,7 @@ footer-Copyright {
   background-color: #f9f9f9;
 }
 
-.postlist > a.category-link {
+.postlist-header > a.category-link {
   display: inline-block;  /* <a> 태그에 너비(width)와 높이(height)를 적용하기 위해 필수 */
 
   width: 60px;  /* 요청하신 너비 60px */

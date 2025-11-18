@@ -57,11 +57,16 @@
         </div>
 
         <div class="postlist">
-            <a href="/" class="category-link">전체</a>
-            <a th:href="@{/(category='꿀팁')}" class="category-link">꿀팁</a>
-            <a th:href="@{/(category='질문')}" class="category-link">질문</a>
-            <a th:href="@{/(category='후기')}" class="category-link">후기</a>
-            <a th:href="@{/(category='잡담')}" class="category-link">잡담</a>
+
+            <div class="postlist-header">
+                <a href="/" class="category-link">전체</a>
+                <a th:href="@{/(category='꿀팁')}" class="category-link">꿀팁</a>
+                <a th:href="@{/(category='질문')}" class="category-link">질문</a>
+                <a th:href="@{/(category='후기')}" class="category-link">후기</a>
+                <a th:href="@{/(category='잡담')}" class="category-link">잡담</a>
+                <a th:href="@{/}" class="category-link" style="margin-left: auto;">글쓰기</a>
+            </div>
+
             <hr />
 
             <div id="post-list-content-wrapper">
