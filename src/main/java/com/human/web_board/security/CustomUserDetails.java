@@ -34,7 +34,6 @@ public class CustomUserDetails implements UserDetails {
         this.regDate = member.getRegDate();
         this.point = member.getPoint();
         this.profileImg = member.getProfileImg();
-
     }
 
     /** ROLE_USER 기본 권한 */
@@ -60,6 +59,4 @@ public class CustomUserDetails implements UserDetails {
     @Override public boolean isCredentialsNonExpired() { return true; }
     @Override public boolean isEnabled() { return true; }
 
-//    public int getPoint() {return this.point;
-//    }
 }

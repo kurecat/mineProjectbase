@@ -92,17 +92,16 @@ header {
 .user-icon {
   display: inline-block; /* ⬅️ [필수] <a> 태그가 크기를 갖도록 함 */
   vertical-align: middle; /* ⬅️ [추천] 옆의 Sign Out 버튼과 세로 정렬을 맞춤 */
-
-  /* --- 님께서 제공해주신 기존 스타일 --- */
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background-color: #d9d9d9;
   background-size: cover;
   background-position: center;
-
-  /* (참고) Sign Out 버튼과의 간격을 위해 */
+  object-fit: cover;
   margin-right: 10px;
+  cursor: pointer;
+  border: 1px solid #ddd;
 }
 
 .message-icon {
