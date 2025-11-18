@@ -44,6 +44,7 @@ public class CommentDao {
         @Language("SQL")
         String sql = "DELETE FROM comments WHERE id=?";
         return jdbc.update(sql, id) > 0; // 반환값은 영향을 받는 행의 갯수
+
     }
 
     // 댓글 수정(수정)
@@ -56,10 +57,10 @@ public class CommentDao {
     public CommentRes findById(Long post_id) {
         @Language("SQL")
         String sql = """
-            SELECT c.id, c.post_id, c.member_id, c.content, c.created_at 
-            FROM comments c JOIN member m ON c.member_id = m.id 
-            WHERE c.post_id = ?
-        """;
+        SELECT id, post_id, member_id, content, created_at
+        FROM comments
+        WHERE id = ?
+    """;
 
         try {
             return jdbc.queryForObject(sql, new CommentResMapper(), post_id);

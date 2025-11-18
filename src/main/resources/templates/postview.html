@@ -30,14 +30,15 @@
                 <div class="flex items-center text-sm text-gray-500 space-x-4">
                     <span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">2025-11-11</span>
                     <span th:text="|조회 : ${post.viewCount}|">조회 : 0</span>
-                    <span th:text="|추천 : ${post.recommendations}|">추천 : 0</span>
+                    <span th:text="|추천 : ${post.recommendationsCount}|">추천 : 0</span>
                 </div>
             </div>
 
             <!-- 제목 + 내용 -->
             <div class="py-6 min-h-[500px]">
                 <div class="mb-6">
-                    <span class="text-blue-600 font-semibold" th:text="|\[${post.categoryName}\]|">[카테고리]</span>
+                    <span class="text-blue-600 font-semibold" th:text="|\[${post.categoryId}\]|">[카테고리]</span>
+<!--                    여기 부분 상의(이건웅),Id-> name-->
                     <h1 class="text-3xl font-bold mt-2" th:text="${post.title}">제목 입력</h1>
                 </div>
 
@@ -91,7 +92,7 @@
                         <p class="mt-2 text-gray-700" th:text="${c.content}">댓글 내용</p>
                     </div>
                 </div>
-
+                <p style="color:red">msg: [[${param.msg}]]</p>
                 <!-- 댓글 작성 폼 -->
                 <form id="comment-form"
                       th:action="@{/comments/{postId}(postId=${post.id})}"
@@ -134,6 +135,17 @@
     <div th:replace="~{fragments/footer :: footer}"></div>
 
 </div>
+<!-- 🔥 URL 파라미터 기반 메시지 알림 -->
+<script th:if="${param.msg}">
+    /* param.msg가 deleted이면 삭제 메시지 */
+    /* param.msg가 created이면 등록 메시지 */
+    if ([[${param.msg}]] === 'deleted') {
+        alert('댓글이 삭제되었습니다.');
+    }
+    if ([[${param.msg}]] === 'created') {
+        alert('댓글이 등록되었습니다.');
+    }
+</script>
 
 </body>
 </html>

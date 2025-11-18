@@ -84,13 +84,13 @@
                                 <td class="p-3 text-center" th:text="${post.nickname}">작성자</td>
 
                                 <td class="p-3 text-center"
-                                    th:text="${#temporals.format(post.created_at, 'MM-dd')}">
+                                    th:text="${#temporals.format(post.createdAt, 'MM-dd')}">
                                     11-13
                                 </td>
 
-                                <td class="p-3 text-center" th:text="${post.view_count}">0</td>
+                                <td class="p-3 text-center" th:text="${post.viewCount}">0</td>
 
-                                <td class="p-3 text-center" th:text="${post.recommendations_count}">0</td>
+                                <td class="p-3 text-center" th:text="${post.recommendationsCount}">0</td>
 
                             </tr>
 
