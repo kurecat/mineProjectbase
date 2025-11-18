@@ -4,13 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시글 작성</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- SmartEditor2 스크립트 로드 -->
-    <script type="text/javascript" th:src="@{/js/smarteditor2/js/HuskyEZCreator.js}" charset="utf-8"></script>
-    <!-- 커스텀 CSS -->
+    <script type="text/javascript" th:src="@{/smarteditor2/js/HuskyEZCreator.js}" charset="utf-8"></script>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 
     <style>
@@ -27,20 +23,17 @@
         }
     </style>
 </head>
-<body class="bg-gray-100">
-<div th:replace="fragments/header :: header"></div>
-<!-- 전체 컨테이너 (W1200px) -->
-<div class="w-[1200px] mx-auto mt-8 mb-8 p-4 md:p-8 bg-white rounded-lg shadow-lg">
-    <!-- 메인 컨테이너 (W1140px) -->
+<body>
+
+<div class="w-[1200px] mx-auto mt-8 mb-8 p-4 md:p-8 bg-white">
     <div class="w-[1140px] mx-auto">
-        <div class="flex flex-col lg:flex-row lg:space-x-8">
+        <div th:replace="fragments/header :: header"></div>
 
-            <!-- 메인 콘텐츠 (게시글 작성 폼) -->
+        <div class="flex flex-col lg:flex-row lg:space-x-8 mt-[30px]">
+
             <main class="flex-1">
-
                 <form th:action="@{/board/save}" method="post" id="post-form" enctype="multipart/form-data">
 
-                    <!-- 1. 상단 바 (카테고리, 제목, 닉네임) -->
                     <div class="flex justify-between items-center mb-4">
                         <div class="flex items-center gap-2">
                             <select name="category" class="h-8 px-3 py-1 rounded-md border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -57,14 +50,12 @@
                         </div>
                     </div>
 
-                    <!-- 2. 스마트에디터 -->
                     <div class="mb-4">
                             <textarea name="content" id="smartEditor" rows="10"
                                       class="w-full h-[500px] p-4 border border-gray-300 rounded-md"
                                       placeholder="스마트에디터가 들어갈 자리"></textarea>
                     </div>
 
-                    <!-- 3. 첨부파일 버튼 (동일) -->
                     <div class="flex gap-2 my-4">
                         <button type="button" id="btn-image-attach"
                                 class="w-[120px] h-[50px] bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-lg transition-colors">
@@ -76,29 +67,22 @@
                         </button>
                     </div>
 
-                    <!-- [4. 이미지 첨부 영역] -->
                     <div id="image-upload-area" class="hidden my-4 p-4 border rounded-md">
 
-                        <!-- 1. Dotted box (드래그 앤 드롭 영역) -->
                         <div id="image-drop-zone" class="border-2 border-dashed border-gray-300 rounded-lg p-10 text-center text-gray-500 cursor-pointer hover:bg-gray-50 transition-colors">
                             이미지를 업로드하려면 여기에 이미지를 끌어놓거나 클릭하세요
-                            <!-- (숨겨진 파일 입력창) -->
                             <input type="file" id="image-input-hidden" multiple accept="image/*" class="hidden">
                         </div>
 
-                        <!-- [4-1. 이미지 프리뷰(썸네일) 영역] -->
                         <div id="image-preview-container" class="mt-4 grid grid-cols-5 gap-4">
-                            <!-- JS로 썸네일이 채워질 공간 -->
                         </div>
 
-                        <!-- 3. Warning text (동일) -->
                         <div class="text-xs text-gray-500 mt-4 space-y-1">
                             <p>* 이미지 업로드는 최대 15MB까지 가능합니다.</p>
                             <p>* 총 30개까지 업로드 가능합니다.</p>
                             <p>* ※ 정보통신망에서 불법촬영물등을 유통할 경우 「전기통신사업법」 제22조의 5 제1항에 따른 삭제.접속차단 등 유통방지에 필요한 조치가 취해지며 「성폭력처벌법」 제14조 「청소년성보호법」 제11조에 따라 형사처벌을 받을수 있습니다.</p>
                         </div>
 
-                        <!-- 4. "업로드" 버튼 (AJAX 실행 버튼) -->
                         <div class="flex justify-end mt-4">
                             <button type="button" id="btn-ajax-upload" class="w-[120px] h-[50px] bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg border border-gray-300">
                                 업로드
@@ -106,7 +90,6 @@
                         </div>
                     </div>
 
-                    <!-- 5. 파일 첨부 영역 (동일) -->
                     <div id="file-upload-area" class="hidden my-4 p-4 border rounded-md">
                         <div class="flex items-center">
                             <span class="font-medium text-sm mr-2">파일 첨부 :</span>
@@ -122,7 +105,6 @@
                         </p>
                     </div>
 
-                    <!-- 6. 하단 버튼 (작성완료) (동일) -->
                     <div class="flex justify-end items-center gap-4 mt-8">
                         <button type="submit" id="btn-submit" class="w-[120px] h-[50px] bg-black hover:bg-gray-800 text-white font-semibold rounded-lg transition-colors">
                             작성완료
@@ -132,18 +114,15 @@
 
             </main>
 
-            <!-- 사이드바 (동일) -->
             <aside class="w-full lg:w-80 lg:flex-shrink-0 mt-8 lg:mt-0">
                 <div class="bg-white rounded-lg shadow-md h-[1000px] flex items-center justify-center border">
                     <span class="text-gray-500 text-2xl">광고 (W310)</span>
                 </div>
             </aside>
-        </div>
-    </div>
-</div>
 
+        </div> <div th:replace="fragments/footer :: footer"></div>
 
-<script>
+    </div> </div> <script>
     // [1. 글로벌 변수 선언]
     var oEditors = []; // SmartEditor2 인스턴스
     let selectedFiles = []; // 드래그 앤 드롭으로 선택된 파일 목록 (File 객체 저장)
@@ -170,7 +149,7 @@
         nhn.husky.EZCreator.createInIFrame({
             oAppRef: oEditors,
             elPlaceHolder: "smartEditor",
-            sSkinURI: "/js/smarteditor2/SmartEditor2Skin.html",
+            sSkinURI: "/smarteditor2/SmartEditor2Skin.html",
             htParams: {
                 bUseToolbar: true,
                 bUseVerticalResizer: true,
@@ -328,6 +307,5 @@
         }
     });
 </script>
-<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>
