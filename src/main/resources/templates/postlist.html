@@ -4,121 +4,115 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>커뮤니티 게시판</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        /* Inter 폰트 적용 (Tailwind의 기본 sans 폰트를 대체) */
         body {
             font-family: 'Inter', 'Noto Sans KR', sans-serif;
         }
-        /* 페이지네이션 활성 버튼 스타일 */
-        .pagination-active {
-            background-color: #3B82F6; /* blue-600 */
-            color: white;
-            border-color: #3B82F6;
-        }
     </style>
 </head>
+
 <body class="bg-gray-100">
-
+<div th:replace="fragments/header :: header"></div>
 <div class="w-[1200px] mx-auto mt-8 mb-8 p-4 md:p-8 bg-white rounded-lg shadow-lg">
-
     <div class="w-[1140px] mx-auto">
+
         <div class="flex flex-col lg:flex-row lg:space-x-8">
 
             <main class="flex-1">
 
+                <!-- 상단 카테고리 / 글쓰기 버튼 -->
                 <div class="flex justify-between items-center mb-4">
                     <span class="bg-blue-600 text-white text-lg font-bold rounded-lg flex items-center justify-center w-14 h-10">꿀팁</span>
 
-                    <a th:href="@{/board/new}" class="bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg w-24 h-10 transition-colors flex items-center justify-center">
+                    <a th:href="@{/board/write}"
+                       class="bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg w-24 h-10 flex items-center justify-center transition-colors">
                         글쓰기
                     </a>
                 </div>
 
+                <!-- 중간 카테고리 버튼 -->
                 <nav class="bg-white p-3 rounded-lg shadow-md mb-6 flex flex-wrap gap-2 md:gap-4">
-                    <button class="bg-gray-200 hover:bg-gray-300 ...">
-                        자취요리레시피 (W160)
-                    </button>
-                    <button class="bg-gray-100 hover:bg-gray-300 ...">
-                        방 청소 노하우 (W140)
-                    </button>
-                    <button class="bg-gray-100 hover:bg-gray-300 ...">
-                        좋은 매물 구하기 (W155)
-                    </button>
-                    <button class="bg-gray-100 hover:bg-gray-300 ...">
-                        집 꾸미기 (W100)
-                    </button>
+                    <button class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded">자취요리레시피</button>
+                    <button class="bg-gray-100 hover:bg-gray-300 px-4 py-2 rounded">방 청소 노하우</button>
+                    <button class="bg-gray-100 hover:bg-gray-300 px-4 py-2 rounded">좋은 매물 구하기</button>
+                    <button class="bg-gray-100 hover:bg-gray-300 px-4 py-2 rounded">집 꾸미기</button>
                 </nav>
 
+                <!-- ★ 게시글 목록 테이블 ★ -->
                 <div class="bg-white rounded-lg shadow-md p-4 md:p-6 h-[1000px] flex flex-col">
+
                     <div class="overflow-x-auto flex-grow">
                         <table class="w-full min-w-[700px] text-sm text-left">
                             <thead class="bg-gray-100 border-b">
                             <tr>
-                                <th class="p-3 w-16 text-center">번호 (W60)</th>
-                                <th class="p-3 w-auto">제목 (W440)</th>
-                                <th class="p-3 w-24 text-center">글쓴이 (W100)</th>
-                                <th class="p-3 w-20 text-center">등록일 (W80)</th>
-                                <th class="p-3 w-16 text-center">조회 (W60)</th>
-                                <th class="p-3 w-16 text-center">추천 (W60)</th>
+                                <th class="p-3 w-16 text-center">번호</th>
+                                <th class="p-3 w-auto">제목</th>
+                                <th class="p-3 w-24 text-center">글쓴이</th>
+                                <th class="p-3 w-20 text-center">등록일</th>
+                                <th class="p-3 w-16 text-center">조회</th>
+                                <th class="p-3 w-16 text-center">추천</th>
                             </tr>
                             </thead>
+
                             <tbody id="post-list-body">
-                            <tr th:if="${posts.isEmpty()}">
-                                <td colspan="6" class="text-center p-8 text-gray-500" style="height: 50px;">
+
+                            <!-- 게시글 없음 -->
+                            <tr th:if="${#lists.isEmpty(posts)}">
+                                <td colspan="6" class="text-center p-8 text-gray-500">
                                     등록된 게시글이 없습니다.
                                 </td>
                             </tr>
 
-                            <tr th:each="post : ${posts.content}" th:if="${!posts.isEmpty()}" class="border-b hover:bg-gray-50" style="height: 50px;">
+                            <!-- 게시글 목록 반복 -->
+                            <tr th:each="post : ${posts}" class="border-b hover:bg-gray-50" style="height: 50px;">
+
                                 <td class="p-3 text-center" th:text="${post.id}">1</td>
+
                                 <td class="p-3 truncate max-w-xs">
-                                    <a th:href="@{/board/{id}(id=${post.id})}" th:text="${post.title}" class="hover:underline">
+                                    <a th:href="@{/board/detail/{id}(id=${post.id})}"
+                                       th:text="${post.title}"
+                                       class="hover:underline block">
                                         샘플 제목입니다.
                                     </a>
                                 </td>
-                                <td class="p-3 text-center" th:text="${post.author}">Kurecat</td>
-                                <td class="p-3 text-center" th:text="${#temporals.format(post.date, 'MM-dd')}">11-13</td>
-                                <td class="p-3 text-center" th:text="${post.views}">57</td>
-                                <td class="p-3 text-center" th:text="${post.likes}">0</td>
+
+                                <td class="p-3 text-center" th:text="${post.nickname}">작성자</td>
+
+                                <td class="p-3 text-center"
+                                    th:text="${#temporals.format(post.createdAt, 'MM-dd')}">
+                                    11-13
+                                </td>
+
+                                <td class="p-3 text-center" th:text="${post.viewCount}">0</td>
+
+                                <td class="p-3 text-center" th:text="${post.recommendationsCount}">0</td>
+
                             </tr>
+
                             </tbody>
                         </table>
                     </div>
 
-                    <nav class="mt-8 flex justify-center items-center space-x-1">
+                    <!-- ★ 페이징 제거됨 (List에서는 사용할 수 없음) -->
 
-                        <a th:if="${posts.hasPrevious()}"
-                           th:href="@{/(page=${posts.number - 1})}"
-                           class="px-3 py-1 border rounded-md text-sm hover:bg-gray-100 transition-colors bg-white">
-                            &lt;
-                        </a>
-
-                        <a th:each="pageNum : ${#numbers.sequence(startPage, endPage)}"
-                           th:href="@{/(page=${pageNum - 1})}"
-                           th:text="${pageNum}"
-                           th:classappend="${pageNum == posts.number + 1} ? 'pagination-active' : 'bg-white'"
-                           class="px-3 py-1 border rounded-md text-sm hover:bg-gray-100 transition-colors">
-                        </a>
-
-                        <a th:if="${posts.hasNext()}"
-                           th:href="@{/(page=${posts.number + 1})}"
-                           class="px-3 py-1 border rounded-md text-sm hover:bg-gray-100 transition-colors bg-white">
-                            &gt;
-                        </a>
-                    </nav>
                 </div>
-
             </main>
 
+            <!-- 오른쪽 광고 영역 -->
             <aside class="w-full lg:w-80 lg:flex-shrink-0 mt-8 lg:mt-0">
                 <div class="bg-white rounded-lg shadow-md h-[1000px] flex items-center justify-center">
-                    <span class="text-gray-500 text-2xl">광고 (W310 H1000)</span>
+                    <span class="text-gray-500 text-2xl">광고 영역</span>
                 </div>
             </aside>
+
         </div>
     </div>
 </div>
+<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>

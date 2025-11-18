@@ -21,12 +21,15 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public Long write(CommentCreateReq req) {
-        if(memberDao.findById(req.getMemberId()) == null) {
-            throw new IllegalArgumentException("존재 하지 않은 회원 입니다.");
-        }
-        if(postDao.findById(req.getMemberId()) == null) {
-            throw new IllegalArgumentException("존재하지 않는 게시글 입니다.");
-        }
+        System.out.println(req.getMemberId());
+        System.out.println(req.getPostId());
+        System.out.println(req.getContent());
+//        if(memberDao.findById(req.getMemberId()) == null) {
+//            throw new IllegalArgumentException("존재 하지 않은 회원 입니다.");
+//        }
+//        if(postDao.findById(req.getMemberId()) == null) {
+//            throw new IllegalArgumentException("존재하지 않는 게시글 입니다.");
+//        }
         return commentDao.save(req);
     }
 

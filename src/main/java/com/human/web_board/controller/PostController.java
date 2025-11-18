@@ -63,7 +63,7 @@ public class PostController {
         // TODO: 필요에 따라 페이징으로 변경 가능
         model.addAttribute("posts", postService.findAll());
         // list.html 또는 post/list.html 중 네가 쓰는 템플릿 이름에 맞춰 바꿔도 됨
-        return "list";  // 현재 네 코드 기준 유지
+        return "postlist";  // 현재 네 코드 기준 유지
     }
 
     /**
@@ -76,6 +76,7 @@ public class PostController {
     @GetMapping("/detail/{id}")
     public String showDetail(
             @PathVariable Long id,
+            @RequestParam(value="msg", required=false) String msg,
             Model model,
             HttpSession session
     ) {
@@ -87,6 +88,7 @@ public class PostController {
 
         // 댓글 목록 가져오기
         List<CommentRes> comments = commentService.list(id);
+        model.addAttribute("comments", comments);
 
         // 로그인 회원 (있으면)
         MemberRes loginMember = (MemberRes) session.getAttribute("loginMember");
@@ -98,7 +100,11 @@ public class PostController {
 
         // detail 화면 템플릿 이름
         // 현재 프로젝트에 post/detail.html 이 있으니까 그걸 쓰고 싶으면 "post/detail" 로 변경
-        return "detail";
+        if (msg!= null){
+            return "postview";
+        }else {
+            return "detail";
+        }
         // return "post/detail";
     }
 

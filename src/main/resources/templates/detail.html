@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title th:text="${post.title}">게시글 상세</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- 공통 CSS -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body class="bg-gray-50">
+
+
+<!-- 헤더 -->
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="w-[1200px] mx-auto mt-8 mb-8">
+
+    <!-- 제목 영역 -->
+    <div class="flex justify-between items-center pb-4 mb-6 border-b border-gray-300">
+        <h2 class="text-2xl font-bold" th:text="${post.title}">게시글 상세</h2>
+        <a class="btn border px-4 py-2" th:href="@{/board/list}">목록</a>
+    </div>
+
+    <!-- 게시글 내용 -->
+    <div class="bg-white shadow p-6 rounded mb-6">
+        <p class="text-gray-500 mb-4">
+            <span th:text="${post.nickname}">작성자</span> ·
+            <span th:text="${#temporals.format(post.createdAt,'yyyy-MM-dd HH:mm')}">2025-11-11</span>
+        </p>
+
+        <div class="prose max-w-none whitespace-pre-line leading-7"
+             th:text="${post.content}">
+        </div>
+    </div>
+
+    <!-- 댓글 작성 영역 -->
+    <div class="bg-white shadow p-6 rounded mb-6">
+        <h3 class="text-lg font-bold mb-4">댓글 쓰기</h3>
+
+        <form th:action="@{/comments/{id}(id=${post.id})}" th:object="${commentWrite}" method="post">
+
+            <input type="hidden" th:field="*{postId}" />
+
+            <textarea th:field="*{content}"
+                      class="w-full border rounded p-3"
+                      placeholder="댓글을 입력하세요..."
+                      rows="4"
+                      required></textarea>
+
+            <div class="mt-3">
+                <button class="px-4 py-2 bg-blue-600 text-white rounded">등록</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- 댓글 목록 -->
+    <div class="bg-white shadow rounded p-0 overflow-hidden">
+
+        <table class="min-w-full text-sm">
+            <thead class="bg-gray-100 text-gray-600 border-b">
+            <tr>
+                <th class="py-3 pl-4 text-left w-40">작성자</th>
+                <th class="text-left">내용</th>
+                <th class="w-40 text-left">작성일</th>
+                <th class="w-32 text-right pr-4">액션</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="c : ${comments}" class="border-b">
+                <td class="py-3 pl-4" th:text="${c.memberId}">TestUser</td>
+
+                <td th:text="${c.content}" class="py-3 whitespace-pre-line"></td>
+
+                <td class="py-3" th:text="${#temporals.format(c.createdAt,'yyyy-MM-dd HH:mm')}">
+                </td>
+
+                <td class="py-3 pr-4 text-right">
+                    <a th:href="@{|/comments/${c.id}/edit|}"
+                       class="px-3 py-1 border rounded mr-2">수정</a>
+
+                    <form th:action="@{|/comments/${c.id}/delete|}"
+                          method="post"
+                          style="display:inline">
+                        <input type="hidden" name="postId" th:value="${post.id}"/>
+                        <button class="px-3 py-1 bg-red-500 text-white rounded">삭제</button>
+                    </form>
+                </td>
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(comments)}">
+                <td colspan="4" class="text-center py-6 text-gray-500">
+                    등록된 댓글이 없습니다.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+
+
+<!-- 푸터 -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+
+</body>
+</html>

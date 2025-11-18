@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/comments")
@@ -27,7 +28,18 @@ public class CommentController {
             CommentCreateReq req,
             HttpSession session
     ) {
+//        System.out.println(1);
+//        System.out.println(session.getAttribute("loginMember"));
+//        System.out.println(postId);
+//        System.out.println(req.getMemberId());
+//        System.out.println(req.getPostId());
+//        System.out.println(req.getContent());
         MemberRes loginMember = (MemberRes) session.getAttribute("loginMember");
+        Long memberId = loginMember.getId();
+        req.setMemberId(memberId);
+        req.setPostId(postId);
+        System.out.println(memberId);
+
         if (loginMember == null) {
             // 비로그인 → 로그인 페이지로 이동
             return "redirect:/login";
@@ -36,9 +48,7 @@ public class CommentController {
         // 어떤 게시글에, 누가 쓴 댓글인지 세팅
         req.setPostId(postId);
         req.setMemberId(loginMember.getId());
-
         commentService.write(req);
-
         // 댓글 작성 후 해당 게시글 상세로 리다이렉트
         return "redirect:/board/detail/" + postId;
     }
@@ -53,6 +63,7 @@ public class CommentController {
             @PathVariable Long commentId,
             @RequestParam("postId") Long postId,
             HttpSession session
+
     ) {
         MemberRes loginMember = (MemberRes) session.getAttribute("loginMember");
         if (loginMember == null) {
@@ -71,6 +82,7 @@ public class CommentController {
         // 삭제 수행
         commentService.delete(commentId);
 
-        return "redirect:/board/detail/" + postId;
+
+        return "redirect:/board/detail/" + postId + "?msg=deleted";
     }
 }
