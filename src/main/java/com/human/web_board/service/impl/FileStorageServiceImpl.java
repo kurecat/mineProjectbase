@@ -43,7 +43,7 @@ class FileStorageServiceImpl implements FileStorageService {
             System.out.println("파일 저장됨: " + target.toAbsolutePath());
             System.out.println("존재 여부: " + target.toFile().exists());
 
-            return subDir + "/" + fileName; // DB에는 상대경로만 저장
+            return "/" + uploadDir + "/" + subDir + "/" + fileName; // DB에는 상대경로만 저장
         } catch (IOException e) {
             throw new RuntimeException("파일 저장 실패: " + e.getMessage(), e);
         }

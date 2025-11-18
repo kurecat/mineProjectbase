@@ -35,7 +35,8 @@ public class MemberController {
 
     // 회원 가입 처리
     @PostMapping("/signup")  // 수정: /members/signup
-    public String signup(MemberSignupReq req, Model model) {
+    public String signup(MemberSignupReq req, Model model,
+                         @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) {
         log.info("회원가입 요청: {}", req);
 
         if (!req.getPwd().equals(req.getPasswordCheck())) {
@@ -52,6 +53,13 @@ public class MemberController {
             log.warn("중복 닉네임 시도: {}", req.getNickname());
             return "members/signup";
         }
+
+        String newImagePath = "";
+        if (profileImage != null && !profileImage.isEmpty()) {
+            newImagePath = fileStorageService.saveImage(profileImage, "members");
+        }
+
+        req.setProfileImg(newImagePath);
 
         try {
             memberService.signup(req);
@@ -154,5 +162,6 @@ public class MemberController {
         MemberRes memberRes = memberService.getByEmail(email);
         return passwordEncoder.matches(pwd, memberRes.getPwd());
     }
+
 
 }
