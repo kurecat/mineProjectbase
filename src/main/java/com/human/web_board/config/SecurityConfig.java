@@ -24,16 +24,22 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
 
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin())
+                )
+
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/css/**", "/js/**", "/images/**",
-                                "/webjars/**", "/favicon.ico"
+                                "/webjars/**", "/favicon.ico",
+                                "/smarteditor2/**"
                         ).permitAll()
                         .requestMatchers(
                                 "/", "/main", "/login",
                                 "/members/signup/**", "/reset-password",
                                 "/api/**", "/posts/**", "/comments/**",
-                                "/board/detail/**","/board/**"
+                                "/board/detail/**","/board/**",
+                                "/upload-images-dragdrop"
                         ).permitAll()
                         .requestMatchers("/image/*", "/ajax/post-list", "/main/search").permitAll()
                         .anyRequest().authenticated()

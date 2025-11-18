@@ -37,16 +37,17 @@
                     <div class="flex justify-between items-center mb-4">
                         <div class="flex items-center gap-2">
                             <select name="category" class="h-8 px-3 py-1 rounded-md border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="recipe">자취요리레시피</option>
-                                <option value="cleaning">방 청소 노하우</option>
-                                <option value="housing">좋은 매물 구하기</option>
-                                <option value="decor">집 꾸미기</option>
+                                <option value="recipe">꿀팁</option>
+                                <option value="cleaning">질문</option>
+                                <option value="housing">후기</option>
+                                <option value="decor">잡담</option>
                             </select>
                             <input type="text" name="title" placeholder="제목" class="w-[500px] h-8 px-3 py-1 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="text-sm text-gray-500">작성자:</span>
-                            <span class="font-semibold text-gray-800" th:text="${'Kurecat'}">Kurecat</span>
+                            <span class="font-semibold text-gray-800"
+                                  th:text="${#authentication.principal.nickname}">[작성자명]</span>
                         </div>
                     </div>
 
