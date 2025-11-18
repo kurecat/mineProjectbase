@@ -133,8 +133,8 @@ public class MemberDao {
         @Override
         public MemberSummaryRes mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new MemberSummaryRes(
-                rs.getString("nickname"),
-                rs.getLong("point")
+                    rs.getString("nickname"),
+                    rs.getLong("point")
             );
         }
     }

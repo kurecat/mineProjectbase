@@ -100,13 +100,40 @@ public class PostController {
 
         // detail 화면 템플릿 이름
         // 현재 프로젝트에 post/detail.html 이 있으니까 그걸 쓰고 싶으면 "post/detail" 로 변경
-        if (msg!= null){
-            return "postview";
-        }else {
-            return "detail";
-        }
+        return "postview";
+//        if (msg!= null){
+//            return "postview";
+//        }else {
+//            return "postview";
+//        }
         // return "post/detail";
     }
+
+    @PostMapping("/{commentId}/edit")
+    public String edit(
+            @PathVariable Long commentId,
+            @RequestParam("postId") Long postId,
+            @RequestParam("content") String content,
+            HttpSession session
+    ) {
+        MemberRes loginMember = (MemberRes) session.getAttribute("loginMember");
+        if (loginMember == null) return "redirect:/login";
+
+        CommentRes comment = commentService.findById(commentId);
+
+        // 본인만 수정 가능
+        if (!loginMember.getId().equals(comment.getMemberId())) {
+            return "redirect:/board/detail/" + postId + "?error=noPermission";
+        }
+
+        // 댓글 업데이트
+        CommentCreateReq req = new CommentCreateReq();
+        req.setContent(content);
+        commentService.update(req, commentId);
+
+        return "redirect:/board/detail/" + postId + "?msg=edited";
+    }
+
 
     /**
      * 게시물 추천(좋아요) 기능

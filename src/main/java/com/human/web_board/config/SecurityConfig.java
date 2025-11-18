@@ -34,7 +34,22 @@ public class SecurityConfig {
                         .loginProcessingUrl("/login")
                         .usernameParameter("email")
                         .passwordParameter("pwd")
-                        .defaultSuccessUrl("/main", true)
+                        .successHandler((request, response, authentication) -> {
+                            CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+
+                            MemberRes loginMember = new MemberRes(
+                                    user.getId(),
+                                    user.getEmail(),
+                                    user.getPassword(),
+                                    user.getNickname(),
+                                    user.getGrade(),
+                                    user.getRegDate(),
+                                    user.getProfileImg()
+                            );
+                            request.getSession().setAttribute("loginMember", loginMember);
+
+                            response.sendRedirect("/main");
+                        })
                         .failureUrl("/login?error")
                         .permitAll()
                 )

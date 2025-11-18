@@ -1,192 +1,333 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AjiteU - 글쓰기 (Naver SmartEditor 2.0)</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 작성</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- SmartEditor2 스크립트 로드 -->
+    <script type="text/javascript" th:src="@{/js/smarteditor2/js/HuskyEZCreator.js}" charset="utf-8"></script>
+    <!-- 커스텀 CSS -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 
-    <script th:src="@{/smarteditor2/js/service/HuskyEZCreator.js}"></script>
     <style>
-        /* (CSS는 이전과 동일하게 유지) */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: "Malgun Gothic", "맑은 고딕", sans-serif; background-color: #f0f0f0; }
-        ul, li { list-style: none; }
-        a { text-decoration: none; color: inherit; }
-        .container { width: 1295px; margin: 0 auto; background-color: #fdf6e3; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
-        header { width: 100%; }
-        .header-top { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; height: 100px; }
-        .logo { font-size: 36px; font-weight: bold; color: #a98c71; }
-        .top-center-box { width: 300px; height: 50px; background-color: #dcdcdc; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #555; }
-        .main-nav { width: 100%; height: 65px; background-color: #a98c71; display: flex; align-items: center; padding-left: 20px; }
-        .main-nav ul { display: flex; }
-        .main-nav li { margin-right: 25px; }
-        .main-nav a { color: white; font-size: 18px; font-weight: bold; }
-        .content-write-page { display: flex; padding: 20px; background-color: #fdf6e3; }
-        .write-area { width: 970px; }
-        .write-options-bar { width: 100%; height: 35px; display: flex; justify-content: space-between; border: 1px solid #ccc; margin-bottom: 15px; font-size: 14px; }
-        .write-options-bar > div { display: flex; align-items: center; justify-content: center; padding: 0 10px; background-color: white; }
-        .font-controls { width: 145px; border-right: 1px solid #ccc; }
-        .category-select { width: 680px; }
-        .write-mode { width: 110px; border-left: 1px solid #ccc; }
-        .title-input { width: 100%; height: 40px; font-size: 1.5rem; padding: 5px 10px; border: 1px solid #ccc; margin-bottom: 15px; box-sizing: border-box; }
+        /* 기본 폰트 */
+        body { font-family: 'Inter', 'Noto Sans KR', sans-serif; }
+        /* SmartEditor 짤림 방지 */
+        .smarteditor2 { width: 100% !important; }
+        .smarteditor2 .se2_toolbar { white-space: normal !important; flex-wrap: wrap; }
 
-        /* [제거] CKEditor 스타일
-        .ck-editor__editable { min-height: 520px; }
-        */
-
-        /* [추가] SmartEditor 2.0은 textarea를 숨기므로, 툴바 높이에 맞춰 하단 요소 위치 조절 */
-        .file-attach-bar { margin-top: 15px; }
-
-        /* (기존 CSS 계속) */
-        .file-attach-bar { width: 100%; height: 60px; border: 1px solid #ccc; display: flex; align-items: center; padding: 0 10px; background-color: white; margin-bottom: 15px; }
-        .attach-button-box { width: 320px; height: 40px; background-color: #a98c71; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; }
-        .attach-info { margin-left: 15px; font-size: 14px; color: #555; }
-        .post-options { font-size: 14px; color: #333; margin-bottom: 20px; }
-        .post-options label { margin-right: 15px; }
-        .button-container { display: flex; justify-content: flex-end; width: 100%; }
-        .button-container button { height: 45px; border: none; color: white; font-size: 16px; font-weight: bold; cursor: pointer; margin-left: 10px; }
-        .btn-submit { width: 90px; background-color: #7971a9; }
-        .btn-cancel { width: 115px; background-color: #a98c71; }
-        .sidebar-right { width: 250px; height: 885px; background-color: #e9e9e3; margin-left: 20px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #555; }
-        footer { width: 100%; height: 65px; background-color: #a98c71; padding: 30px; text-align: center; color: white; }
-        .font-controls select { height: 28px; border: 1px solid #ccc; border-radius: 3px; background-color: #f9f9f9; font-size: 13px; padding: 0 2px; cursor: pointer; margin: 0 2px; }
-
-        /* [수정] 폰트 컨트롤 CSS 이름 변경 */
-        .font-dropdown {
-            width: 135px; /* (145px - padding/border) */
+        /* [드래그 앤 드롭 활성 스타일] */
+        .drop-zone-over {
+            border-color: #3B82F6; /* blue-600 */
+            background-color: #EFF6FF; /* blue-50 */
         }
     </style>
 </head>
-<body>
-<div class="container">
-    <header>
-        <div class="header-top">
-            <h1 class="logo">AjiteU</h1>
-            <div class="top-center-box">(W 300 H 50)</div>
+<body class="bg-gray-100">
+<div th:replace="fragments/header :: header"></div>
+<!-- 전체 컨테이너 (W1200px) -->
+<div class="w-[1200px] mx-auto mt-8 mb-8 p-4 md:p-8 bg-white rounded-lg shadow-lg">
+    <!-- 메인 컨테이너 (W1140px) -->
+    <div class="w-[1140px] mx-auto">
+        <div class="flex flex-col lg:flex-row lg:space-x-8">
+
+            <!-- 메인 콘텐츠 (게시글 작성 폼) -->
+            <main class="flex-1">
+
+                <form th:action="@{/board/save}" method="post" id="post-form" enctype="multipart/form-data">
+
+                    <!-- 1. 상단 바 (카테고리, 제목, 닉네임) -->
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center gap-2">
+                            <select name="category" class="h-8 px-3 py-1 rounded-md border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="recipe">자취요리레시피</option>
+                                <option value="cleaning">방 청소 노하우</option>
+                                <option value="housing">좋은 매물 구하기</option>
+                                <option value="decor">집 꾸미기</option>
+                            </select>
+                            <input type="text" name="title" placeholder="제목" class="w-[500px] h-8 px-3 py-1 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm text-gray-500">작성자:</span>
+                            <span class="font-semibold text-gray-800" th:text="${'Kurecat'}">Kurecat</span>
+                        </div>
+                    </div>
+
+                    <!-- 2. 스마트에디터 -->
+                    <div class="mb-4">
+                            <textarea name="content" id="smartEditor" rows="10"
+                                      class="w-full h-[500px] p-4 border border-gray-300 rounded-md"
+                                      placeholder="스마트에디터가 들어갈 자리"></textarea>
+                    </div>
+
+                    <!-- 3. 첨부파일 버튼 (동일) -->
+                    <div class="flex gap-2 my-4">
+                        <button type="button" id="btn-image-attach"
+                                class="w-[120px] h-[50px] bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-lg transition-colors">
+                            이미지 첨부
+                        </button>
+                        <button type="button" id="btn-file-attach"
+                                class="w-[120px] h-[50px] bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-lg transition-colors">
+                            파일 첨부
+                        </button>
+                    </div>
+
+                    <!-- [4. 이미지 첨부 영역] -->
+                    <div id="image-upload-area" class="hidden my-4 p-4 border rounded-md">
+
+                        <!-- 1. Dotted box (드래그 앤 드롭 영역) -->
+                        <div id="image-drop-zone" class="border-2 border-dashed border-gray-300 rounded-lg p-10 text-center text-gray-500 cursor-pointer hover:bg-gray-50 transition-colors">
+                            이미지를 업로드하려면 여기에 이미지를 끌어놓거나 클릭하세요
+                            <!-- (숨겨진 파일 입력창) -->
+                            <input type="file" id="image-input-hidden" multiple accept="image/*" class="hidden">
+                        </div>
+
+                        <!-- [4-1. 이미지 프리뷰(썸네일) 영역] -->
+                        <div id="image-preview-container" class="mt-4 grid grid-cols-5 gap-4">
+                            <!-- JS로 썸네일이 채워질 공간 -->
+                        </div>
+
+                        <!-- 3. Warning text (동일) -->
+                        <div class="text-xs text-gray-500 mt-4 space-y-1">
+                            <p>* 이미지 업로드는 최대 15MB까지 가능합니다.</p>
+                            <p>* 총 30개까지 업로드 가능합니다.</p>
+                            <p>* ※ 정보통신망에서 불법촬영물등을 유통할 경우 「전기통신사업법」 제22조의 5 제1항에 따른 삭제.접속차단 등 유통방지에 필요한 조치가 취해지며 「성폭력처벌법」 제14조 「청소년성보호법」 제11조에 따라 형사처벌을 받을수 있습니다.</p>
+                        </div>
+
+                        <!-- 4. "업로드" 버튼 (AJAX 실행 버튼) -->
+                        <div class="flex justify-end mt-4">
+                            <button type="button" id="btn-ajax-upload" class="w-[120px] h-[50px] bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg border border-gray-300">
+                                업로드
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 5. 파일 첨부 영역 (동일) -->
+                    <div id="file-upload-area" class="hidden my-4 p-4 border rounded-md">
+                        <div class="flex items-center">
+                            <span class="font-medium text-sm mr-2">파일 첨부 :</span>
+                            <input type="file" name="attachFiles" multiple class="text-sm text-gray-500
+                                    file:mr-2 file:py-1 file:px-3
+                                    file:rounded-lg file:border-0
+                                    file:text-sm file:font-medium
+                                    file:bg-gray-100 file:text-gray-700
+                                    hover:file:bg-gray-200">
+                        </div>
+                        <p class="text-xs text-gray-500 mt-3">
+                            ※ “파일 첨부”는 압축 파일만 업로드 가능합니다. 이미지 및 MP4 동영상 업로드는 “이미지 첨부” 기능을 사용해 주세요
+                        </p>
+                    </div>
+
+                    <!-- 6. 하단 버튼 (작성완료) (동일) -->
+                    <div class="flex justify-end items-center gap-4 mt-8">
+                        <button type="submit" id="btn-submit" class="w-[120px] h-[50px] bg-black hover:bg-gray-800 text-white font-semibold rounded-lg transition-colors">
+                            작성완료
+                        </button>
+                    </div>
+                </form>
+
+            </main>
+
+            <!-- 사이드바 (동일) -->
+            <aside class="w-full lg:w-80 lg:flex-shrink-0 mt-8 lg:mt-0">
+                <div class="bg-white rounded-lg shadow-md h-[1000px] flex items-center justify-center border">
+                    <span class="text-gray-500 text-2xl">광고 (W310)</span>
+                </div>
+            </aside>
         </div>
-        <nav class="main-nav">
-            <ul>
-                <li><a href="#">게시판</a></li>
-                <li><a href="#">설문조사</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main class="content-write-page">
-
-        <form
-                class="write-area"
-                th:action="@{/board/write}"
-                th:object="${postForm}"
-                method="post"
-                onsubmit="return submitContents(this);"
-        >
-            <div class="write-options-bar">
-                <div class="font-controls">
-                    <select class="font-dropdown" name="fontSize">
-                        <option value="9pt">9pt</option>
-                        <option value="10pt">10pt</option>
-                        <option value="11pt" selected>11pt</option>
-                        <option value="12pt">12pt</option>
-                    </select>
-                </div>
-                <div class="category-select">
-                    <span>(W 680 H 35)</span>
-                </div>
-                <div class="write-mode">
-                    <span>불러오기</span>
-                </div>
-            </div>
-
-            <div>
-                <input
-                        type="text"
-                        th:field="*{title}"
-                        placeholder="제목을 입력하세요."
-                        class="title-input"
-                />
-            </div>
-
-            <textarea th:field="*{content}" style="width: 100%;">
-                    <p>여기에 내용을 입력하세요.</p>
-                </textarea>
-
-            <div class="file-attach-bar">
-                <div class="attach-button-box">(W 320 H 40) 사진 및 파일 첨부</div>
-                <span class="attach-info">왼쪽의 버튼을 클릭하여 첨부하세요.</span>
-            </div>
-
-            <div class="post-options">
-                <label>
-                    <input type="checkbox" th:field="*{allowComments}" /> 댓글 허용
-                </label>
-                <label>
-                    <input type="checkbox" th:field="*{extraOption}" /> 기타
-                </label>
-            </div>
-
-            <div class="button-container">
-                <button class="btn-submit" type="submit">등록</button>
-                <button
-                        class="btn-cancel"
-                        type="button"
-                        th:onclick="|location.href='@{/board/list}'|"
-                >
-                    돌아가기
-                </button>
-            </div>
-        </form>
-
-        <aside class="sidebar-right">(W 250 H 885)</aside>
-    </main>
-
-    <footer>Footer</footer>
+    </div>
 </div>
 
+
 <script>
-    var oEditors = []; // 에디터 인스턴스를 저장할 전역 변수
+    // [1. 글로벌 변수 선언]
+    var oEditors = []; // SmartEditor2 인스턴스
+    let selectedFiles = []; // 드래그 앤 드롭으로 선택된 파일 목록 (File 객체 저장)
 
-    // 1. SmartEditor 2.0 생성
-    nhn.husky.EZCreator.createInIFrame({
-        oAppRef: oEditors, // 전역변수 oEditors에 에디터 인스턴스를 저장
+    document.addEventListener('DOMContentLoaded', function() {
 
-        // th:field="*{content}"가 생성한 textarea의 id="content"를 지정
-        elPlaceHolder: "content",
+        // --- (1) 첨부파일 영역 토글 스크립트 (동일) ---
+        const btnImageAttach = document.getElementById('btn-image-attach');
+        const btnFileAttach = document.getElementById('btn-file-attach');
+        const imageUploadArea = document.getElementById('image-upload-area');
+        const fileUploadArea = document.getElementById('file-upload-area');
 
-        // 2단계에서 설치한 static 경로
-        // (URL 루트 경로부터의 절대 경로로 지정해야 함)
-        sSkinURI: "/smarteditor2/SmartEditor2Skin.html",
-        htParams: {
-            // 툴바 사용 여부 (true: 사용/ false: 미사용)
-            bUseToolbar: true,
-            // 입력창 크기 조절바 사용 여부 (true: 사용/ false: 미사용)
-            bUseVerticalResizer: true,
-            // 모드 탭(Editor | HTML | TEXT) 사용 여부 (true: 사용/ false: 미사용)
-            bUseModeChanger: true,
-            // 기본 글꼴
-            fOnBeforeUnload : function(){},
-            // (선택) 에디터 높이 지정 (CSS의 .ck-editor__editable {min-height} 대체)
-            nHeight: 520
-        },
+        btnImageAttach.addEventListener('click', () => {
+            imageUploadArea.classList.toggle('hidden');
+            fileUploadArea.classList.add('hidden');
+        });
+        btnFileAttach.addEventListener('click', () => {
+            fileUploadArea.classList.toggle('hidden');
+            imageUploadArea.classList.add('hidden');
+        });
 
-        fCreator: "createSEditor2"
-    });
 
-    // 2. [매우 중요] 폼 전송(submit) 전에 SmartEditor의 내용을 textarea로 복사하는 함수
-    function submitContents(elForm) {
-        try {
-            // oEditors[0]는 첫 번째 에디터 인스턴스를 의미합니다.
-            // "content" ID를 가진 textarea에 에디터의 HTML 내용을 업데이트합니다.
-            oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
+        // --- (2) [SmartEditor2 초기화 스크립트 (AJAX 연동)] (동일) ---
+        nhn.husky.EZCreator.createInIFrame({
+            oAppRef: oEditors,
+            elPlaceHolder: "smartEditor",
+            sSkinURI: "/js/smarteditor2/SmartEditor2Skin.html",
+            htParams: {
+                bUseToolbar: true,
+                bUseVerticalResizer: true,
+                bUseModeChanger: true,
+                fWidth: "100%"
+            },
+            fOnAppLoad : function(){
+                oEditors.getById["smartEditor"].exec("LOAD_AND_BIND_EVENT", ["photo_upload"]);
+            },
+            sUpdateImageAPIName: "/upload-image-smarteditor",
+            fCreator: "createSEditor2"
+        });
 
-            // 폼 전송을 계속 진행합니다.
-            return true;
-        } catch (e) {
-            console.error("SmartEditor 2.0 UPDATE_CONTENTS_FIELD 오류:", e);
-            // 오류 발생 시 폼 전송을 중단합니다.
-            return false;
+        // --- (3) [폼 제출(submit) 시 필수 처리] (동일) ---
+        const form = document.getElementById('post-form');
+        const submitButton = document.getElementById('btn-submit');
+        submitButton.addEventListener('click', (e) => {
+            oEditors.getById["smartEditor"].exec("UPDATE_CONTENTS_FIELD", []);
+
+            const title = form.title.value;
+            const content = form.content.value;
+            if (title.trim() === "") {
+                alert("제목을 입력해주세요.");
+                form.title.focus();
+                e.preventDefault();
+                return;
+            }
+            if (content.trim() === "" || content.trim() === "<p>&nbsp;</P>" || content.trim() === "<p>&nbsp;</p>") {
+                alert("내용을 입력해주세요.");
+                oEditors.getById["smartEditor"].exec("FOCUS");
+                e.preventDefault();
+                return;
+            }
+        });
+
+
+        // --- (4) [⭐️ 드래그 앤 드롭 & 클릭 업로드 로직 (삭제 기능 추가) ⭐️] ---
+
+        const dropZone = document.getElementById('image-drop-zone');
+        const fileInput = document.getElementById('image-input-hidden');
+        const previewContainer = document.getElementById('image-preview-container');
+        const ajaxUploadButton = document.getElementById('btn-ajax-upload');
+
+        // (A) "클릭" 로직
+        dropZone.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => {
+            addFilesToList(e.target.files);
+            fileInput.value = ''; // (중요) <input> 초기화 (동일 파일 재선택 가능하도록)
+        });
+
+        // (B) "드래그 앤 드롭" 로직
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drop-zone-over');
+        });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drop-zone-over');
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drop-zone-over');
+            addFilesToList(e.dataTransfer.files);
+        });
+
+        // (C) "업로드" (AJAX) 버튼 클릭 로직
+        ajaxUploadButton.addEventListener('click', () => {
+            if (selectedFiles.length === 0) {
+                alert("업로드할 이미지를 먼저 선택하세요.");
+                return;
+            }
+
+            const formData = new FormData();
+            selectedFiles.forEach(file => {
+                formData.append('images', file);
+            });
+
+            fetch('/upload-images-dragdrop', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.urls) {
+                    let htmlToPaste = '';
+                    data.urls.forEach(url => {
+                        htmlToPaste += `<img src="${url}" style="max-width: 100%;"><br>`;
+                    });
+
+                    oEditors.getById["smartEditor"].exec("PASTE_HTML", [htmlToPaste]);
+                    clearSelectedFiles();
+                    alert("이미지가 에디터에 삽입되었습니다.");
+                }
+            })
+            .catch(error => {
+                console.error("Image upload failed:", error);
+                alert("이미지 업로드에 실패했습니다.");
+            });
+        });
+
+        // (Helper) 파일 목록(selectedFiles)에 파일 추가
+        function addFilesToList(files) {
+            for (const file of files) {
+                if (file.type.startsWith('image/')) {
+                    // [⭐️ 수정] 프리뷰를 생성하고, File 객체를 selectedFiles에 저장
+                    createPreview(file);
+                }
+            }
         }
-    }
+
+        // (Helper) [⭐️ 수정] 이미지 프리뷰(썸네일) 생성 및 삭제 버튼 추가
+        function createPreview(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                // 1. 썸네일 감싸는 부모 div (X 버튼을 absolute로 배치하기 위함)
+                const previewWrapper = document.createElement('div');
+                previewWrapper.className = 'relative'; // Tailwind 'relative'
+
+                // 2. 썸네일 이미지
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'w-full h-24 object-cover rounded-md';
+
+                // 3. 삭제(X) 버튼
+                const deleteButton = document.createElement('button');
+                deleteButton.type = 'button'; // (submit 방지)
+                deleteButton.className = 'absolute top-1 right-1 bg-black bg-opacity-50 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold';
+                deleteButton.innerText = 'X';
+
+                // [⭐️ 4. (신규) X 버튼 클릭 이벤트]
+                deleteButton.addEventListener('click', () => {
+                    // (A) DOM(화면)에서 프리뷰 삭제
+                    previewWrapper.remove();
+
+                    // (B) selectedFiles 배열에서 해당 File 객체 삭제
+                    selectedFiles = selectedFiles.filter(f => f !== file);
+                });
+
+                // 5. DOM에 조립
+                previewWrapper.appendChild(img);
+                previewWrapper.appendChild(deleteButton);
+                previewContainer.appendChild(previewWrapper);
+
+                // [⭐️ 6. (신규) selectedFiles 배열에 파일 추가]
+                selectedFiles.push(file);
+
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // (Helper) 파일 목록 및 프리뷰 초기화
+        function clearSelectedFiles() {
+            selectedFiles = []; // 배열 비우기
+            previewContainer.innerHTML = ''; // 썸네일 DOM 비우기
+            // fileInput.value = ''; // (addFilesToList에서 매번 초기화하므로 여기서 안해도 됨)
+        }
+    });
 </script>
+<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>
