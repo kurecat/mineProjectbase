@@ -9,13 +9,17 @@ import java.nio.file.Paths;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
     @Value("${app.upload.dir}")
     private String uploadDir;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // /files/xxx → 프로젝트루트/uploads/xxx
+
         String absolutePth = Paths.get(uploadDir).toAbsolutePath().toUri().toString();
+        if (!absolutePth.endsWith("/")) {
+            absolutePth += "/";
+        }
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations(absolutePth);
     }
