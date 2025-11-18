@@ -21,12 +21,21 @@ import java.util.List;
 @Slf4j
 public class PostServiceImpl implements PostService {
     private final PostDao postDao;
-
     private final MemberDao memberDao;
 
     @Override
     public Long save(PostFormDto form) {
-        return 0L;
+        // PostFormDto → PostCreateReq 로 변환
+        PostCreateReq req = new PostCreateReq();
+        req.setTitle(form.getTitle());
+        req.setContent(form.getContent());
+        req.setMemberId(form.getMemberId()); // 로그인 사용자
+        req.setCategoryId(form.getCategoryId()); // 카테고리 select 값
+//        req.setAllowComments(form.isAllowComments());
+//        req.setExtraOption(form.isExtraOption());
+
+        // 저장
+        return postDao.save(req);
     }
 
     @Override
@@ -37,7 +46,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public Long write(PostCreateReq req) {
-        if (memberDao.findById(req.getMember_Id()) == null) {
+        if (memberDao.findById(req.getMemberId()) == null) {
             throw new IllegalArgumentException("존재하지 않는 회원 입니다.");
         }
         return postDao.save(req);

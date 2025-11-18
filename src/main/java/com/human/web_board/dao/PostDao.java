@@ -24,7 +24,7 @@ public class PostDao {
     public Long save(PostCreateReq p) {
         @Language("SQL")
         String sql = "INSERT INTO posts(id,member_id,title,content,category_id,view_count,recommendations_count,created_at) VALUES (posts_seq.NEXTVAL, ?, ?, ?,?,?,?,?)";
-        jdbc.update(sql, p.getMember_Id(), p.getTitle(), p.getContent(), p.getCategory_id(), 0, 0, LocalDateTime.now());
+        jdbc.update(sql, p.getMemberId(), p.getTitle(), p.getContent(), p.getCategoryId(), 0, 0, LocalDateTime.now());
         return jdbc.queryForObject("SELECT posts_seq.CURRVAL FROM dual", Long.class);
     }
 

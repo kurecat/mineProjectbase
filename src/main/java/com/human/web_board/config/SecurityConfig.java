@@ -38,6 +38,7 @@ public class SecurityConfig {
                                 "/", "/main", "/login",
                                 "/members/signup/**", "/reset-password",
                                 "/api/**", "/posts/**", "/comments/**",
+                                "/board/detail/**","/board/**","/board/write"
                                 "/board/detail/**","/board/**",
                                 "/upload-images-dragdrop"
                         ).permitAll()
@@ -71,6 +72,11 @@ public class SecurityConfig {
                         })
                         .failureUrl("/login?error=true")
                         .permitAll()
+                )
+                .rememberMe(rem -> rem
+                        .key("uniqueAndSecret")          // 임의의 비밀키
+                        .rememberMeParameter("remember-me") // form 체크박스 name과 맞춤
+                        .tokenValiditySeconds(60 * 60 * 24 * 7) // 7일
                 )
 
                 .logout(logout -> logout
