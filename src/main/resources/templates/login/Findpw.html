@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <title>비밀번호 찾기</title>
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="reset-form">
+        <h2 class="reset-form__title">Reset Password</h2>
+        <p class="reset-form__subtitle">Enter your Email address</p>
+
+        <form id="reset-form" action="/reset-password" method="post" novalidate>
+
+            <div class="reset-form__group">
+                <label for="email" class="reset-form__label">Email*</label>
+                <input type="email" id="email" name="email" class="reset-form__input" placeholder="Email address" required>
+            </div>
+
+            <div class="reset-form__group password-group hidden">
+                <label for="password" class="reset-form__label">Password*</label>
+                <input type="password" id="password" name="password" class="reset-form__input" placeholder="Password">
+            </div>
+
+            <div class="reset-form__group password-group hidden">
+                <label for="password-check" class="reset-form__label">Password check*</label>
+                <!-- name 속성을 passwordCheck로 변경 -->
+                <input type="password" id="password-check" name="passwordCheck" class="reset-form__input" placeholder="Password check">
+            </div>
+
+            <button type="submit" class="reset-form__button">reset password</button>
+
+        </form>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const emailInput = document.getElementById('email');
+        const passwordGroups = document.querySelectorAll('.password-group');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        const hasEmailError = document.querySelector('[th\\:errors="*{email}"]') !== null;
+        const hasPasswordError = document.querySelector('[th\\:errors="*{password}"]') !== null ||
+            document.querySelector('[th\\:errors="*{passwordCheck}"]') !== null;
+
+        if ((emailInput.value !== '' && !hasEmailError) || hasPasswordError) {
+            passwordGroups.forEach(group => group.classList.remove('hidden'));
+        }
+
+        emailInput.addEventListener('blur', function() {
+            if (emailRegex.test(emailInput.value)) {
+                passwordGroups.forEach(group => group.classList.remove('hidden'));
+            } else {
+                passwordGroups.forEach(group => group.classList.add('hidden'));
+            }
+        });
+    });
+</script>
+</body>
+</html>

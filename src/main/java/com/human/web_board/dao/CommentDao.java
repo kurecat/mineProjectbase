@@ -29,14 +29,15 @@ public class CommentDao {
     // 댓글 가져오기 (게시글 ID를 통해서 가져 와야 함)(수정)
     public List<CommentRes> findByPostId(Long postId) {
         @Language("SQL")
-        String sql = """
-            SELECT c.id, c.post_id, c.member_id, c.content, c.created_at 
-            FROM comments c JOIN member m ON c.member_id = m.id 
-            WHERE c.id = ?
-            ORDER BY c.id ASC
+         String sql = """
+        SELECT id, post_id, member_id, content, created_at
+        FROM comments
+        WHERE post_id = ?
+        ORDER BY id DESC
         """;
         return jdbc.query(sql, new CommentResMapper(), postId);
     }
+
 
     // 댓글 삭제(수정)
     public boolean delete(Long id) {
@@ -52,16 +53,16 @@ public class CommentDao {
         return jdbc.update(sql, c.getContent(), id) > 0;
     }
 
-    public CommentRes findById(Long id) {
+    public CommentRes findById(Long post_id) {
         @Language("SQL")
         String sql = """
             SELECT c.id, c.post_id, c.member_id, c.content, c.created_at 
             FROM comments c JOIN member m ON c.member_id = m.id 
-            WHERE c.id = ?
+            WHERE c.post_id = ?
         """;
 
         try {
-            return jdbc.queryForObject(sql, new CommentResMapper(), id);
+            return jdbc.queryForObject(sql, new CommentResMapper(), post_id);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
