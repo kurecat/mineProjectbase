@@ -9,13 +9,10 @@ import java.util.List;
 
 public interface PostService {
 
-    // 게시글 저장 (글쓰기)
     Long save(PostFormDto form);
 
-    // 게시글 전체 목록
     List<PostRes> findAll();
 
-    // 기존 기능 ↓
     Long write(PostCreateReq req);
 
     List<PostRes> list();
@@ -45,5 +42,9 @@ public interface PostService {
     List<PostSummaryRes> listSummaries(String category, int offset, int rowNum);
 
     int countSummaries(String category);
+
+    /** 🔥 최신글 가져오는 메소드 — 반환 타입 확정 */
+    List<PostRes> listRecent(int limit);
 }
+
 
