@@ -1,5 +1,7 @@
 package com.human.web_board.config;
 
+import com.human.web_board.dto.MemberRes;
+import com.human.web_board.security.CustomUserDetails;
 import com.human.web_board.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -45,6 +47,7 @@ public class SecurityConfig {
                                     user.getNickname(),
                                     user.getGrade(),
                                     user.getRegDate(),
+                                    user.getPoint(),
                                     user.getProfileImg()
                             );
                             request.getSession().setAttribute("loginMember", loginMember);

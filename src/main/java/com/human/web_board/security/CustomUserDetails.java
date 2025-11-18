@@ -21,6 +21,7 @@ public class CustomUserDetails implements UserDetails {
     private final String nickname;
     private final String grade;
     private final LocalDateTime regDate;
+    private final int point;
     private final String profileImg;
 
     /** MemberRes → CustomUserDetails 로 변환하는 생성자 */
@@ -31,7 +32,9 @@ public class CustomUserDetails implements UserDetails {
         this.nickname = member.getNickname();
         this.grade = member.getGrade();
         this.regDate = member.getRegDate();
+        this.point = member.getPoint();
         this.profileImg = member.getProfileImg();
+
     }
 
     /** ROLE_USER 기본 권한 */
@@ -56,4 +59,7 @@ public class CustomUserDetails implements UserDetails {
     @Override public boolean isAccountNonLocked() { return true; }
     @Override public boolean isCredentialsNonExpired() { return true; }
     @Override public boolean isEnabled() { return true; }
+
+    public int getPoint() {return this.point;
+    }
 }
