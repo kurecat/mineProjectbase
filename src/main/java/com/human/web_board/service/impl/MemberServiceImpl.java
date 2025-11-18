@@ -90,6 +90,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean update(MemberSignupReq req, Long id) {
+
+        // 비밀번호 암호화
+        String encodedPwd = passwordEncoder.encode(req.getPwd());
+        req.setPwd(encodedPwd);
+
         boolean success = memberDao.update(id, req);
         if (!success) throw new IllegalArgumentException("회원 수정 실패");
         return true;

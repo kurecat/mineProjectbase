@@ -5,12 +5,20 @@ import com.human.web_board.dto.MemberSignupReq;
 import com.human.web_board.service.FileStorageService;
 import com.human.web_board.service.MemberService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.ui.Model;
+import com.human.web_board.dto.MemberSignupReq;
+import com.human.web_board.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
@@ -19,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberController {
     private final MemberService memberService;
     private final FileStorageService fileStorageService;
+    private final PasswordEncoder passwordEncoder;
 
     // 회원 가입 폼
     @GetMapping("/signup")
@@ -30,6 +39,9 @@ public class MemberController {
     // 회원 가입 처리
     @PostMapping("/signup")
     public String signup(MemberSignupReq req) {
+    @PostMapping("/signup")  // 수정: /members/signup
+    public String signup(MemberSignupReq req, Model model,
+                         @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) {
         log.info("회원가입 요청: {}", req);
 
         // 비밀번호 확인
@@ -51,6 +63,13 @@ public class MemberController {
         }
 
         // 회원가입 시도
+        String newImagePath = "";
+        if (profileImage != null && !profileImage.isEmpty()) {
+            newImagePath = fileStorageService.saveImage(profileImage, "members");
+        }
+
+        req.setProfileImg(newImagePath);
+
         try {
             memberService.signup(req);
         } catch (IllegalArgumentException e) {
@@ -112,7 +131,13 @@ public class MemberController {
 
     // 회원 상세
     @GetMapping("/{id}")
-    public String detail(@PathVariable Long id, Model model) {
+    public String detail(@PathVariable Long id, Model model, Principal principal) {
+        if (principal != null) {
+            String email = principal.getName();
+            MemberRes memberRes = memberService.getByEmail(email);
+            System.out.println(memberRes);
+            model.addAttribute("loginMember", memberRes);
+        }
         model.addAttribute("member", memberService.getById(id));
         return "members/myPage";
     }
@@ -134,4 +159,17 @@ public class MemberController {
         log.info("이메일 중복 체크: {}, 존재 여부: {}", email, exists);
         return exists;
     }
+
+    @PostMapping("/{id}/verify-password")
+    @ResponseBody
+    public boolean verifyPassword(@PathVariable Long id,
+                                  @RequestParam String pwd,
+                                 Principal principal,
+                                 RedirectAttributes redirectAttributes) {
+        String email = principal.getName();
+        MemberRes memberRes = memberService.getByEmail(email);
+        return passwordEncoder.matches(pwd, memberRes.getPwd());
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package com.human.web_board.controller;
 
+import com.human.web_board.dto.MemberRes;
 import com.human.web_board.dto.PostSummaryRes;
 import com.human.web_board.service.MemberService;
 import com.human.web_board.service.PostService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.security.Principal;
 import java.util.List;
 
 
@@ -37,11 +39,10 @@ public class MainPageController {
             @RequestParam(required = false) Long categoryId,
             @RequestParam(defaultValue = "0") int offset,
             @RequestParam(defaultValue = "10") int rowNum,
-            Model model, HttpSession session) {
+            Model model) {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(auth.getName());
         // 서비스에서 전체 목록 가져와서 모델에 추가
+
         model.addAttribute(
                 "postSummaries",
                 postService.listSummaries(
@@ -73,8 +74,9 @@ public class MainPageController {
             @RequestParam(required = false) String query,
             @RequestParam(defaultValue = "0") int offset,
             @RequestParam(defaultValue = "10") int rowNum,
-            Model model, HttpSession session) {
+            Model model) {
         // 서비스에서 전체 목록 가져와서 모델에 추가
+
         model.addAttribute(
                 "postSummaries",
                 postService.listSummaries(
