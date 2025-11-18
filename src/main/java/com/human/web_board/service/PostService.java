@@ -39,5 +39,11 @@ public interface PostService {
     void increaseView(Long postId);
 
     int increaseRecommendations(Long postId);
+
+    List<PostSummaryRes> searchList(String query, int i, int i1);
+
+    List<PostSummaryRes> listSummaries(String category, int offset, int rowNum);
+
+    int countSummaries(String category);
 }
 

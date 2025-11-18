@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="postListContentFragment">
+
+    <div class="ntwrvsbox">
+        <p class="numberbox">번호</p>
+        <p class="titlebox">제목</p>
+        <p class="writer">글쓴이</p>
+        <p class="regdate">등록일</p>
+        <p class="views">조회</p>
+        <p class="suggest">추천</p>
+    </div>
+    <hr />
+
+    <div th:if="${!postSummaries.isEmpty()}">
+
+        <th:block th:each="post : ${postSummaries}">
+
+            <div class="ntwrvsbox post-item">
+                <p class="numberbox" th:text="${post.id}">99</p>
+                <p class="titlebox">
+                    <a th:href="@{/post/{id}(id=${post.id})}" th:text="${post.title}">
+                        게시물 제목
+                    </a>
+                    <span class="category-tag"
+                          th:text="| [${post.categoryName}]|"
+                          style="color: #555; font-size: 0.9em;">
+                    </span>
+                </p>
+                <p class="writer" th:text="${post.nickname}">글쓴이</p>
+                <p class="regdate" th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd')}">2025-11-18</p>
+                <p class="views" th:text="${post.viewCount}">0</p>
+                <p class="suggest" th:text="${post.recommendationsCount}">0</p>
+
+            </div>
+
+            <hr />
+
+        </th:block> </div>
+
+    <div th:if="${postSummaries.isEmpty()}" class="no-posts" style="text-align: center; padding: 20px;">
+        <p>표시할 게시물이 없습니다.</p>
+        <hr />
+    </div>
+
+    <nav class="pagination-container" aria-label="Page navigation"
+         th:if="${pagination != null && pagination.totalPage > 0}">
+        <ul class="pagination">
+
+            <li class="page-item" th:classappend="${pagination.isFirst} ? 'disabled'">
+                <a class="page-link" th:href="@{/(category=${param.category}, offset=${pagination.prevOffset})}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <li class="page-item"
+                th:each="page : ${#numbers.sequence(pagination.startPage, pagination.endPage)}"
+                th:classappend="${page == pagination.currentPage} ? 'active'">
+
+                <a class="page-link"
+                   th:href="@{/(category=${param.category}, offset=${(page - 1) * pagination.rowNum})}"
+                   th:text="${page}">1</a>
+            </li>
+
+            <li class="page-item" th:classappend="${pagination.isLast} ? 'disabled'">
+                <a class="page-link" th:href="@{/(category=${param.category}, offset=${pagination.nextOffset})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+</div>
+</html>

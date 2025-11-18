@@ -1,6 +1,7 @@
 package com.human.web_board.controller;
 
 import com.human.web_board.dto.MemberRes;
+import com.human.web_board.dto.Pagination;
 import com.human.web_board.dto.PostSummaryRes;
 import com.human.web_board.service.MemberService;
 import com.human.web_board.service.PostService;
@@ -27,10 +28,7 @@ public class MainPageController {
     private final PostService postService;
     private final MemberService memberService;
 
-    @GetMapping("/")
-    public String mainPage() {
-        return "redirect:/main";
-    }
+
 
     // 전체 or 특정 게시판
     @GetMapping("/main")
@@ -38,7 +36,7 @@ public class MainPageController {
             @RequestParam(required = false) Long mainCategoryId,
             @RequestParam(required = false) Long categoryId,
             @RequestParam(defaultValue = "0") int offset,
-            @RequestParam(defaultValue = "10") int rowNum,
+            @RequestParam(defaultValue = "16") int rowNum,
             Model model) {
 
         // 서비스에서 전체 목록 가져와서 모델에 추가
@@ -73,7 +71,7 @@ public class MainPageController {
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String query,
             @RequestParam(defaultValue = "0") int offset,
-            @RequestParam(defaultValue = "10") int rowNum,
+            @RequestParam(defaultValue = "16") int rowNum,
             Model model) {
         // 서비스에서 전체 목록 가져와서 모델에 추가
 
@@ -99,6 +97,48 @@ public class MainPageController {
         );
         return "main/main";
     }
+    // [수정] GET / (최초 페이지 로드용)
+    @GetMapping("/")
+    public String listPosts(Model model,
+                            @RequestParam(value = "category", required = false) String category,
+                            @RequestParam(defaultValue = "0") int offset,
+                            @RequestParam(defaultValue = "16") int rowNum) {
+
+        // 1. [수정] 총 게시물 수 계산 및 Pagination 객체 생성
+        int totalCount = postService.countSummaries(category);
+        Pagination pagination = new Pagination(totalCount, rowNum, offset);
+
+        // 2. 목록 및 페이지네이션 정보 전달
+        model.addAttribute("postSummaries", postService.listSummaries(category, offset, rowNum));
+        model.addAttribute("pagination", pagination); // [수정] 페이지네이션 객체 추가
+
+        // 3. (기존 코드) 인기글, 추천글, 랭킹
+        model.addAttribute("popularPosts", postService.listPopular(1, 5));
+        model.addAttribute("recommendedPosts", postService.listRecommended(1, 5));
+        model.addAttribute("highScores", memberService.listHighScores(1, 5));
+
+        return "main/main"; // (뷰 이름은 "main/main"으로 가정)
+    }
+
+    // [수정] GET /ajax/post-list (AJAX 전용)
+    @GetMapping("/ajax/post-list")
+    public String getPostListFragment(Model model,
+                                      @RequestParam(value = "category", required = false) String category,
+                                      @RequestParam(defaultValue = "0") int offset,
+                                      @RequestParam(defaultValue = "16") int rowNum) {
+
+        // 1. [수정] 총 게시물 수 계산 및 Pagination 객체 생성
+        int totalCount = postService.countSummaries(category);
+        Pagination pagination = new Pagination(totalCount, rowNum, offset);
+
+        // 2. 목록 및 페이지네이션 정보 전달
+        model.addAttribute("postSummaries", postService.listSummaries(category, offset, rowNum));
+        model.addAttribute("pagination", pagination); // [수정] 페이지네이션 객체 추가
+
+        // 3. HTML 조각 반환
+        return "fragments/postListContent :: postListContentFragment";
+    }
 }
+
 
 

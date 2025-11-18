@@ -90,19 +90,19 @@ header {
 }
 
 .user-icon {
-    display: inline-block;  /* ⬅️ [필수] <a> 태그가 크기를 갖도록 함 */
-    vertical-align: middle; /* ⬅️ [추천] 옆의 Sign Out 버튼과 세로 정렬을 맞춤 */
+  display: inline-block; /* ⬅️ [필수] <a> 태그가 크기를 갖도록 함 */
+  vertical-align: middle; /* ⬅️ [추천] 옆의 Sign Out 버튼과 세로 정렬을 맞춤 */
 
-    /* --- 님께서 제공해주신 기존 스타일 --- */
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background-color: #d9d9d9;
-    background-size: cover;
-    background-position: center;
+  /* --- 님께서 제공해주신 기존 스타일 --- */
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #d9d9d9;
+  background-size: cover;
+  background-position: center;
 
-    /* (참고) Sign Out 버튼과의 간격을 위해 */
-    margin-right: 10px;
+  /* (참고) Sign Out 버튼과의 간격을 위해 */
+  margin-right: 10px;
 }
 
 .message-icon {
@@ -616,7 +616,7 @@ footer-Copyright {
 }
 
 .titlebox {
-  width: 440px;
+  width: 420px;
 }
 
 .writer {
@@ -624,7 +624,7 @@ footer-Copyright {
 }
 
 .regdate {
-  width: 80px;
+  width: 100px;
 }
 
 .views {
@@ -898,7 +898,7 @@ footer-Copyright {
   /* 요청: W550 H50, color 0D6EFD */
   width: 100%;
   height: 50px;
-  background-color: #0D6EFD;
+  background-color: #0d6efd;
   font-size: 16px;
   color: #fff;
   font-weight: bold;
@@ -914,372 +914,498 @@ footer-Copyright {
 }
 
 .reset-form {
-            /* 요청: W590 H415 */
-            width: 590px;
-            height: auto;
+  /* 요청: W590 H415 */
+  width: 590px;
+  height: auto;
 
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 
-            /* W 590 - (Padding 20*2) =
+  /* W 590 - (Padding 20*2) =
                내부 콘텐츠 550px */
-            padding: 20px;
+  padding: 20px;
 
-            margin-top:30px;
-            margin-bottom:30px;
-        }
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
 
-        /* 폼 제목 (Reset Password) */
-        .reset-form__title {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 0 0 5px;
-        }
+/* 폼 제목 (Reset Password) */
+.reset-form__title {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0 0 5px;
+}
 
-        /* 폼 부제목 (Enter your Email address) */
-        .reset-form__subtitle {
-            font-size: 16px;
-            color: #555;
-            margin-bottom: 25px;
-        }
+/* 폼 부제목 (Enter your Email address) */
+.reset-form__subtitle {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 25px;
+}
 
-        /* 폼 그룹 (라벨 + 인풋) */
-        .reset-form__group {
-            margin-bottom: 20px;
-        }
+/* 폼 그룹 (라벨 + 인풋) */
+.reset-form__group {
+  margin-bottom: 20px;
+}
 
-        .reset-form__label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 6px;
-        }
+.reset-form__label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
 
-        /* 폼 입력창 (이메일, 비밀번호 등) */
-        .reset-form__input {
-            /* 요청: W550 H50 */
-            width: 100%; /* 550px */
-            height: 50px;
+/* 폼 입력창 (이메일, 비밀번호 등) */
+.reset-form__input {
+  /* 요청: W550 H50 */
+  width: 100%; /* 550px */
+  height: 50px;
 
-            /* 요청: 폰트 사이즈 16px */
-            font-size: 16px;
+  /* 요청: 폰트 사이즈 16px */
+  font-size: 16px;
 
-            padding: 0 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
+  padding: 0 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
 
-        .reset-form__input::placeholder {
-            color: #aaa;
-        }
+.reset-form__input::placeholder {
+  color: #aaa;
+}
 
-        /* 폼 제출 버튼 */
-        .reset-form__button {
-            /* 요청: W550 H50, color 0D6EFD */
-            width: 100%; /* 550px */
-            height: 50px;
-            background-color: #0D6EFD;
+/* 폼 제출 버튼 */
+.reset-form__button {
+  /* 요청: W550 H50, color 0D6EFD */
+  width: 100%; /* 550px */
+  height: 50px;
+  background-color: #0d6efd;
 
-            /* 요청: 폰트 사이즈 16px */
-            font-size: 16px;
+  /* 요청: 폰트 사이즈 16px */
+  font-size: 16px;
 
-            color: #fff;
-            font-weight: bold;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            margin-top: 10px; /* 버튼 상단 여백 */
-        }
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 10px; /* 버튼 상단 여백 */
+}
 
-        .reset-form__button:hover {
-            background-color: #0b5ed7;
-        }
+.reset-form__button:hover {
+  background-color: #0b5ed7;
+}
 
-        /* * ----------------------------------------
+/* * ----------------------------------------
          * 🎨 동적 UI를 위한 유틸리티 클래스
          * ----------------------------------------
         */
 
-        /* [핵심]
+/* [핵심]
            JavaScript로 이 클래스를 제거하여
            숨겨진 필드를 보여줍니다.
         */
-        .hidden {
-            display: none;
-        }
+.hidden {
+  display: none;
+}
 
-        .profile-container {
-                    display: flex;
-                    gap: 20px; /* 각 섹션 사이의 간격 */
-                    max-width: 1200px;
-                    margin: 0 auto; /* 중앙 정렬 */
-                    padding: 20px;
-                    background-color: #fff;
-                    border-radius: 8px;
-                    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-                }
+.profile-container {
+  display: flex;
+  gap: 20px; /* 각 섹션 사이의 간격 */
+  max-width: 1200px;
+  margin: 0 auto; /* 중앙 정렬 */
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
 
-                /* * ----------------------------------------
+/* * ----------------------------------------
                  * 👤 왼쪽 프로필 정보 섹션
                  * ----------------------------------------
                 */
-                .profile-info {
-                    flex-basis: 280px; /* 고정 너비 */
-                    flex-shrink: 0;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                }
+.profile-info {
+  flex-basis: 280px; /* 고정 너비 */
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-                .profile-info__avatar-wrapper {
-                    /* 요청: W280 H280 */
-                    width: 280px;
-                    height: 280px;
-                    border-radius: 50%; /* 원형 */
-                    overflow: hidden; /* 이미지가 원형 밖으로 나가지 않도록 */
-                    background-color: #e0e0e0; /* 이미지 없을 때 배경 */
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    margin-bottom: 15px;
-                    border: 1px solid #ddd;
-                }
+.profile-info__avatar-wrapper {
+  /* 요청: W280 H280 */
+  width: 280px;
+  height: 280px;
+  border-radius: 50%; /* 원형 */
+  overflow: hidden; /* 이미지가 원형 밖으로 나가지 않도록 */
+  background-color: #e0e0e0; /* 이미지 없을 때 배경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+}
 
-                .profile-info__avatar {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover; /* 이미지가 비율 유지하며 꽉 채우도록 */
-                }
+.profile-info__avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지가 비율 유지하며 꽉 채우도록 */
+}
 
-                .profile-info__username {
-                    font-size: 24px;
-                    font-weight: bold;
-                    margin-bottom: 5px;
-                    color: #222;
-                }
+.profile-info__username {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #222;
+}
 
-                .profile-info__points {
-                    font-size: 18px;
-                    color: #666;
-                    margin-bottom: 20px;
-                }
+.profile-info__points {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 20px;
+}
 
-                /* Edit Profile 버튼 */
-                .profile-info__edit-button {
-                    /* 요청: W280 H30 */
-                    width: 280px;
-                    height: 30px;
-                    background-color: #f0f0f0;
-                    border: 1px solid #ccc;
-                    border-radius: 5px;
-                    font-size: 16px;
-                    cursor: pointer;
-                    transition: background-color 0.2s;
-                    margin-bottom: 20px; /* Enter Password와의 간격 */
-                }
+/* Edit Profile 버튼 */
+.profile-info__edit-button {
+  /* 요청: W280 H30 */
+  width: 280px;
+  height: 30px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-bottom: 20px; /* Enter Password와의 간격 */
+}
 
-                .profile-info__edit-button:hover {
-                    background-color: #e0e0e0;
-                }
+.profile-info__edit-button:hover {
+  background-color: #e0e0e0;
+}
 
-                /* * ----------------------------------------
+/* * ----------------------------------------
                  * 🔒 비밀번호 입력 및 수정 필드 섹션
                  * ----------------------------------------
                 */
-                .auth-section {
-                    width: 100%;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                }
+.auth-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-                /* Enter Password 필드 */
-                .auth-section__password-input-group {
-                    width: 280px; /* 프로필 정보와 동일 너비 */
-                    margin-bottom: 15px;
-                }
+/* Enter Password 필드 */
+.auth-section__password-input-group {
+  width: 280px; /* 프로필 정보와 동일 너비 */
+  margin-bottom: 15px;
+}
 
-                .auth-section__label {
-                    display: block;
-                    font-size: 14px;
-                    margin-bottom: 5px;
-                    font-weight: bold;
-                }
+.auth-section__label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
 
-                .auth-section__input {
-                    width: 100%;
-                    height: 35px;
-                    padding: 0 10px;
-                    border: 1px solid #ccc;
-                    border-radius: 4px;
-                    font-size: 14px;
-                }
+.auth-section__input {
+  width: 100%;
+  height: 35px;
+  padding: 0 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
 
-                /* 수정 필드 그룹 */
-                .edit-fields-section {
-                    width: 100%;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                }
+/* 수정 필드 그룹 */
+.edit-fields-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-                .edit-fields-section__group {
-                    width: 280px; /* 프로필 정보와 동일 너비 */
-                    margin-bottom: 15px;
-                }
+.edit-fields-section__group {
+  width: 280px; /* 프로필 정보와 동일 너비 */
+  margin-bottom: 15px;
+}
 
-                .edit-fields-section__upload-label {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 100%;
-                    height: 35px;
-                    background-color: #f0f0f0;
-                    border: 1px solid #ccc;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    font-size: 14px;
-                    color: #555;
-                    transition: background-color 0.2s;
-                }
+.edit-fields-section__upload-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 35px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #555;
+  transition: background-color 0.2s;
+}
 
-                .edit-fields-section__upload-label:hover {
-                    background-color: #e0e0e0;
-                }
+.edit-fields-section__upload-label:hover {
+  background-color: #e0e0e0;
+}
 
-                .edit-fields-section__upload-input {
-                    display: none; /* 실제 파일 인풋 숨김 */
-                }
+.edit-fields-section__upload-input {
+  display: none; /* 실제 파일 인풋 숨김 */
+}
 
+/* 하단 버튼 그룹 */
+.edit-fields-section__buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 280px;
+  margin-top: 10px;
+}
 
-                /* 하단 버튼 그룹 */
-                .edit-fields-section__buttons {
-                    display: flex;
-                    justify-content: space-between;
-                    width: 280px;
-                    margin-top: 10px;
-                }
+.edit-fields-section__button {
+  height: 35px;
+  padding: 0 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
 
-                .edit-fields-section__button {
-                    height: 35px;
-                    padding: 0 15px;
-                    border: none;
-                    border-radius: 5px;
-                    font-size: 14px;
-                    cursor: pointer;
-                    transition: background-color 0.2s;
-                }
+.edit-fields-section__button--save {
+  background-color: #007bff;
+  color: white;
+}
 
-                .edit-fields-section__button--save {
-                    background-color: #007bff;
-                    color: white;
-                }
+.edit-fields-section__button--save:hover {
+  background-color: #0056b3;
+}
 
-                .edit-fields-section__button--save:hover {
-                    background-color: #0056b3;
-                }
+.edit-fields-section__button--cancel {
+  background-color: #6c757d;
+  color: white;
+}
 
-                .edit-fields-section__button--cancel {
-                    background-color: #6c757d;
-                    color: white;
-                }
+.edit-fields-section__button--cancel:hover {
+  background-color: #5a6268;
+}
 
-                .edit-fields-section__button--cancel:hover {
-                    background-color: #5a6268;
-                }
+.edit-fields-section__button--delete {
+  background-color: #dc3545;
+  color: white;
+}
 
-                .edit-fields-section__button--delete {
-                    background-color: #dc3545;
-                    color: white;
-                }
+.edit-fields-section__button--delete:hover {
+  background-color: #c82333;
+}
 
-                .edit-fields-section__button--delete:hover {
-                    background-color: #c82333;
-                }
-
-
-                /* * ----------------------------------------
+/* * ----------------------------------------
                  * 📜 오른쪽 게시물/댓글 리스트 섹션
                  * ----------------------------------------
                 */
-                .content-lists {
-                    flex-grow: 1; /* 남은 공간 모두 차지 */
-                    display: flex;
-                    gap: 20px;
-                }
+.content-lists {
+  flex-grow: 1; /* 남은 공간 모두 차지 */
+  display: flex;
+  gap: 20px;
+}
 
-                .content-list__section {
-                    flex-basis: calc(50% - 10px); /* 전체 공간의 절반 - 간격 */
-                    flex-shrink: 0;
+.content-list__section {
+  flex-basis: calc(50% - 10px); /* 전체 공간의 절반 - 간격 */
+  flex-shrink: 0;
 
-                    /* 요청: W370 H345 */
-                    width: 370px;
-                    height: 345px;
+  /* 요청: W370 H345 */
+  width: 370px;
+  height: 345px;
 
-                    background-color: #f8f9fa;
-                    border: 1px solid #eee;
-                    border-radius: 8px;
-                    padding: 15px;
-                    box-shadow: 0 1px 5px rgba(0,0,0,0.05);
-                    display: flex;
-                    flex-direction: column;
-                }
+  background-color: #f8f9fa;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
 
-                .content-list__title {
-                    font-size: 20px;
-                    font-weight: bold;
-                    margin-bottom: 10px;
-                    color: #222;
-                }
+.content-list__title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #222;
+}
 
-                .content-list__placeholder {
-                    flex-grow: 1;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    color: #aaa;
-                    font-style: italic;
-                }
+.content-list__placeholder {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #aaa;
+  font-style: italic;
+}
 
-                /* * ----------------------------------------
+/* * ----------------------------------------
                  * 👻 유틸리티: 숨김/보임
                  * ----------------------------------------
                 */
-                .hidden {
-                    display: none !important; /* !important로 강제 */
-                }
+.hidden {
+  display: none !important; /* !important로 강제 */
+}
 
-                .edit-fields-section__input{
-                width:280px;
-                height:30px;
-                }
+.edit-fields-section__input {
+  width: 280px;
+  height: 30px;
+}
 
-                .signout-btn {
-                    display: inline-block; /* <a> 태그를 버튼처럼 만들기 위해 필수 */
+.signout-btn {
+  display: inline-block; /* <a> 태그를 버튼처럼 만들기 위해 필수 */
 
-                    /* 님의 기존 버튼 스타일과 맞춤 (추정) */
-                    width: 65px;
-                    height: 30px;
-                    border-radius: 5px;
-                    border: 1px solid #ccc;
-                    background-color: #ffffff;
-                    font-size: 12px;
-                    font-weight: bold;
-                    cursor: pointer;
+  /* 님의 기존 버튼 스타일과 맞춤 (추정) */
+  width: 65px;
+  height: 30px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
 
-                    /* * ⬇️ <a> 태그 스타일링을 위한 핵심 속성 ⬇️
+  /* * ⬇️ <a> 태그 스타일링을 위한 핵심 속성 ⬇️
                      */
-                    color: #333 !important;           /* <a> 태그의 파란색/보라색 글씨 덮어쓰기 */
-                    text-decoration: none !important;  /* <a> 태그의 밑줄 제거 (필수!) */
-                    text-align: center;                /* 글자 중앙 정렬 */
-                    line-height: 28px;               /* (height - border*2) = 28px. 세로 중앙 정렬 */
-                    box-sizing: border-box;            /* 패딩/테두리가 크기를 밀어내지 않도록 */
-                }
+  color: #333 !important; /* <a> 태그의 파란색/보라색 글씨 덮어쓰기 */
+  text-decoration: none !important; /* <a> 태그의 밑줄 제거 (필수!) */
+  text-align: center; /* 글자 중앙 정렬 */
+  line-height: 28px; /* (height - border*2) = 28px. 세로 중앙 정렬 */
+  box-sizing: border-box; /* 패딩/테두리가 크기를 밀어내지 않도록 */
+}
 
-                /* 마우스를 올렸을 때 효과 (공통) */
-                .signout-btn:hover {
-                    background-color: #f5f5f5;
-                    text-decoration: none !important; /* 호버 시에도 밑줄 금지 */
-                }
+/* 마우스를 올렸을 때 효과 (공통) */
+.signout-btn:hover {
+  background-color: #f5f5f5;
+  text-decoration: none !important; /* 호버 시에도 밑줄 금지 */
+}
+
+/* --- 필터 버튼 스타일 --- */
+.post-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* 버튼 사이 간격 */
+  align-items:center;
+}
+
+.filter-btn:hover {
+  background-color: #f0f0f0;
+  border-color: #ccc;
+}
+
+/* 활성화된 필터 버튼 스타일 */
+.filter-btn.active {
+  background-color: #007bff; /* 원하는 활성 색상으로 변경하세요 */
+  color: white;
+  border-color: #007bff;
+  font-weight: bold;
+}
+
+/* --- 페이지네이션 스타일 --- */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 30px; /* 게시판 목록과 페이지네이션 사이 간격 */
+}
+
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.page-item {
+}
+
+.page-link {
+  display: block;
+  padding: 10px 15px;
+  color: #007bff;
+  text-decoration: none;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-left-width: 0;
+  transition: background-color 0.2s, color 0.2s;
+  font-size: 14px;
+}
+
+.page-item:first-child .page-link {
+  border-left-width: 1px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.page-item:last-child .page-link {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.page-link:hover {
+  background-color: #f4f4f4;
+}
+
+/* 활성화된 페이지 아이템 스타일 */
+.page-item.active .page-link {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+  font-weight: bold;
+  z-index: 1;
+  position: relative;
+}
+
+/* 비활성화된 링크 (Thymeleaf 등에서 사용) */
+.page-item.disabled .page-link {
+  color: #aaa;
+  pointer-events: none;
+  background-color: #f9f9f9;
+}
+
+.postlist > a.category-link {
+  display: inline-block;  /* <a> 태그에 너비(width)와 높이(height)를 적용하기 위해 필수 */
+
+  width: 60px;  /* 요청하신 너비 60px */
+  height: 40px; /* 요청하신 높이 40px */
+
+  /* 텍스트를 버튼의 가로/세로 중앙에 정렬합니다 */
+  line-height: 40px;   /* 높이(height)와 동일하게 설정하여 세로 중앙 정렬 */
+  text-align: center;  /* 가로 중앙 정렬 */
+
+  /* 두 번째 이미지(image_c18043.png) 스타일 적용 */
+  background-color: #f0f0f0; /* 옅은 회색 배경 */
+  color: #333;               /* 기본 글자색 */
+  text-decoration: none;    /* 밑줄 제거 */
+  border-radius: 5px;       /* 모서리를 둥글게 */
+  margin: 5px 3px 5px 3px;    /* 버튼 사이에 약간의 여백 */
+
+  font-size: 0.9em;         /* 폰트 크기 (60px 너비에 맞게 살짝 줄임) */
+  font-weight: 500;
+
+  /* 클릭 시 부드럽게 색상이 변하도록 트랜지션 효과 추가 */
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* * 마우스를 올렸을 때(hover) 스타일
+ */
+.postlist > a.category-link:hover {
+  background-color: #e0e0e0; /* 살짝 더 진한 회색 */
+  color: #000;
+}
+
+/* * (JavaScript에서 추가/제거하는) .active 클래스가 적용된 스타일
+ * 첫 번째 이미지(image_c17fcd.png)의 스타일을 적용
+ */
+.postlist > a.category-link.active {
+  background-color: #f0f0f0; /* 배경색은 유지하거나 변경 */
+  color: rebeccapurple;     /* 보라색 글씨 */
+  font-weight: bold;        /* 굵은 글씨 */
+  text-decoration: underline; /* 밑줄 */
+}
