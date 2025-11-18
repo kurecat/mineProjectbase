@@ -25,7 +25,7 @@ public class CommentController {
             HttpSession session
     ) {
         MemberRes loginMember = (MemberRes) session.getAttribute("loginMember");
-        //System.out.println(loginMember);
+        System.out.println(loginMember);
         //if (loginMember == null) return "redirect:/login";
 
         req.setPostId(postId);
