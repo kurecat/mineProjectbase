@@ -15,13 +15,13 @@ import java.util.Collections;
 @Getter
 public class CustomUserDetails implements UserDetails {
 
-    private Long id;
-    private String email;
-    private String password;   // pwd
-    private String nickname;
-    private String grade;
-    private LocalDateTime regDate;
-    private String profileImg;
+    private final Long id;
+    private final String email;
+    private final String password;   // pwd
+    private final String nickname;
+    private final String grade;
+    private final LocalDateTime regDate;
+    private final String profileImg;
 
     /** MemberRes → CustomUserDetails 로 변환하는 생성자 */
     public CustomUserDetails(MemberRes member) {
