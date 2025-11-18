@@ -20,10 +20,11 @@
 
             <a th:href="@{|/members/${#authentication.principal.id}|}">
                 <img class="user-icon"
-                     th:src="${#authentication.principal.profileImg}"
+                     th:src="${#authentication.principal.profileImg != null
+                        ? #authentication.principal.profileImg
+                        : '/image/emptyProfile.png'}"
                      th:alt="${#authentication.principal.nickname} + ' 프로필 사진'" />
             </a>
-
             <form th:action="@{/logout}" method="post" style="display: inline;">
                 <button class="signout-btn" type="submit">Sign Out</button>
             </form>
