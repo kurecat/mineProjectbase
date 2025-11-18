@@ -46,24 +46,18 @@ public class SecurityConfig {
                         .passwordParameter("pwd")
                         .successHandler((request, response, authentication) -> {
 
+                            // 로그인 세션 저장
                             CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+                            request.getSession().setAttribute("loginMember", new MemberRes(
+                                    user.getId(), user.getEmail(), user.getPassword(),
+                                    user.getNickname(), user.getGrade(),
+                                    user.getRegDate(), user.getPoint(), user.getProfileImg()
+                            ));
 
-                            MemberRes loginMember = new MemberRes(
-                                    user.getId(),
-                                    user.getEmail(),
-                                    user.getPassword(),
-                                    user.getNickname(),
-                                    user.getGrade(),
-                                    user.getRegDate(),
-                                    user.getPoint(),
-                                    user.getProfileImg()
-                            );
-
-                            request.getSession().setAttribute("loginMember", loginMember);
-
-                            response.sendRedirect("/main");
+                            // 성공 시 URL 파라미터 추가
+                            response.sendRedirect("/main?loginSuccess=true");
                         })
-                        .failureUrl("/login?error=true")
+                        .failureUrl("/login?loginFail=true") // JS와 동일하게 맞춤
                         .permitAll()
                 )
 
