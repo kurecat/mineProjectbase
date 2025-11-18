@@ -208,13 +208,13 @@ public class PostDao {
         public PostRes mapRow(ResultSet rs, int rowNum) throws SQLException {
             PostRes post = new PostRes();
             post.setId(rs.getLong("id"));
-            post.setMember_id(rs.getLong("member_id"));
+            post.setMemberId(rs.getLong("member_id"));
             post.setTitle(rs.getString("title"));
             post.setContent(rs.getString("content"));
-            post.setCategory_id(rs.getLong("category_id"));
-            post.setView_count(rs.getLong("view_count"));
-            post.setRecommendations_count(rs.getLong("recommendations_count"));
-            post.setCreated_at(rs.getTimestamp("created_at").toLocalDateTime());
+            post.setCategoryId(rs.getLong("category_id"));
+            post.setViewCount(rs.getLong("view_count"));
+            post.setRecommendationsCount(rs.getLong("recommendations_count"));
+            post.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
             post.setNickname(rs.getString("nickname"));
             return post;
         }
@@ -227,8 +227,8 @@ public class PostDao {
             post.setId(rs.getLong("id"));
             post.setTitle(rs.getString("title"));
             post.setNickname(rs.getString("nickname"));
-            post.setView_count(rs.getLong("view_count"));
-            post.setCreated_at(rs.getTimestamp("created_at").toLocalDateTime());
+            post.setViewCount(rs.getLong("view_count"));
+            post.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
             return post;
         }
     }
