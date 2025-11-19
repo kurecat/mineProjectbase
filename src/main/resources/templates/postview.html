@@ -46,7 +46,33 @@
 
             <!-- 버튼 영역 -->
             <div class="flex justify-between items-center border-t border-gray-300 pt-6">
-                <a class="text-sm text-gray-500 hover:underline" href="#">신고하기</a>
+                <button id="report-btn"
+                        class="text-sm text-gray-500 hover:underline">
+                    신고하기
+                </button>
+                <div id="report-form-area" class="hidden mt-4">
+                    <form th:action="@{/comments/report}" method="post">
+        <textarea name="content"
+                  class="w-full border rounded p-3"
+                  rows="3"
+                  placeholder="신고 내용을 입력하세요..."
+                  required></textarea>
+
+                        <input type="hidden" name="postId" th:value="${post.id}" />
+
+                        <div class="mt-2 flex gap-2">
+                            <button class="px-3 py-1 bg-red-600 text-white rounded text-sm">
+                                신고 등록
+                            </button>
+
+                            <button type="button" id="report-cancel"
+                                    class="px-3 py-1 bg-gray-300 rounded text-sm">
+                                취소
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
 
                 <div class="flex gap-2">
 
@@ -194,6 +220,22 @@
     if (msg === 'created') alert('댓글이 등록되었습니다.');
     if (msg === 'edited') alert('댓글이 수정되었습니다.');
     if (msg === 'deleted') alert('댓글이 삭제되었습니다.');
+</script>
+<!-- 신고하기 -->
+<script>
+    const reportBtn = document.getElementById("report-btn");
+    const reportArea = document.getElementById("report-form-area");
+    const reportCancel = document.getElementById("report-cancel");
+
+    // 신고하기 버튼 클릭 → 입력창 열기
+    reportBtn.addEventListener("click", () => {
+        reportArea.classList.remove("hidden");
+    });
+
+    // 취소 버튼 → 입력창 닫기
+    reportCancel.addEventListener("click", () => {
+        reportArea.classList.add("hidden");
+    });
 </script>
 
 </body>
