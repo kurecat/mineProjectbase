@@ -86,18 +86,19 @@ public class CommentDao {
 
     public List<CommentRes> findByMemberId(Long memberId, int offset, int rowNum) {
         @Language("SQL")
-        String sql = """
-            SELECT * FROM (
-                SELECT ROWNUM AS rn, inner_query.*
-                FROM (
-                    SELECT id, post_id, member_id, content, created_at
-                    FROM comments
-                    WHERE member_id = ?
-                    ORDER BY id DESC
-                ) inner_query
-                WHERE ROWNUM <= ?
-            )
-            WHERE rn > ?
+        String sql = """        
+                SELECT * FROM (
+                    SELECT ROWNUM AS rn, inner_query.*
+                    FROM (
+                        SELECT c.id, c.post_id, c.member_id, m.nickname, c.content, c.created_at
+                        FROM comments c
+                        JOIN MEMBERS m ON m.id = c.MEMBER_ID
+                        WHERE member_id = ?
+                        ORDER BY id DESC
+                    ) inner_query
+                    WHERE ROWNUM <= ?
+                )
+                WHERE rn > ?
         """;
         return jdbc.query(sql, new CommentResMapper(), memberId, offset + rowNum, offset);
     }

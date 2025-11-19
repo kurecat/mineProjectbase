@@ -117,7 +117,8 @@ public class MemberController {
         }
 
         // 닉네임 중복 확인
-        if (memberService.isNicknameExists(req.getNickname())) {
+        if (memberService.isNicknameExists(req.getNickname())
+            && !memberService.getById(id).getNickname().equals(req.getNickname())) {
             log.warn("회원가입 실패 - 닉네임 중복: {}", req.getNickname());
             return "redirect:/members/" + id + "?signupFail=nicknameExists";
         }

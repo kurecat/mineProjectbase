@@ -92,7 +92,7 @@
                 <h3 class="content-list__title">My Comment list</h3>
                 <ul th:if="${comments != null and !comments.isEmpty()}" th:each="comment : ${comments}">
                     <li>
-                        <a th:href="@{|/board/detail/${comment.postId}|}" th:text="${comment.content}"></a>
+                        <a th:href="@{|/board/detail/${comment.postId}#comment-list|}" th:text="${comment.content}"></a>
                     </li>
                 </ul>
                 <div class="content-list__placeholder">댓글이 없습니다.</div>

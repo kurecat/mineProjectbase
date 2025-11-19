@@ -92,7 +92,7 @@ public class PostDao {
                           INNER_QUERY.*
                      FROM (
                       SELECT P.ID,
-                             C.NAME AS CATEGORY_NAME,
+                             MC.NAME AS CATEGORY_NAME,
                              P.TITLE,
                              P.MEMBER_ID,
                              M.NICKNAME,
@@ -102,10 +102,8 @@ public class PostDao {
                         FROM POSTS P
                         JOIN MEMBERS M
                       ON P.MEMBER_ID = M.ID
-                        JOIN CATEGORY C
-                      ON P.CATEGORY_ID = C.ID
                         JOIN MAIN_CATEGORY MC
-                      ON C.MAIN_CATEGORY_ID = MC.ID
+                      ON P.MAIN_CATEGORY_ID = MC.ID
                       WHERE p.MEMBER_ID = ?
                        ORDER BY P.ID DESC
                    ) INNER_QUERY
