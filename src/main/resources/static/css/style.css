@@ -1472,3 +1472,10 @@ footer-Copyright {
 .unstyled-list {
   list-style: none;
 }
+
+.error-text {
+    color: #ff4444;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    display: block;
+}

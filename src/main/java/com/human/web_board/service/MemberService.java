@@ -32,7 +32,7 @@ public interface MemberService {
     // 이메일 존재 여부 체크 추가
     boolean isEmailExists(String email);
 
-
+    boolean checkEmailExists(String email);
 
     List<MemberSummaryRes> listHighScores(int offset, int rowNum);
 

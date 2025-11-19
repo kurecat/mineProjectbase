@@ -34,6 +34,13 @@ public class MemberServiceImpl implements MemberService {
         return exists;
     }
 
+    @Override
+    public boolean checkEmailExists(String email) {
+        boolean exists = memberDao.findByEmail(email) != null;
+        log.info("서비스 - 이메일 존재 여부 확인: {} -> {}", email, exists);
+        return exists;
+    }
+
     // 회원가입
     @Override
     public Long signup(MemberSignupReq req) {

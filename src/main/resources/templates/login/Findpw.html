@@ -16,9 +16,11 @@
         <form id="resetForm" method="post" action="/reset-password">
 
 
-        <div class="reset-form__group">
+            <div class="reset-form__group">
                 <label for="email" class="reset-form__label">Email*</label>
                 <input type="email" id="email" name="email" class="reset-form__input" placeholder="Email address" required>
+
+                <span id="emailErrorMsg" class="error-text hidden">존재하지 않는 이메일 입니다.</span>
             </div>
 
             <div class="reset-form__group password-group hidden">
@@ -93,27 +95,47 @@
         });
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const emailInput = document.getElementById('email');
-        const passwordGroups = document.querySelectorAll('.password-group');
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+document.addEventListener('DOMContentLoaded', function() {
+    const emailInput = document.getElementById('email');
+    const errorMsg = document.getElementById('emailErrorMsg'); // 에러 메시지 태그
+    const passwordGroups = document.querySelectorAll('.password-group');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        const hasEmailError = document.querySelector('[th\\:errors="*{email}"]') !== null;
-        const hasPasswordError = document.querySelector('[th\\:errors="*{password}"]') !== null ||
-            document.querySelector('[th\\:errors="*{passwordCheck}"]') !== null;
+    // 이메일 입력창에서 커서가 벗어날 때(blur) 실행
+    emailInput.addEventListener('blur', function() {
+        const emailValue = emailInput.value;
 
-        if ((emailInput.value !== '' && !hasEmailError) || hasPasswordError) {
-            passwordGroups.forEach(group => group.classList.remove('hidden'));
+        // 1. 입력값이 비어있거나 이메일 형식이 아니면 -> 다 숨기고 종료
+        if (!emailValue || !emailRegex.test(emailValue)) {
+            passwordGroups.forEach(group => group.classList.add('hidden'));
+            errorMsg.classList.add('hidden'); // 에러 메시지도 숨김
+            return;
         }
 
-        emailInput.addEventListener('blur', function() {
-            if (emailRegex.test(emailInput.value)) {
-                passwordGroups.forEach(group => group.classList.remove('hidden'));
-            } else {
-                passwordGroups.forEach(group => group.classList.add('hidden'));
-            }
-        });
+        // 2. 서버에 이메일 존재 여부 확인 (AJAX)
+        fetch(`/api/check-email?email=${emailValue}`)
+            .then(response => response.json()) // true 또는 false 반환
+            .then(isExist => {
+                if (isExist) {
+                    // 이메일이 존재함 (정상) -> 비밀번호 입력창 보이기
+                    passwordGroups.forEach(group => group.classList.remove('hidden'));
+                    errorMsg.classList.add('hidden'); // 에러 메시지 숨김
+                } else {
+                    // 이메일이 없음 (비정상) -> 에러 메시지 보이기
+                    passwordGroups.forEach(group => group.classList.add('hidden')); // 비밀번호 창 다시 숨김
+                    errorMsg.classList.remove('hidden'); // "존재하지 않는..." 메시지 표시
+                }
+            })
+            .catch(error => {
+                console.error("이메일 확인 중 오류:", error);
+            });
     });
+
+    // (선택사항) 사용자가 이메일을 다시 수정하려고 타이핑을 시작하면 에러 메시지를 지워주는 센스
+    emailInput.addEventListener('input', function() {
+        errorMsg.classList.add('hidden');
+    });
+});
 </script>
 </body>
 </html>
