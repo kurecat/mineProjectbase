@@ -68,17 +68,22 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessHandler((request, response, authentication) -> {
-                            // 세션 무효화 및 쿠키 삭제
+                            // 세션 무효화
                             request.getSession().invalidate();
+
+                            // 세션 쿠키만 삭제, remember-me 쿠키는 유지
                             var cookies = request.getCookies();
                             if (cookies != null) {
                                 for (var cookie : cookies) {
-                                    cookie.setMaxAge(0);
-                                    cookie.setValue(null);
-                                    cookie.setPath("/");
-                                    response.addCookie(cookie);
+                                    if ("JSESSIONID".equals(cookie.getName())) { // 세션 쿠키만 삭제
+                                        cookie.setMaxAge(0);
+                                        cookie.setValue(null);
+                                        cookie.setPath("/");
+                                        response.addCookie(cookie);
+                                    }
                                 }
                             }
+
                             response.sendRedirect("/login");
                         })
                         .permitAll()
