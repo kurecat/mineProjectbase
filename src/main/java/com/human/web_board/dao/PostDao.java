@@ -63,20 +63,22 @@ public class PostDao {
     public PostRes findById(Long id) {
         @Language("SQL")
         String sql = """
-                SELECT
-                    p.id,
-                    p.member_id,
-                    m.nickname,
-                    p.title,
-                    p.content,
-                    p.main_category_id,
-                    p.view_count,
-                    p.recommendations_count,
-                    p.created_at
-                FROM posts p
-                JOIN members m ON p.member_id = m.id
-                WHERE p.id = ?
-                """;
+            SELECT
+                p.id,
+                p.member_id,
+                m.nickname,
+                p.title,
+                p.content,
+                p.main_category_id,
+                mc.name AS category_name,  -- ★ 여기 추가 (카테고리 이름 조회)
+                p.view_count,
+                p.recommendations_count,
+                p.created_at
+            FROM posts p
+            JOIN members m ON p.member_id = m.id
+            JOIN MAIN_CATEGORY mc ON p.main_category_id = mc.id
+            WHERE p.id = ?
+            """;
 
         List<PostRes> list = jdbc.query(sql, new PostResPowMapper(), id);
         return list.isEmpty() ? null : list.get(0);
@@ -214,7 +216,8 @@ public class PostDao {
             post.setMemberId(rs.getLong("member_id"));
             post.setTitle(rs.getString("title"));
             post.setContent(rs.getString("content"));
-            post.setMaincategoryId(rs.getLong("main_category_id"));
+            post.setMainCategoryId(rs.getLong("main_category_id"));
+            post.setCategoryName(rs.getString("category_name"));
             post.setViewCount(rs.getLong("view_count"));
             post.setRecommendationsCount(rs.getLong("recommendations_count"));
             post.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
