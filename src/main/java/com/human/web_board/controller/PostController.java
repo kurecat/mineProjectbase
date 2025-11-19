@@ -172,4 +172,5 @@ public class PostController {
         postService.delete(id);
         return "redirect:/?msg=deleted";
     }
+
 }
