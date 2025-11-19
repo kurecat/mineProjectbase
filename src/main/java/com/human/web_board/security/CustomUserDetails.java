@@ -3,13 +3,16 @@ package com.human.web_board.security;
 import com.human.web_board.dto.MemberRes;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 /**
+
  * Spring Security에서 인증된 사용자 정보를 담는 클래스
  */
 @Getter
@@ -36,10 +39,16 @@ public class CustomUserDetails implements UserDetails {
         this.profileImg = member.getProfileImg();
     }
 
-    /** ROLE_USER 기본 권한 */
+    /** 권한 지정: grade 2 = ADMIN, 그 외 = USER */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList(); // 권한이 필요하면 ROLE_USER 등 추가 가능
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        if ("2".equals(this.grade)) {
+            authorities.add(new SimpleGrantedAuthority("ADMIN"));
+        } else {
+            authorities.add(new SimpleGrantedAuthority("USER"));
+        }
+        return authorities;
     }
 
     /** Spring Security에서 username = email */
