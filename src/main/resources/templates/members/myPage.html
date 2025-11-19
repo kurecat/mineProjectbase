@@ -19,8 +19,11 @@
                      class="profile-info__avatar">
             </div>
             <p id="display-username" class="profile-info__username" th:text="${member.nickname}">username</p>
-            <p id="display-points" class="profile-info__points" th:text="${member.point}">P : 1530</p>
 
+            <p id="display-points" class="profile-info__points">
+                <span>Point :</span>
+                <span th:text="${member.point}">0</span>
+            </p>
             <button id="edit-profile-button" class="profile-info__edit-button">Edit Profile</button>
 
             <form id="auth-section" class="auth-section hidden" th:action="@{|${member.id}/verify-password|}" method="post">
@@ -49,7 +52,7 @@
 
                 <div class="edit-fields-section__group">
                     <label for="password-check" class="edit-fields-section__label">Password check</label>
-                    <input type="password" id="password-check" class="edit-fields-section__input">
+                    <input type="password" id="password-check" class="edit-fields-section__input" name="passwordCheck">
                     <div class="signup-form__error-message" id="password-check-error"></div>
                 </div>
 
@@ -91,6 +94,19 @@
 <script th:src="@{/js/member-edit.validation.js}"></script>
 <script th:inline="javascript">
 
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.get("signupFail") === "passwordMismatch") {
+        alert("비밀번호 확인이 일치하지 않습니다");
+    }
+    if (urlParams.get("signupFail") === "nicknameExists") {
+        alert("이미 사용 중인 닉네임입니다");
+    }
+
+    // 비밀번호 재설정 성공/실패
+    if (urlParams.get("updateSuccess") === "true") {
+        alert("비밀번호 변경 완료!");
+    }
 
     // ⭐️⭐️⭐️ 동적 기능 JavaScript ⭐️⭐️⭐️
 
@@ -145,8 +161,9 @@
             .then(response => response.text())
             .then(result => {
                 if (result === "true") {
-                    document.getElementById("edit-fields-section").classList.remove("hidden");
-                    document.getElementById("auth-section").classList.add("hidden");
+                    editFieldsSection.classList.remove("hidden");
+                    authSection.classList.add("hidden");
+                    editProfileButton.classList.add("hidden");
                 } else {
                     alert("비밀번호가 일치하지 않습니다.");
                 }
@@ -169,7 +186,7 @@
         // D. "Cancel" 버튼 클릭 시
         cancelButton.addEventListener('click', function() {
             editFieldsSection.classList.add('hidden');
-            authSection.classList.add('hidden');
+            editProfileButton.classList.remove('hidden');
             enterPasswordInput.value = '';
             editUsernameInput.value = displayUsername.textContent;
             editPasswordInput.value = '';

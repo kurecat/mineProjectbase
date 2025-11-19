@@ -152,5 +152,10 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+    @Override
+    public List<PostRes> listRecent(int limit) {
+        return List.of();
+    }
+
 
 }

@@ -97,6 +97,7 @@ public class PostDao {
                         SELECT p.id,
                                c.name AS category_name,
                                p.title,
+                               p.MEMBER_ID,
                                m.NICKNAME,
                                p.VIEW_COUNT,
                                p.RECOMMENDATIONS_COUNT,
@@ -143,6 +144,7 @@ public class PostDao {
                 SELECT p.id,
                        c.name AS category_name,
                        p.title,
+                       p.MEMBER_ID,
                        m.NICKNAME,
                        p.VIEW_COUNT,
                        p.RECOMMENDATIONS_COUNT,
@@ -167,6 +169,7 @@ public class PostDao {
                 SELECT p.id,
                        c.name AS category_name,
                        p.title,
+                       p.MEMBER_ID,
                        m.NICKNAME,
                        p.VIEW_COUNT,
                        p.RECOMMENDATIONS_COUNT,
@@ -240,6 +243,7 @@ public class PostDao {
                     rs.getLong("id"),
                     rs.getString("title"),
                     rs.getString("category_name"),
+                    rs.getLong("member_id"),
                     rs.getString("nickname"),
                     rs.getLong("view_count"),
                     rs.getLong("recommendations_count"),
@@ -260,7 +264,7 @@ public class PostDao {
         // 1. SQL문 조립 (Oracle 페이지네이션)
         sql.append("SELECT * FROM ( ");
         sql.append("  SELECT ROWNUM AS rn, inner_query.* FROM ( ");
-        sql.append("    SELECT p.id, c.name AS category_name, p.title, m.NICKNAME, ");
+        sql.append("    SELECT p.id, c.name AS category_name, p.title, p.MEMBER_ID, m.NICKNAME, ");
         sql.append("           p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT ");
         sql.append("    FROM POSTS p ");
 

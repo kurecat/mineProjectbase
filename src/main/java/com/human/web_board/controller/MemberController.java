@@ -98,31 +98,62 @@ public class MemberController {
     public String edit(@PathVariable Long id,
                        @ModelAttribute MemberSignupReq req,
                        @RequestParam(value = "profileImage", required = false) MultipartFile profileImage,
+                       Principal principal,
                        Model model) {
 
         MemberRes member = memberService.getById(id);
+
+        // 본인 확인
+        if (!member.getEmail().equals(principal.getName())) {
+            model.addAttribute("error", "본인만 수정할 수 있습니다.");
+            return "member/myPage";
+        }
+
+        // 비밀번호 확인
+        if (!req.getPwd().equals(req.getPasswordCheck())) {
+            log.warn("회원가입 실패 - 비밀번호 불일치: {}", req.getEmail());
+            return "redirect:/members/" + id + "?signupFail=passwordMismatch";
+        }
+
+        // 닉네임 중복 확인
+        if (memberService.isNicknameExists(req.getNickname())) {
+            log.warn("회원가입 실패 - 닉네임 중복: {}", req.getNickname());
+            return "redirect:/members/" + id + "?signupFail=nicknameExists";
+        }
+
         String currentImagePath = member.getProfileImg();
         String newImagePath = currentImagePath;
+
         if (profileImage != null && !profileImage.isEmpty()) {
             newImagePath = fileStorageService.saveImage(profileImage, "members");
             if (currentImagePath != null && !currentImagePath.isEmpty()) {
                 fileStorageService.deleteIfExists(currentImagePath);
             }
         }
+
         req.setProfileImg(newImagePath);
 
         try {
             memberService.update(req, id);
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
-            return "members/edit";
+            return "member/myPage";
         }
+
         return "redirect:/members/" + id + "?updateSuccess=true";
     }
 
-    // 회원 삭제
+    // 회원 삭제 처리
     @PostMapping("/{id}/delete")
-    public String delete(@PathVariable Long id) {
+    public String delete(@PathVariable Long id, Principal principal, Model model) {
+        MemberRes member = memberService.getById(id);
+
+        // 본인 확인
+        if (!member.getEmail().equals(principal.getName())) {
+            model.addAttribute("error", "본인만 삭제할 수 있습니다.");
+            return "member/myPage";
+        }
+
         memberService.delete(id);
         return "redirect:/logout";
     }
@@ -164,9 +195,8 @@ public class MemberController {
                                   @RequestParam String pwd,
                                  Principal principal,
                                  RedirectAttributes redirectAttributes) {
-        String email = principal.getName();
-        MemberRes memberRes = memberService.getByEmail(email);
-        return passwordEncoder.matches(pwd, memberRes.getPwd());
+        MemberRes loginMember = memberService.getByEmail(principal.getName());
+        return loginMember.getId().equals(id);
     }
 
 

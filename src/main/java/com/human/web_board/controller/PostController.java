@@ -38,13 +38,14 @@ public class PostController {
         if (loginMember == null) {
             return "redirect:/login";
         }
-
+        // 게시글 Category 저장
+        Long categoryId = postFormDto.getCategoryId();
         // 작성자 ID 저장
         postFormDto.setMemberId(loginMember.getId());
 
         // 저장 실행
         postService.save(postFormDto);
-
+        System.out.println("선택된 카테고리 ID = " + categoryId);
         return "redirect:/board/list?msg=created";
     }
 
