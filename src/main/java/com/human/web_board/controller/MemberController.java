@@ -112,7 +112,7 @@ public class MemberController {
 
         // 비밀번호 확인
         if (!req.getPwd().equals(req.getPasswordCheck())) {
-            log.warn("회원가입 실패 - 비밀번호 불일치: {}", req.getEmail());
+            log.warn("회원가입 실패 - 비밀번호 불일치: {}", req.getEmail() + req.getPwd() + req.getPasswordCheck());
             return "redirect:/members/" + id + "?signupFail=passwordMismatch";
         }
 
