@@ -56,7 +56,7 @@ public class SecurityConfig {
                             request.getSession().setAttribute("loginMember", loginMember);
                             response.sendRedirect("/main");
                         })
-                        .failureUrl("/login?error=true")
+                        .failureUrl("/login?loginFail=true")
                         .permitAll()
                 )
                 .rememberMe(rem -> rem
