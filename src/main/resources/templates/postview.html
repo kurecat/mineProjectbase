@@ -50,8 +50,8 @@
                         class="text-sm text-gray-500 hover:underline">
                     신고하기
                 </button>
-                <div id="report-form-area" class="hidden mt-4">
-                    <form th:action="@{/comments/report}" method="post">
+                <div id="report-form-area" class="hidden mt-4 w-full">
+                    <form th:action="@{/comments/report}" method="post" class="w-full">
         <textarea name="content"
                   class="w-full border rounded p-3"
                   rows="3"
@@ -117,6 +117,10 @@
                     <div th:each="c : ${comments}"
                          th:with="isEditing=${param.editId != null and T(java.lang.Long).valueOf(param.editId[0]) == c.id}"
                          class="py-4 border-b border-gray-100">
+
+                        <div th:if="${!(c.content.startsWith('[신고]')
+                    and (loginMember == null
+                        or (loginMember.id != c.memberId and loginMember.grade != '관리자')))}">
 
                         <!-- ⭐ 일반 모드 -->
                         <div th:if="${!isEditing}">
