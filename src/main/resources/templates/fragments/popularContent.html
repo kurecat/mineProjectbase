@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="popularContentFragment">
+    <div class="content-list__section">
+        <h3 class="content-list__title">인기글</h3>
+        <ul th:if="${popularPosts != null and !popularPosts.isEmpty()}" th:each="post : ${popularPosts}">
+            <li class="unstyled-list">
+                <a th:href="@{|/board/detail/${post.id}|}" th:text="${post.title}" class="unstyled-link"></a>
+            </li>
+        </ul>
+        <div th:if="${popularPosts == null or popularPosts.isEmpty()}"
+             class="content-list__placeholder">게시물이 없습니다.
+        </div>
+    </div>
+</div>
+</html>

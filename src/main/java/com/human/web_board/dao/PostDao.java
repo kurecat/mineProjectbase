@@ -172,25 +172,35 @@ public class PostDao {
     public List<PostSummaryRes> findPopular(int offset, int rowNum) {
         @Language("SQL")
         String sql = """
-                SELECT p.id,
-                       mc.name AS category_name,
-                       p.title,
-                       p.MEMBER_ID,
-                       m.NICKNAME,
-                       p.VIEW_COUNT,
-                       p.RECOMMENDATIONS_COUNT,
-                       p.CREATED_AT
-                FROM POSTS p
-                JOIN members m ON p.member_id = m.id
-                JOIN MAIN_CATEGORY mc ON p.MAIN_CATEGORY_ID = mc.id
-                WHERE ROWNUM BETWEEN ? and ?
-                ORDER BY p.VIEW_COUNT DESC
+                SELECT *
+                   FROM (
+                    SELECT ROWNUM AS RN,
+                           SORTED.*
+                      FROM (
+                       SELECT P.ID,
+                              MC.NAME AS CATEGORY_NAME,
+                              P.TITLE,
+                              P.MEMBER_ID,
+                              M.NICKNAME,
+                              P.VIEW_COUNT,
+                              P.RECOMMENDATIONS_COUNT,
+                              P.CREATED_AT
+                         FROM POSTS P
+                         JOIN MEMBERS M
+                       ON P.MEMBER_ID = M.ID
+                         JOIN MAIN_CATEGORY MC
+                       ON P.MAIN_CATEGORY_ID = MC.ID
+                        ORDER BY P.VIEW_COUNT DESC
+                    ) SORTED
+                     WHERE ROWNUM <= ?
+                 )
+                  WHERE RN > ?
                 """;
         return jdbc.query(
                 sql,
                 new PostSummaryResRowMapper(),
-                offset,
-                offset + rowNum
+                offset + rowNum,
+                offset
         );
     }
 
@@ -198,25 +208,35 @@ public class PostDao {
     public List<PostSummaryRes> findRecommended(int offset, int rowNum) {
         @Language("SQL")
         String sql = """
-                SELECT p.id,
-                       mc.name AS category_name,
-                       p.title,
-                       p.MEMBER_ID,
-                       m.NICKNAME,
-                       p.VIEW_COUNT,
-                       p.RECOMMENDATIONS_COUNT,
-                       p.CREATED_AT
-                FROM POSTS p
-                JOIN members m ON p.member_id = m.id
-                JOIN MAIN_CATEGORY mc ON p.MAIN_CATEGORY_ID = mc.id
-                WHERE ROWNUM BETWEEN ? and ?
-                ORDER BY p.RECOMMENDATIONS_COUNT DESC
+                SELECT *
+                   FROM (
+                    SELECT ROWNUM AS RN,
+                           SORTED.*
+                      FROM (
+                       SELECT P.ID,
+                              MC.NAME AS CATEGORY_NAME,
+                              P.TITLE,
+                              P.MEMBER_ID,
+                              M.NICKNAME,
+                              P.VIEW_COUNT,
+                              P.RECOMMENDATIONS_COUNT,
+                              P.CREATED_AT
+                         FROM POSTS P
+                         JOIN MEMBERS M
+                       ON P.MEMBER_ID = M.ID
+                         JOIN MAIN_CATEGORY MC
+                       ON P.MAIN_CATEGORY_ID = MC.ID
+                        ORDER BY P.RECOMMENDATIONS_COUNT DESC
+                    ) SORTED
+                     WHERE ROWNUM <= ?
+                 )
+                  WHERE RN > ?
                 """;
         return jdbc.query(
                 sql,
                 new PostSummaryResRowMapper(),
-                offset,
-                offset + rowNum
+                offset + rowNum,
+                offset
         );
     }
 

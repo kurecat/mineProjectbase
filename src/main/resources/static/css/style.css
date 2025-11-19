@@ -590,6 +590,10 @@ footer-Copyright {
   height: 1000px;
   border: 1px solid black;
   margin-left: 30px;
+  background-image: url("/image/ad1.jpeg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .bastpostlist {
@@ -1461,7 +1465,6 @@ footer-Copyright {
 }
 
 /* 기존 스타일 제거하는 스타일 */
-
 .unstyled-link {
   all: unset; /* 모든 기본 스타일 제거 */
   cursor: pointer; /* 링크처럼 보이게 */
@@ -1479,3 +1482,4 @@ footer-Copyright {
     margin-top: 5px;
     display: block;
 }
+
