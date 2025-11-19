@@ -30,10 +30,18 @@ public class CommentDao {
     public List<CommentRes> findByPostId(Long postId) {
         @Language("SQL")
          String sql = """
-        SELECT id, post_id, member_id, content, created_at
-        FROM comments
-        WHERE post_id = ?
-        ORDER BY id DESC
+
+                SELECT
+                  c.id,
+                  c.content,
+                  c.member_id,
+                  c.post_id,
+                  c.created_at,
+                  m.nickname
+                  FROM comments c
+                  JOIN members m ON c.member_id = m.id
+                  WHERE c.post_id = ?
+                  ORDER BY c.id ASC
         """;
         return jdbc.query(sql, new CommentResMapper(), postId);
     }
@@ -76,9 +84,10 @@ public class CommentDao {
             return new CommentRes(
               rs.getLong("id"),
               rs.getLong("post_id"),
-              rs.getLong("member_id"),
+              rs.getString("nickname"),
               rs.getString("content"),
-              rs.getTimestamp("created_at").toLocalDateTime()
+              rs.getTimestamp("created_at").toLocalDateTime(),
+              rs.getLong("member_id")
             );
         }
     }

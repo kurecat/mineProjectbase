@@ -66,7 +66,7 @@
                     </form>
 
                     <a th:href="@{/}"
-                       class="w-32 h-12 flex items-center justify-center bg-black hover:bg-gray-800 text-white rounded-lg font-bold">
+                       class="w-32 h-12 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg">
                         돌아가기
                     </a>
                 </div>
@@ -101,7 +101,7 @@
                         <!-- ⭐ 일반 모드 -->
                         <div th:if="${!isEditing}">
                             <div class="flex items-center justify-between">
-                                <span class="font-semibold" th:text="${c.memberId}">작성자</span>
+                                <span class="font-semibold" th:text="${c.nickname}">작성자</span>
                                 <span class="text-xs text-gray-400"
                                       th:text="${#temporals.format(c.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
                             </div>
@@ -109,21 +109,36 @@
                             <p class="mt-2 text-gray-700" th:text="${c.content}">내용</p>
 
                             <!-- 본인 댓글만 버튼 보임 -->
+                            <div class="mt-2 flex gap-2"
+                                 th:if="${loginMember != null and loginMember.id == c.memberId}">
+
+                                <!-- 수정 버튼 (파스텔 블루) -->
                             <div class="mt-2 flex gap-2" th:if="${loginMember != null}">
                                 <a th:href="@{|/board/detail/${post.id}?editId=${c.id}|}"
+                                   class="px-2 py-1 text-sm rounded-md
+              border border-blue-300
+              bg-blue-50 text-blue-600
+              hover:bg-blue-100 transition">
                                    th:if="${loginMember.id == c.memberId}"
                                    class="px-2 py-1 text-sm bg-yellow-300 rounded">
                                     수정
                                 </a>
+
+                                <!-- 삭제 버튼 (파스텔 레드) -->
+                                <form th:action="@{|/comments/${c.id}/delete|}" method="post">
                                 <form th:action="@{|/comments/${c.id}/delete|}" method="post"
                                       th:if="${loginMember.id == c.memberId or loginMember.grade == '2'}">
                                     <input type="hidden" name="postId" th:value="${post.id}">
+                                    <button
+                                            class="px-2 py-1 text-sm rounded-md
+                   border border-red-300
+                   bg-red-50 text-red-600
+                   hover:bg-red-100 transition">
                                     <button class="px-2 py-1 bg-red-500 text-white text-sm rounded"
                                             onclick="return confirm('정말 삭제하시겠습니까?');">
                                         삭제
                                     </button>
                                 </form>
-
                             </div>
                         </div>
 
