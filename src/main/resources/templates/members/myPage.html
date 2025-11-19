@@ -95,7 +95,8 @@
                         <a th:href="@{|/board/detail/${comment.postId}#comment-list|}" th:text="${comment.content}"></a>
                     </li>
                 </ul>
-                <div class="content-list__placeholder">댓글이 없습니다.</div>
+                <div th:if="${comments == null or comments.isEmpty()}"
+                     class="content-list__placeholder">댓글이 없습니다.</div>
             </div>
         </div>
     </div>
