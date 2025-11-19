@@ -65,10 +65,17 @@ public class CommentDao {
     public CommentRes findById(Long post_id) {
         @Language("SQL")
         String sql = """
-        SELECT id, post_id, member_id, content, created_at
-        FROM comments
-        WHERE id = ?
-    """;
+    SELECT c.id,
+           c.post_id,
+           c.member_id,
+           c.content,
+           c.created_at,
+           m.nickname
+    FROM comments c
+    JOIN members m ON c.member_id = m.id
+    WHERE c.id = ?
+""";
+
 
         try {
             return jdbc.queryForObject(sql, new CommentResMapper(), post_id);
