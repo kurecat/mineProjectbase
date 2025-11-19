@@ -614,15 +614,6 @@ footer-Copyright {
   align-items: center;
   text-align: center;
 }
-
-.unstyled-link {
-  all: unset; /* 모든 기본 스타일 제거 */
-  cursor: pointer; /* 링크처럼 보이게 */
-}
-.unstyled-link:hover {
-  text-decoration: underline;
-}
-
 .numberbox {
   width: 60px;
 }
@@ -1467,4 +1458,17 @@ footer-Copyright {
 .postlist-header > a.write-button {
    /* background-color: #007bff; */
    /* color: white; */
+}
+
+/* 기존 스타일 제거하는 스타일 */
+
+.unstyled-link {
+  all: unset; /* 모든 기본 스타일 제거 */
+  cursor: pointer; /* 링크처럼 보이게 */
+}
+.unstyled-link:hover {
+  text-decoration: underline;
+}
+.unstyled-list {
+  list-style: none;
 }

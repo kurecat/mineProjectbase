@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const nickname = document.getElementById('edit-username');
 
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{4,16}$/;
-    const usernameRegex = /^[a-zA-Z0-9_-]{3,16}$/;
+    const usernameRegex = /^[가-힣a-zA-Z0-9_-]{2,16}$/;
 
     form.addEventListener('submit', function(event) {
         // 어떤 버튼으로 제출됐는지 확인
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
     showError(nickname, 'nickname-error', '필수 입력 항목입니다.');
     return false;
 } else if (!usernameRegex.test(nickname.value)) {
-    showError(nickname, 'nickname-error', '3~16자의 영문자, 숫자, 밑줄(_), 하이픈(-)만 사용 가능합니다.');
+    showError(nickname, 'nickname-error', '2~16자의 한글, 영문자, 숫자, 밑줄(_), 하이픈(-)만 사용 가능합니다.');
     return false;
 } else {
     showSuccess(nickname, 'nickname-error');
