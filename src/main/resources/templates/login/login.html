@@ -82,8 +82,19 @@
             document.getElementById("email").value = email;
             document.getElementById("remember-me").checked = true;
         }
-    };
 
+        const form = document.querySelector("form");
+        form.addEventListener("submit", function () {
+            const rememberMe = document.getElementById("remember-me").checked;
+            const emailInput = document.getElementById("email").value;
+
+            if (rememberMe) {
+                document.cookie = `rememberId=${encodeURIComponent(emailInput)};path=/;max-age=${60*60*24*7}`;
+            } else {
+                document.cookie = `rememberId=;path=/;max-age=0`;
+            }
+        });
+    };
 </script>
 
 </body>
