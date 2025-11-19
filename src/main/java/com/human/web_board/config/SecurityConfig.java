@@ -12,13 +12,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import jakarta.servlet.http.Cookie;
-import java.net.URLEncoder;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
+
 
     private final CustomUserDetailsService customUserDetailsService;
 
@@ -26,39 +26,22 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-
-                .headers(headers -> headers
-                        .frameOptions(frameOptions -> frameOptions.sameOrigin())
-                )
-
+                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/css/**", "/js/**", "/images/**",
-                                "/webjars/**", "/favicon.ico",
-                                "/smarteditor2/**"
-                        ).permitAll()
-                        .requestMatchers(
-                                "/", "/main", "/login",
-                                "/members/signup/**", "/reset-password",
-                                "/api/**", "/posts/**", "/comments/**",
-                                "/board/detail/**","/board/**","/board/write",
-                                "/upload-images-dragdrop"
-                        ).permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico", "/smarteditor2/**").permitAll()
+                        .requestMatchers("/", "/main", "/login", "/members/signup/**", "/reset-password",
+                                "/api/**", "/posts/**", "/comments/**", "/board/detail/**", "/board/**", "/board/write",
+                                "/upload-images-dragdrop").permitAll()
                         .requestMatchers("/image/*", "/ajax/post-list", "/main/search").permitAll()
-
-                        // ⬇ 관리자 전용 URL
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
-
                         .anyRequest().authenticated()
                 )
-
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
                         .usernameParameter("email")
                         .passwordParameter("pwd")
                         .successHandler((request, response, authentication) -> {
-
                             CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
 
                             MemberRes loginMember = new MemberRes(
@@ -73,21 +56,6 @@ public class SecurityConfig {
                             );
 
                             request.getSession().setAttribute("loginMember", loginMember);
-
-                            // Remember-Me 쿠키 저장
-                            if ("on".equals(request.getParameter("remember-me"))) {
-                                Cookie cookie = new Cookie("rememberId",
-                                        URLEncoder.encode(user.getEmail(), "UTF-8"));
-                                cookie.setMaxAge(60 * 60 * 24 * 7); // 7일
-                                cookie.setPath("/");
-                                response.addCookie(cookie);
-                            } else {
-                                Cookie cookie = new Cookie("rememberId", null);
-                                cookie.setMaxAge(0);
-                                cookie.setPath("/");
-                                response.addCookie(cookie);
-                            }
-
                             response.sendRedirect("/main");
                         })
                         .failureUrl("/login?error=true")
@@ -96,13 +64,25 @@ public class SecurityConfig {
                 .rememberMe(rem -> rem
                         .key("uniqueAndSecret")
                         .rememberMeParameter("remember-me")
+                        .userDetailsService(customUserDetailsService)
                         .tokenValiditySeconds(60 * 60 * 24 * 7)
                 )
-
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login")
-                        .invalidateHttpSession(true)
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            // 세션 무효화 및 쿠키 삭제
+                            request.getSession().invalidate();
+                            var cookies = request.getCookies();
+                            if (cookies != null) {
+                                for (var cookie : cookies) {
+                                    cookie.setMaxAge(0);
+                                    cookie.setValue(null);
+                                    cookie.setPath("/");
+                                    response.addCookie(cookie);
+                                }
+                            }
+                            response.sendRedirect("/login");
+                        })
                         .permitAll()
                 );
 
@@ -116,12 +96,9 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authBuilder =
-                http.getSharedObject(AuthenticationManagerBuilder.class);
-
+        AuthenticationManagerBuilder authBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
         authBuilder.userDetailsService(customUserDetailsService)
                 .passwordEncoder(passwordEncoder());
-
         return authBuilder.build();
     }
 }
