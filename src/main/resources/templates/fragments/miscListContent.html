@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <div th:fragment="miscListContentFragment" class="misc-list-container">
+    <div class="content-list__section">
+      <h3 class="content-list__title">인기글</h3>
+      <ul
+        th:if="${popularPosts != null and !popularPosts.isEmpty()}"
+        th:each="post : ${popularPosts}"
+      >
+        <li class="unstyled-list">
+          <a
+            th:href="@{|/board/detail/${post.id}|}"
+            th:text="${post.title}"
+            class="unstyled-link"
+          ></a>
+        </li>
+      </ul>
+      <div
+        th:if="${popularPosts == null or popularPosts.isEmpty()}"
+        class="content-list__placeholder"
+      >
+        게시물이 없습니다.
+      </div>
+    </div>
+
+    <div class="content-list__section">
+      <h3 class="content-list__title">추천글</h3>
+      <ul
+        th:if="${recommendedPosts != null and !recommendedPosts.isEmpty()}"
+        th:each="post : ${recommendedPosts}"
+      >
+        <li class="unstyled-list">
+          <a
+            th:href="@{|/board/detail/${post.id}|}"
+            th:text="${post.title}"
+            class="unstyled-link"
+          ></a>
+        </li>
+      </ul>
+      <div
+        th:if="${recommendedPosts == null or recommendedPosts.isEmpty()}"
+        class="content-list__placeholder"
+      >
+        게시물이 없습니다.
+      </div>
+    </div>
+
+    <div class="content-list__section">
+      <h3 class="content-list__title">포인트 순위</h3>
+      <ul
+        th:if="${highScores != null and !highScores.isEmpty()}"
+        th:each="member : ${highScores}"
+      >
+        <li class="unstyled-list">
+          <a
+            th:href="@{|/members/${member.id}|}"
+            class="unstyled-link"
+          >
+            <span th:text="${member.nickname}"></span>
+            <span th:text="${member.point}"></span>
+          </a>
+        </li>
+      </ul>
+      <div
+        th:if="${highScores == null or highScores.isEmpty()}"
+        class="content-list__placeholder"
+      >
+        게시물이 없습니다.
+      </div>
+    </div>
+  </div>
+</html>
