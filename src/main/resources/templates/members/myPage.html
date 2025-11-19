@@ -80,7 +80,7 @@
             <div class="content-list__section">
                 <h3 class="content-list__title">My Post list</h3>
                 <ul th:if="${postSummaries != null and !postSummaries.isEmpty()}" th:each="post : ${postSummaries}">
-                    <li>
+                    <li class="unstyled-list">
                         <a th:href="@{|/board/detail/${post.id}|}" th:text="${post.title}" class="unstyled-link"></a>
                     </li>
                 </ul>
@@ -91,7 +91,7 @@
             <div class="content-list__section">
                 <h3 class="content-list__title">My Comment list</h3>
                 <ul th:if="${comments != null and !comments.isEmpty()}" th:each="comment : ${comments}">
-                    <li>
+                    <li class="unstyled-list">
                         <a th:href="@{|/board/detail/${comment.postId}#comment-list|}" th:text="${comment.content}" class="unstyled-link"></a>
                     </li>
                 </ul>
