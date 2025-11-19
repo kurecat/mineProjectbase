@@ -246,6 +246,27 @@
         reportArea.classList.add("hidden");
     });
 </script>
+<script>
+    // 게시글 삭제 확인
+    const postDeleteForm = document.querySelector('form[th\\:action*="/board/delete/"]');
+    if (postDeleteForm){
+        postDeleteForm.addEventListener('submit', function(e){
+            if(!confirm("게시글과 관련 댓글까지 정말 삭제하시겠습니까?")) {
+                e.preventDefault();
+            }
+        });
+    }
+
+    // 댓글 삭제 확인
+    document.querySelectorAll('form[th\\:action*="/comments/"][th\\:action*="/delete"]').forEach(form => {
+        form.addEventListener('submit', function(e){
+            e.preventDefault(); // 기본 제출 막기
+            if(confirm("댓글을 정말 삭제하시겠습니까?")) {
+                form.submit(); // 확인 시 실제 제출
+            }
+        });
+    });
+</script>
 
 </body>
 </html>
