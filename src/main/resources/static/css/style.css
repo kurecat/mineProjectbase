@@ -592,6 +592,10 @@ footer-Copyright {
   height: 1000px;
   border: 1px solid black;
   margin-left: 30px;
+  background-image: url("/image/ad1.jpeg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .bastpostlist {

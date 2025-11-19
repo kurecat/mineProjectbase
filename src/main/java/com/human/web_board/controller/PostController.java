@@ -161,7 +161,8 @@ public class PostController {
         // [3] 권한 확인 (본인 확인 OR 관리자 확인)
         // 작성자가 아니고(AND) 등급이 2도 아니라면 -> 권한 없음
         boolean isAuthor = post.getMemberId().equals(loginMember.getId());
-        boolean isAdmin = (Integer.parseInt(loginMember.getGrade()) == 2);
+        boolean isAdmin = "관리자".equals(loginMember.getGrade());
+
 
         if (!isAuthor && !isAdmin) {
             // 본인도 아니고 관리자도 아니면 쫓아냄

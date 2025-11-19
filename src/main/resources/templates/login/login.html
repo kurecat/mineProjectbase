@@ -11,7 +11,7 @@
     <div class="login-wrapper">
         <form th:action="@{/login}" method="post">
 
-        <h2>Please Sign in</h2>
+            <h2>Please Sign in</h2>
 
             <div class="form-group">
                 <input type="email" class="form-control" id="email" name="email" placeholder="Email address" required>
@@ -32,21 +32,18 @@
                     <span class="separator">|</span>
                     <a th:href="@{/members/signup}">Sign Up</a>
                 </div>
-
             </div>
-
-
 
             <button type="submit" class="btn-signin">Sign in</button>
         </form>
     </div>
     <div th:replace="~{fragments/footer :: footer}"></div>
 </div>
+
 <script>
     const urlParams = new URLSearchParams(window.location.search);
 
     // 로그인 성공/실패
-
     if (urlParams.get("loginFail") === "true") {
         alert("로그인 실패! 이메일 또는 비밀번호 확인");
     }
@@ -77,19 +74,25 @@
         const cookies = document.cookie.split(";").map(c => c.trim());
         const rememberCookie = cookies.find(c => c.startsWith("rememberId="));
 
+        const emailInput = document.getElementById("email");
+        const rememberMeCheckbox = document.getElementById("remember-me");
+
         if (rememberCookie) {
             const email = decodeURIComponent(rememberCookie.split("=")[1]);
-            document.getElementById("email").value = email;
-            document.getElementById("remember-me").checked = true;
+            emailInput.value = email;
+            rememberMeCheckbox.checked = true;  // 쿠키가 있으면 체크
+        } else {
+            rememberMeCheckbox.checked = false; // 없으면 체크 해제
         }
 
+        // 로그인 시 체크박스 상태 따라 쿠키 생성/삭제
         const form = document.querySelector("form");
         form.addEventListener("submit", function () {
-            const rememberMe = document.getElementById("remember-me").checked;
-            const emailInput = document.getElementById("email").value;
+            const rememberMe = rememberMeCheckbox.checked;
+            const emailVal = emailInput.value;
 
             if (rememberMe) {
-                document.cookie = `rememberId=${encodeURIComponent(emailInput)};path=/;max-age=${60*60*24*7}`;
+                document.cookie = `rememberId=${encodeURIComponent(emailVal)};path=/;max-age=${60*60*24*7}`;
             } else {
                 document.cookie = `rememberId=;path=/;max-age=0`;
             }

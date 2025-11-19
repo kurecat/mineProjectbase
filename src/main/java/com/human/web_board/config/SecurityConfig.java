@@ -13,10 +13,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import jakarta.servlet.http.Cookie;
+
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-
 
     private final CustomUserDetailsService customUserDetailsService;
 
@@ -54,6 +55,21 @@ public class SecurityConfig {
                             );
 
                             request.getSession().setAttribute("loginMember", loginMember);
+
+                            // Remember me 체크박스 기반 이메일 쿠키 저장/삭제
+                            String remember = request.getParameter("remember-me");
+                            if ("on".equals(remember)) {
+                                Cookie rememberCookie = new Cookie("rememberId", user.getEmail());
+                                rememberCookie.setMaxAge(60 * 60 * 24 * 7); // 7일
+                                rememberCookie.setPath("/");
+                                response.addCookie(rememberCookie);
+                            } else {
+                                Cookie rememberCookie = new Cookie("rememberId", null);
+                                rememberCookie.setMaxAge(0);
+                                rememberCookie.setPath("/");
+                                response.addCookie(rememberCookie);
+                            }
+
                             response.sendRedirect("/main");
                         })
                         .failureUrl("/login?loginFail=true")
@@ -71,11 +87,11 @@ public class SecurityConfig {
                             // 세션 무효화
                             request.getSession().invalidate();
 
-                            // 세션 쿠키만 삭제, remember-me 쿠키는 유지
+                            // 세션 쿠키만 삭제
                             var cookies = request.getCookies();
                             if (cookies != null) {
                                 for (var cookie : cookies) {
-                                    if ("JSESSIONID".equals(cookie.getName())) { // 세션 쿠키만 삭제
+                                    if ("JSESSIONID".equals(cookie.getName())) {
                                         cookie.setMaxAge(0);
                                         cookie.setValue(null);
                                         cookie.setPath("/");
@@ -83,6 +99,8 @@ public class SecurityConfig {
                                     }
                                 }
                             }
+
+                            // 이메일 쿠키는 그대로 유지 → 체크박스와 이메일 유지 가능
 
                             response.sendRedirect("/login");
                         })

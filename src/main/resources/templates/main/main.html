@@ -76,8 +76,14 @@
 
         </div>
         <div class="postlistright"></div>
-        <div class="bastpostlist"></div>
-        <div class="goodpostlist"></div>
+        <div class="bastpostlist">
+            <div th:replace="~{fragments/popularContent :: popularContentFragment}">
+            </div>
+        </div>
+        <div class="goodpostlist">
+            <div th:replace="~{fragments/recommendedContent :: recommendedContentFragment}">
+            </div>
+        </div>
     </main>
     <div th:replace="~{fragments/footer :: footer}"></div>
 </div>

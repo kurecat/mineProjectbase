@@ -26,7 +26,7 @@ public class CommentController {
     ) {
         MemberRes loginMember = (MemberRes) session.getAttribute("loginMember");
         System.out.println(loginMember);
-        //if (loginMember == null) return "redirect:/login";
+        if (loginMember == null) return "redirect:/login";
 
         req.setPostId(postId);
         req.setMemberId(loginMember.getId());
@@ -81,5 +81,25 @@ public class CommentController {
 
         return "redirect:/board/detail/" + postId + "?msg=deleted";
     }
+    @PostMapping("/report")
+    public String report(
+            @RequestParam Long postId,
+            @RequestParam String content,
+            HttpSession session){
+        MemberRes login = (MemberRes) session.getAttribute("loginMember");
+        if (login == null) {
+            return "redirect:/login";
+        }
+
+        CommentCreateReq req = new CommentCreateReq();
+        req.setPostId(postId);
+        req.setMemberId(login.getId());
+        req.setContent("[신고] " + content); // 신고 표시
+
+        commentService.write(req);
+
+        return "redirect:/board/detail/" + postId;
+    }
+
 
 }

@@ -46,8 +46,14 @@
 
             <!-- 버튼 영역 -->
             <div class="flex justify-between items-center border-t border-gray-300 pt-6">
-                <a class="text-sm text-gray-500 hover:underline" href="#">신고하기</a>
 
+                <!-- 신고하기 -->
+                <button id="report-btn"
+                        class="text-sm text-gray-500 hover:underline">
+                    신고하기
+                </button>
+
+                <!-- 수정, 삭제, 돌아가기 -->
                 <div class="flex gap-2">
 
                     <a th:href="@{|/board/edit/${post.id}|}"
@@ -69,7 +75,41 @@
                        class="w-32 h-12 flex items-center justify-center bg-blue-100 hover:bg-gray-200 rounded-lg">
                         돌아가기
                     </a>
+
                 </div>
+            </div>
+
+            <!-- 신고 입력 폼 -->
+            <div id="report-form-area"
+                 class="hidden mt-4 w-full">
+
+                <form th:action="@{/comments/report}" method="post"
+                      class="w-full p-4 border border-red-200 bg-red-50 rounded-lg space-y-3">
+
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-semibold text-red-600">신고 내용 작성</span>
+                    </div>
+
+                    <textarea name="content"
+                              class="w-full border border-red-200 rounded-md p-3 text-sm
+                                     focus:outline-none focus:ring-2 focus:ring-red-400"
+                              rows="4"
+                              placeholder="신고 내용을 입력하세요..."
+                              required></textarea>
+
+                    <input type="hidden" name="postId" th:value="${post.id}" />
+
+                    <div class="flex gap-2 justify-end">
+                        <button class="px-3 py-1 bg-red-600 text-white rounded text-sm">
+                            신고 등록
+                        </button>
+
+                        <button type="button" id="report-cancel"
+                                class="px-3 py-1 bg-gray-300 rounded text-sm">
+                            취소
+                        </button>
+                    </div>
+                </form>
             </div>
 
             <!-- 댓글 영역 -->
@@ -80,88 +120,84 @@
                     <span class="font-semibold" th:text="|댓글 (${#lists.size(comments)})|"></span>
                 </div>
 
-                <!-- 댓글 리스트 -->
                 <div id="comment-list" class="mt-4">
 
-                    <!-- 댓글 없음 -->
                     <div th:if="${#lists.isEmpty(comments)}"
-                         class="text-center text-gray-500 py-10">등록된 댓글이 없습니다.</div>
+                         class="text-center text-gray-500 py-10">
+                        등록된 댓글이 없습니다.
+                    </div>
 
                     <!-- 댓글 반복 -->
                     <div th:each="c : ${comments}"
                          th:with="isEditing=${param.editId != null and T(java.lang.Long).valueOf(param.editId[0]) == c.id}"
                          class="py-4 border-b border-gray-100">
 
-                        <!-- ⭐ 일반 모드 -->
-                        <div th:if="${!isEditing}">
-                            <div class="flex items-center justify-between">
-                                <span class="font-semibold" th:text="${c.nickname}">작성자</span>
-                                <span class="text-xs text-gray-400"
-                                      th:text="${#temporals.format(c.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
-                            </div>
+                        <!-- 신고 댓글 숨김 처리 -->
+                        <div th:if="${!(c.content.startsWith('[신고]')
+                            and (loginMember == null
+                            or (loginMember.id != c.memberId and loginMember.grade != '관리자')))}">
 
-                            <p class="mt-2 text-gray-700" th:text="${c.content}">내용</p>
-
-                            <!-- 본인 댓글만 버튼 보임 -->
-                            <div class="mt-2 flex gap-2"
-                                 th:if="${loginMember != null}">
-
-                                <a th:href="@{|/board/detail/${post.id}?editId=${c.id}|}"
-                                   th:if="${loginMember.id == c.memberId}"
-                                   class="px-2 py-1 text-sm rounded-md
-                            border border-blue-300
-                            bg-blue-50 text-blue-600
-                            hover:bg-blue-100 transition">
-                                    수정
-                                </a>
-
-                                <form th:action="@{|/comments/${c.id}/delete|}" method="post"
-                                      th:if="${loginMember.id == c.memberId or loginMember.grade == '관리자'}">
-                                    <input type="hidden" name="postId" th:value="${post.id}">
-
-                                    <button class="px-2 py-1 bg-red-500 text-white text-sm rounded"
-                                            onclick="return confirm('정말 삭제하시겠습니까?');">
-                                        삭제
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-
-                        <!-- ⭐ 수정 모드 (인라인 편집) -->
-                        <div th:if="${isEditing}">
-                            <form th:action="@{|/comments/${c.id}/edit|}" method="post">
-
-                                <textarea name="content"
-                                          class="w-full p-2 border rounded mb-2"
-                                          th:text="${c.content}" required></textarea>
-
-                                <input type="hidden" name="postId" th:value="${post.id}">
-
-                                <div class="flex gap-2">
-                                    <button class="px-3 py-1 bg-blue-600 text-white rounded">
-                                        수정 완료
-                                    </button>
-
-                                    <a th:href="@{|/board/detail/${post.id}|}"
-                                       class="px-3 py-1 bg-gray-300 rounded">
-                                        취소
-                                    </a>
+                            <!-- 일반 보기 모드 -->
+                            <div th:if="${!isEditing}">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-semibold" th:text="${c.nickname}">작성자</span>
+                                    <span class="text-xs text-gray-400"
+                                          th:text="${#temporals.format(c.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
                                 </div>
 
-                            </form>
+                                <p class="mt-2"
+                                   th:classappend="${c.content.startsWith('[신고]') ? 'text-red-600 font-semibold' : 'text-gray-700'}"
+                                   th:text="${c.content}">
+                                </p>
+
+                                <!-- 본인 또는 관리자만 수정/삭제 -->
+                                <div class="mt-2 flex gap-2"
+                                     th:if="${loginMember != null}">
+
+                                    <a th:href="@{|/board/detail/${post.id}?editId=${c.id}|}"
+                                       th:if="${loginMember.id == c.memberId}"
+                                       class="px-2 py-1 text-sm rounded-md border border-blue-300 bg-blue-50 text-blue-600 hover:bg-blue-100 transition">
+                                        수정
+                                    </a>
+
+                                    <form th:action="@{|/comments/${c.id}/delete|}" method="post"
+                                          th:if="${loginMember.id == c.memberId or loginMember.grade == '관리자'}">
+                                        <input type="hidden" name="postId" th:value="${post.id}">
+                                        <button class="px-2 py-1 bg-red-500 text-white text-sm rounded"
+                                                onclick="return confirm('정말 삭제하시겠습니까?');">
+                                            삭제
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- 수정 모드 -->
+                            <div th:if="${isEditing}">
+                                <form th:action="@{|/comments/${c.id}/edit|}" method="post">
+                                    <textarea name="content"
+                                              class="w-full p-2 border rounded mb-2"
+                                              th:text="${c.content}" required></textarea>
+                                    <input type="hidden" name="postId" th:value="${post.id}">
+
+                                    <div class="flex gap-2">
+                                        <button class="px-3 py-1 bg-blue-600 text-white rounded">수정 완료</button>
+                                        <a th:href="@{|/board/detail/${post.id}|}"
+                                           class="px-3 py-1 bg-gray-300 rounded">취소</a>
+                                    </div>
+                                </form>
+                            </div>
+
                         </div>
-
-                    </div> <!-- 댓글 반복 끝 -->
-
-                </div> <!-- 댓글 리스트 끝 -->
+                    </div>
+                </div>
 
                 <!-- 댓글 작성 -->
                 <form th:action="@{/comments/{postId}(postId=${post.id})}" method="post"
                       class="mt-6 p-4 bg-gray-50 rounded-lg">
-
                     <textarea name="content"
                               class="w-full p-3 border border-gray-300 rounded mb-3"
-                              placeholder="댓글을 입력하세요..." required></textarea>
+                              placeholder="댓글을 입력하세요..."
+                              required></textarea>
 
                     <input type="hidden" name="postId" th:value="${post.id}">
 
@@ -170,11 +206,11 @@
                     </button>
                 </form>
 
-            </div> <!-- 댓글 영역 끝 -->
+            </div>
 
         </main>
 
-        <!-- 사이드 광고 -->
+        <!-- 광고 -->
         <aside class="w-full lg:w-80 lg:flex-shrink-0 mt-8 lg:mt-0">
             <div class="bg-white rounded-lg shadow-md h-[960px] flex items-center justify-center border">
                 <span class="text-gray-500 text-2xl">광고 (W310)</span>
@@ -188,12 +224,48 @@
 
 </div>
 
-<!-- 🔔 메시지 알림 -->
+<!-- 알림 -->
 <script th:if="${param.msg}">
     const msg = /*[[${param.msg}]]*/ null;
     if (msg === 'created') alert('댓글이 등록되었습니다.');
     if (msg === 'edited') alert('댓글이 수정되었습니다.');
     if (msg === 'deleted') alert('댓글이 삭제되었습니다.');
+</script>
+
+<!-- 신고 JS -->
+<script>
+    const reportBtn = document.getElementById("report-btn");
+    const reportArea = document.getElementById("report-form-area");
+    const reportCancel = document.getElementById("report-cancel");
+
+    reportBtn.addEventListener("click", () => {
+        reportArea.classList.remove("hidden");
+    });
+
+    reportCancel.addEventListener("click", () => {
+        reportArea.classList.add("hidden");
+    });
+</script>
+<script>
+    // 게시글 삭제 확인
+    const postDeleteForm = document.querySelector('form[th\\:action*="/board/delete/"]');
+    if (postDeleteForm){
+        postDeleteForm.addEventListener('submit', function(e){
+            if(!confirm("게시글과 관련 댓글까지 정말 삭제하시겠습니까?")) {
+                e.preventDefault();
+            }
+        });
+    }
+
+    // 댓글 삭제 확인
+    document.querySelectorAll('form[th\\:action*="/comments/"][th\\:action*="/delete"]').forEach(form => {
+        form.addEventListener('submit', function(e){
+            e.preventDefault(); // 기본 제출 막기
+            if(confirm("댓글을 정말 삭제하시겠습니까?")) {
+                form.submit(); // 확인 시 실제 제출
+            }
+        });
+    });
 </script>
 
 </body>

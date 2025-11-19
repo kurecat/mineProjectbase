@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+
  * Spring Security에서 인증된 사용자 정보를 담는 클래스
  */
 @Getter
@@ -56,11 +57,13 @@ public class CustomUserDetails implements UserDetails {
         return authorities;
     }
 
+    /** Spring Security에서 username = email */
     @Override
     public String getUsername() {
         return this.email;
     }
 
+    /** 비밀번호 반환 */
     @Override
     public String getPassword() {
         return this.password;

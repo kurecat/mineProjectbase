@@ -10,9 +10,9 @@ public class MemberRes {
     private Long id;
     private String email;
     private String pwd;
-    private String nickname;  // name → nickname
-    private String grade;     // grade 추가
-    private LocalDateTime regDate; //날짜
+    private String nickname;
+    private String grade;
+    private LocalDateTime regDate;
     private int point;
     private String profileImg; // 이미지 추가
 
@@ -27,4 +27,9 @@ public class MemberRes {
         this.point = member.getPoint();
         this.profileImg = member.getProfileImg();
     }
+
+    public String getGradeName() {
+        return "관리자".equals(grade) ? "관리자" : "사용자";
+    }
+
 }
