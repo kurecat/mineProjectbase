@@ -45,6 +45,10 @@ public class SecurityConfig {
                                 "/upload-images-dragdrop"
                         ).permitAll()
                         .requestMatchers("/image/*", "/ajax/post-list", "/main/search").permitAll()
+
+                        // ⬇ 관리자 전용 URL
+                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
+
                         .anyRequest().authenticated()
                 )
 
