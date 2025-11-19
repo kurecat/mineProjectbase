@@ -20,7 +20,7 @@
             <div class="ntwrvsbox post-item">
                 <p class="numberbox" th:text="${post.id}">99</p>
                 <p class="titlebox">
-                    <a th:href="@{/board/detail/{id}(id=${post.id})}" th:text="${post.title}">
+                    <a th:href="@{/board/detail/{id}(id=${post.id})}" th:text="${post.title}" class="unstyled-link">
                         게시물 제목
                     </a>
                     <span class="category-tag"
@@ -29,7 +29,7 @@
                     </span>
                 </p>
                 <p class="writer">
-                    <a th:href="@{/members/{id}(id=${post.memberId})}" th:text="${post.nickname}">
+                    <a th:href="@{/members/{id}(id=${post.memberId})}" th:text="${post.nickname}" class="unstyled-link">
                     글쓴이
                     </a>
                 </p>
