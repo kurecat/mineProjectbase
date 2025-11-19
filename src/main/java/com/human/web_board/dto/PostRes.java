@@ -11,7 +11,7 @@ public class PostRes {
     private Long memberId;  // FK
     private String title;
     private String content;
-    private Long categoryId;  // FK(여기 나중에 수정할 수도 있음! long->string)
+    private Long maincategoryId;  // FK(여기 나중에 수정할 수도 있음! long->string)
     private Long viewCount;
     private Long recommendationsCount;
     private LocalDateTime createdAt;
