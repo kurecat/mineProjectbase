@@ -12,6 +12,8 @@ public interface CommentService {
     // 댓글 목록 조회
     List<CommentRes> list(Long postId);
 
+    List<CommentRes> listByMemberId(Long memberId, int offset, int rowNum);
+
     // 댓글 수정
     boolean update(CommentCreateReq req, Long id);
 

@@ -2,8 +2,7 @@ package com.human.web_board.controller;
 
 import com.human.web_board.dto.MemberRes;
 import com.human.web_board.dto.MemberSignupReq;
-import com.human.web_board.service.FileStorageService;
-import com.human.web_board.service.MemberService;
+import com.human.web_board.service.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
@@ -26,6 +25,8 @@ import java.security.Principal;
 @RequestMapping("/members")
 public class MemberController {
     private final MemberService memberService;
+    private final PostService postService;
+    private final CommentService commentService;
     private final FileStorageService fileStorageService;
     private final PasswordEncoder passwordEncoder;
 
@@ -164,10 +165,11 @@ public class MemberController {
         if (principal != null) {
             String email = principal.getName();
             MemberRes memberRes = memberService.getByEmail(email);
-            System.out.println(memberRes);
             model.addAttribute("loginMember", memberRes);
         }
         model.addAttribute("member", memberService.getById(id));
+        model.addAttribute("postSummaries", postService.listSummaries(id, 0, 5));
+        model.addAttribute("comments", commentService.listByMemberId(id, 0, 5));
         return "members/myPage";
     }
 

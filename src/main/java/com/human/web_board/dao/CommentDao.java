@@ -69,6 +69,24 @@ public class CommentDao {
         }
     }
 
+    public List<CommentRes> findByMemberId(Long memberId, int offset, int rowNum) {
+        @Language("SQL")
+        String sql = """
+            SELECT * FROM (
+                SELECT ROWNUM AS rn, inner_query.*
+                FROM (
+                    SELECT id, post_id, member_id, content, created_at
+                    FROM comments
+                    WHERE member_id = ?
+                    ORDER BY id DESC
+                ) inner_query
+                WHERE ROWNUM <= ?
+            )
+            WHERE rn > ?
+        """;
+        return jdbc.query(sql, new CommentResMapper(), memberId, offset + rowNum, offset);
+    }
+
     // mapper 메서드(수정)
     static class CommentResMapper implements RowMapper<CommentRes> {
         @Override

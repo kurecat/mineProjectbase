@@ -45,6 +45,8 @@ public interface PostService {
 
     /** 🔥 최신글 가져오는 메소드 — 반환 타입 확정 */
     List<PostRes> listRecent(int limit);
+
+    List<PostSummaryRes> listSummaries(Long memberId, int offset, int rowNum);
 }
 
 
