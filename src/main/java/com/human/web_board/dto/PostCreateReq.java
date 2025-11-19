@@ -8,6 +8,6 @@ public class PostCreateReq {
     private Long memberId;
     private String title;
     private String content;
-    public Long CategoryId;    // 추가
+    public Long mainCategoryId;    // 추가
 
 }

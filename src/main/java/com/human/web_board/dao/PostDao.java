@@ -20,15 +20,16 @@ import java.util.List;
 public class PostDao {
     private final JdbcTemplate jdbc;
 
-    // 게시글 등록(수정)
+    // 게시글 등록
     public Long save(PostCreateReq p) {
         @Language("SQL")
-        String sql = "INSERT INTO posts(id,member_id,title,content,category_id,view_count,recommendations_count,created_at) VALUES (posts_seq.NEXTVAL, ?, ?, ?,?,?,?,?)";
-        jdbc.update(sql, p.getMemberId(), p.getTitle(), p.getContent(), p.getCategoryId(), 0, 0, LocalDateTime.now());
+        // 수정됨: main_category_id 컬럼에 값을 직접 저장
+        String sql = "INSERT INTO posts(id, member_id, title, content, main_category_id, view_count, recommendations_count, created_at) VALUES (posts_seq.NEXTVAL, ?, ?, ?, ?, ?, ?, ?)";
+        jdbc.update(sql, p.getMemberId(), p.getTitle(), p.getContent(), p.getMainCategoryId(), 0, 0, LocalDateTime.now());
         return jdbc.queryForObject("SELECT posts_seq.CURRVAL FROM dual", Long.class);
     }
 
-    // 게시글 목록 보기
+    // 게시글 목록 보기 (관리자용 등 단순 목록)
     public List<PostRes> findAll() {
         @Language("SQL")
         String sql = """
@@ -44,7 +45,7 @@ public class PostDao {
         return jdbc.query(sql, new PostListMapper());
     }
 
-    // 게시글 수정(수정)
+    // 게시글 수정
     public boolean update(Long id, String title, String content) {
         @Language("SQL")
         String sql = "UPDATE posts SET title=?, content=? WHERE id=?";
@@ -58,24 +59,26 @@ public class PostDao {
         return jdbc.update(sql, id) > 0;
     }
 
-    // id로 모든 게시글 정보 가져 오기(수정)
+    // id로 모든 게시글 정보 가져 오기 (상세보기)
     public PostRes findById(Long id) {
         @Language("SQL")
         String sql = """
-                SELECT
-                    p.id,
-                    p.member_id,
-                    m.nickname,
-                    p.title,
-                    p.content,
-                    p.category_id,
-                    p.view_count,
-                    p.recommendations_count,
-                    p.created_at
-                FROM posts p
-                JOIN members m ON p.member_id = m.id
-                WHERE p.id = ?
-                """;
+            SELECT
+                p.id,
+                p.member_id,
+                m.nickname,
+                p.title,
+                p.content,
+                p.main_category_id,
+                mc.name AS category_name,  -- ★ 여기 추가 (카테고리 이름 조회)
+                p.view_count,
+                p.recommendations_count,
+                p.created_at
+            FROM posts p
+            JOIN members m ON p.member_id = m.id
+            JOIN MAIN_CATEGORY mc ON p.main_category_id = mc.id
+            WHERE p.id = ?
+            """;
 
         List<PostRes> list = jdbc.query(sql, new PostResPowMapper(), id);
         return list.isEmpty() ? null : list.get(0);
@@ -113,11 +116,10 @@ public class PostDao {
         return jdbc.query(sql, new PostSummaryResRowMapper(), memberId, offset + rowNum, offset);
     }
 
-    // 전체 게시판에서 검색
-
+    // [수정됨] 전체 게시판에서 검색 및 페이징 (CATEGORY 테이블 제거됨)
     public List<PostSummaryRes> findSummaries(
-            Long mainCategoryId,
-            Long categoryId,
+            Long mainCategoryId, // 이제 사용 안 함 (혹은 categoryId와 동일 취급)
+            Long categoryId,     // 실제 넘어오는 MAIN_CATEGORY의 ID (1, 2, 3, 4)
             String query,
             int offset,
             int rowNum
@@ -127,7 +129,7 @@ public class PostDao {
                     SELECT ROWNUM AS rn, inner_query.*
                     FROM (
                         SELECT p.id,
-                               c.name AS category_name,
+                               mc.name AS category_name,
                                p.title,
                                p.MEMBER_ID,
                                m.NICKNAME,
@@ -135,22 +137,20 @@ public class PostDao {
                                p.RECOMMENDATIONS_COUNT,
                                p.CREATED_AT
                         FROM POSTS p
-                        JOIN members m ON p.member_id = m.id
-                        JOIN CATEGORY c ON p.CATEGORY_ID = c.id
-                        JOIN MAIN_CATEGORY mc ON c.main_category_id = mc.id
+                        JOIN members m on p.member_id = m.id
+                        JOIN MAIN_CATEGORY mc on p.main_category_id = mc.id
                         WHERE 1=1
                 """);
 
         List<Object> params = new ArrayList<>();
 
-        if (mainCategoryId != null) {
-            sql.append(" AND c.MAIN_CATEGORY_ID = ?");
-            params.add(mainCategoryId);
-        } else if (categoryId != null) {
-            sql.append(" AND p.CATEGORY_ID = ?");
+        // 카테고리 필터링 (category_id가 있으면 main_category_id로 검색)
+        if (categoryId != null) {
+            sql.append(" AND p.MAIN_CATEGORY_ID = ?");
             params.add(categoryId);
         }
 
+        // 검색어 필터링
         if (query != null && !query.isBlank()) {
             sql.append(" AND p.TITLE LIKE ?");
             params.add("%" + query + "%");
@@ -170,11 +170,12 @@ public class PostDao {
         return jdbc.query(sql.toString(), new PostSummaryResRowMapper(), params.toArray());
     }
 
+    // [수정됨] 인기글 조회 (CATEGORY 제거)
     public List<PostSummaryRes> findPopular(int offset, int rowNum) {
         @Language("SQL")
         String sql = """
                 SELECT p.id,
-                       c.name AS category_name,
+                       mc.name AS category_name,
                        p.title,
                        p.MEMBER_ID,
                        m.NICKNAME,
@@ -183,7 +184,7 @@ public class PostDao {
                        p.CREATED_AT
                 FROM POSTS p
                 JOIN members m ON p.member_id = m.id
-                JOIN CATEGORY c ON p.CATEGORY_ID = c.id
+                JOIN MAIN_CATEGORY mc ON p.MAIN_CATEGORY_ID = mc.id
                 WHERE ROWNUM BETWEEN ? and ?
                 ORDER BY p.VIEW_COUNT DESC
                 """;
@@ -195,11 +196,12 @@ public class PostDao {
         );
     }
 
+    // [수정됨] 추천글 조회 (CATEGORY 제거)
     public List<PostSummaryRes> findRecommended(int offset, int rowNum) {
         @Language("SQL")
         String sql = """
                 SELECT p.id,
-                       c.name AS category_name,
+                       mc.name AS category_name,
                        p.title,
                        p.MEMBER_ID,
                        m.NICKNAME,
@@ -208,7 +210,7 @@ public class PostDao {
                        p.CREATED_AT
                 FROM POSTS p
                 JOIN members m ON p.member_id = m.id
-                JOIN CATEGORY c ON p.CATEGORY_ID = c.id
+                JOIN MAIN_CATEGORY mc ON p.MAIN_CATEGORY_ID = mc.id
                 WHERE ROWNUM BETWEEN ? and ?
                 ORDER BY p.RECOMMENDATIONS_COUNT DESC
                 """;
@@ -246,7 +248,8 @@ public class PostDao {
             post.setMemberId(rs.getLong("member_id"));
             post.setTitle(rs.getString("title"));
             post.setContent(rs.getString("content"));
-            post.setCategoryId(rs.getLong("category_id"));
+            post.setMainCategoryId(rs.getLong("main_category_id"));
+            post.setCategoryName(rs.getString("category_name"));
             post.setViewCount(rs.getLong("view_count"));
             post.setRecommendationsCount(rs.getLong("recommendations_count"));
             post.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
@@ -268,13 +271,14 @@ public class PostDao {
         }
     }
 
+    // [수정됨] SQL 별칭(category_name)과 매퍼 일치시킴
     static class PostSummaryResRowMapper implements RowMapper<PostSummaryRes> {
         @Override
         public PostSummaryRes mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new PostSummaryRes(
                     rs.getLong("id"),
                     rs.getString("title"),
-                    rs.getString("category_name"),
+                    rs.getString("category_name"), // SQL Alias가 category_name임
                     rs.getLong("member_id"),
                     rs.getString("nickname"),
                     rs.getLong("view_count"),
@@ -283,60 +287,46 @@ public class PostDao {
             );
         }
     }
+
     // ==================================================================
-    // [수정된 메소드]
-    // AJAX용 (String category) findSummaries
+    // [수정됨] AJAX용 (String category) findSummaries
+    // CATEGORY 테이블 제거 후 MAIN_CATEGORY 직접 연결
     // ==================================================================
     public List<PostSummaryRes> findSummaries(String category, int offset, int rowNum) {
         StringBuilder sql = new StringBuilder();
-
-        // 파라미터를 순서대로 담을 List 생성
         List<Object> params = new ArrayList<>();
 
-        // 1. SQL문 조립 (Oracle 페이지네이션)
         sql.append("SELECT * FROM ( ");
         sql.append("  SELECT ROWNUM AS rn, inner_query.* FROM ( ");
-        sql.append("    SELECT p.id, c.name AS category_name, p.title, p.MEMBER_ID, m.NICKNAME, ");
+        sql.append("    SELECT p.id, mc.name AS category_name, p.title, p.MEMBER_ID, m.NICKNAME, ");
         sql.append("           p.VIEW_COUNT, p.RECOMMENDATIONS_COUNT, p.CREATED_AT ");
         sql.append("    FROM POSTS p ");
-
-        // [수정] JOIN members m ON p.member_id = m.id (다른 쿼리와 통일)
         sql.append("    JOIN members m ON p.member_id = m.id ");
-
-        sql.append("    JOIN CATEGORY c ON p.CATEGORY_ID = c.id ");
-        sql.append("    JOIN MAIN_CATEGORY mc ON c.main_category_id = mc.id ");
+        // [수정] CATEGORY JOIN 제거하고 MAIN_CATEGORY와 직접 조인
+        sql.append("    JOIN MAIN_CATEGORY mc ON p.main_category_id = mc.id ");
         sql.append("    WHERE 1=1 ");
 
-        // [수정] 필터 기준을 c.name -> mc.NAME 으로 변경 (예: '꿀팁')
         if (category != null && !category.isEmpty()) {
-            sql.append(" AND mc.NAME = ? "); // MAIN_CATEGORY의 이름으로 검색
-            params.add(category);            // 파라미터 List에 값 추가
+            sql.append(" AND mc.NAME = ? "); // 카테고리 이름(예: '꿀팁')으로 검색
+            params.add(category);
         }
 
-        // [수정] ORDER BY p.id DESC (최신순 정렬)
         sql.append("    ORDER BY p.id DESC ");
-
         sql.append("  ) inner_query ");
-        sql.append("  WHERE ROWNUM <= ? "); // 페이지 처리 파라미터
-        sql.append(") WHERE rn > ? ");      // 페이지 처리 파라미터
+        sql.append("  WHERE ROWNUM <= ? ");
+        sql.append(") WHERE rn > ? ");
 
-        // [수정] 파라미터 순서 및 변수 적용
-        params.add(offset + rowNum); // endRow
-        params.add(offset);          // startRow
+        params.add(offset + rowNum);
+        params.add(offset);
 
-        // 3. 쿼리 실행
-        // [수정] PostSummaryResRowMapper 사용
-        return jdbc.query(
-                sql.toString(),           // 동적으로 완성된 SQL문
-                new PostSummaryResRowMapper(),
-                params.toArray()          // 파라미터 List를 배열로 변환
-        );
+        return jdbc.query(sql.toString(), new PostSummaryResRowMapper(), params.toArray());
     }
 
+    // [수정됨] 카운트 쿼리 (CATEGORY 제거)
     public int countSummaries(String category) {
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM POSTS p ");
-        sql.append("JOIN CATEGORY c ON p.CATEGORY_ID = c.id ");
-        sql.append("JOIN MAIN_CATEGORY mc ON c.main_category_id = mc.id ");
+        // [수정] CATEGORY JOIN 제거
+        sql.append("JOIN MAIN_CATEGORY mc ON p.main_category_id = mc.id ");
         sql.append("WHERE 1=1 ");
 
         List<Object> params = new ArrayList<>();

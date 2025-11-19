@@ -46,7 +46,7 @@ public class PostController {
         // 저장 실행
         postService.save(postFormDto);
         System.out.println("선택된 카테고리 ID = " + categoryId);
-        return "redirect:/board/list?msg=created";
+        return "redirect:/";
     }
 
     /** 게시판 목록 */

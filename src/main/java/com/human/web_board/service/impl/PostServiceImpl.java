@@ -30,7 +30,7 @@ public class PostServiceImpl implements PostService {
         req.setTitle(form.getTitle());
         req.setContent(form.getContent());
         req.setMemberId(form.getMemberId()); // 로그인 사용자
-        req.setCategoryId(form.getCategoryId()); // 카테고리 select 값
+        req.setMainCategoryId(form.getCategoryId()); // 카테고리 select 값
 //        req.setAllowComments(form.isAllowComments());
 //        req.setExtraOption(form.isExtraOption());
 
