@@ -13,6 +13,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import jakarta.servlet.http.Cookie;
+import java.net.URLEncoder;
+
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -61,15 +64,29 @@ public class SecurityConfig {
 
                             request.getSession().setAttribute("loginMember", loginMember);
 
+                            // Remember-Me 쿠키 저장
+                            if ("on".equals(request.getParameter("remember-me"))) {
+                                Cookie cookie = new Cookie("rememberId",
+                                        URLEncoder.encode(user.getEmail(), "UTF-8"));
+                                cookie.setMaxAge(60 * 60 * 24 * 7); // 7일
+                                cookie.setPath("/");
+                                response.addCookie(cookie);
+                            } else {
+                                Cookie cookie = new Cookie("rememberId", null);
+                                cookie.setMaxAge(0);
+                                cookie.setPath("/");
+                                response.addCookie(cookie);
+                            }
+
                             response.sendRedirect("/main");
                         })
                         .failureUrl("/login?error=true")
                         .permitAll()
                 )
                 .rememberMe(rem -> rem
-                        .key("uniqueAndSecret")          // 임의의 비밀키
-                        .rememberMeParameter("remember-me") // form 체크박스 name과 맞춤
-                        .tokenValiditySeconds(60 * 60 * 24 * 7) // 7일
+                        .key("uniqueAndSecret")
+                        .rememberMeParameter("remember-me")
+                        .tokenValiditySeconds(60 * 60 * 24 * 7)
                 )
 
                 .logout(logout -> logout
