@@ -52,7 +52,7 @@
 
                     <a th:href="@{|/board/edit/${post.id}|}"
                        th:if="${loginMember != null and loginMember.id == post.memberId}"
-                       class="w-20 h-12 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg font-medium">
+                       class="w-20 h-12 flex items-center justify-center bg-blue-50 hover:bg-gray-200 rounded-lg font-medium">
                         수정
                     </a>
 
@@ -66,7 +66,7 @@
                     </form>
 
                     <a th:href="@{/}"
-                       class="w-32 h-12 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg">
+                       class="w-32 h-12 flex items-center justify-center bg-blue-100 hover:bg-gray-200 rounded-lg">
                         돌아가기
                     </a>
                 </div>
