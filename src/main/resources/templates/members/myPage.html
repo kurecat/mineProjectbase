@@ -40,8 +40,7 @@
 
                 <div class="edit-fields-section__group">
                     <label for="edit-username" class="edit-fields-section__label">Edit username</label>
-                    <input type="text" id="edit-username" class="edit-fields-section__input" name="nickname"
-                           th:value="${member.nickname}">
+                    <input type="text" id="edit-username" class="edit-fields-section__input" name="nickname">
                     <div class="signup-form__error-message" id="nickname-error"></div>
                 </div>
                 <div class="edit-fields-section__group">
@@ -116,9 +115,9 @@
         alert("이미 사용 중인 닉네임입니다");
     }
 
-    // 비밀번호 재설정 성공/실패
+    // 멤버 정보 재설정 성공/실패
     if (urlParams.get("updateSuccess") === "true") {
-        alert("비밀번호 변경 완료!");
+        alert("개인정보 변경 완료!");
     }
 
     // ⭐️⭐️⭐️ 동적 기능 JavaScript ⭐️⭐️⭐️
@@ -182,7 +181,6 @@
                 }
             });
         });
-
 
         // B-2. "Upload profile Image"
         uploadProfileImageInput.addEventListener('change', function() {

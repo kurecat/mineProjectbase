@@ -73,25 +73,36 @@ public class MemberDao {
 //    }
 
     public boolean update(Long id, MemberSignupReq req) {
-        StringBuilder sql = new StringBuilder("UPDATE members SET nickname = ?");
+        StringBuilder sql = new StringBuilder("UPDATE members SET ");
         List<Object> args = new ArrayList<>();
-        args.add(req.getNickname());
+        List<String> updates = new ArrayList<>();
 
-        if (req.getPwd() != null && !req.getPwd().isEmpty()) {
-            sql.append(", pwd = ?");
+        if (req.getNickname() != null && !req.getNickname().isBlank()) {
+            updates.add("nickname = ?");
+            args.add(req.getNickname());
+        }
+
+        if (req.getPwd() != null && !req.getPwd().isBlank()) {
+            updates.add("pwd = ?");
             args.add(req.getPwd());
         }
-        if (req.getProfileImg() != null && !req.getProfileImg().isEmpty()) {
-            sql.append(", profile_img = ?");
+
+        if (req.getProfileImg() != null && !req.getProfileImg().isBlank()) {
+            updates.add("profile_img = ?");
             args.add(req.getProfileImg());
         }
 
+        // 아무 것도 수정할 게 없으면 false 반환
+        if (updates.isEmpty()) {
+            return false;
+        }
+
+        sql.append(String.join(", ", updates));
         sql.append(" WHERE id = ?");
         args.add(id);
 
         return jdbc.update(sql.toString(), args.toArray()) > 0;
     }
-
 
     public List<MemberSummaryRes> findHighScores(int offset, int rowNum) {
         @Language("SQL")
