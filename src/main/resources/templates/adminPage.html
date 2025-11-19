@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>관리자 페이지</title>
+    <style>
+        .row-divider {
+            border: 0;
+            height: 1px;
+            background-color: #e0e0e0; /* 연한 회색 */
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="admin-wrapper">
+        <h1 class="admin-title">관리자 페이지</h1>
+
+        <div class="admin-select-wrapper">
+            <select id="adminCategorySelect" class="admin-select" onchange="changeAdminSection()">
+                <option value="user">유저 관리</option>
+                <option value="post">게시글 관리</option>
+                <option value="comment">댓글 관리</option>
+            </select>
+        </div>
+
+        <div class="admin-divider"></div>
+
+        <div id="section-user" class="admin-section">
+            <div class="admin-row admin-header-row">
+                <div class="admin-col-header w250">이메일</div>
+                <div class="admin-col-header w150">닉네임</div>
+                <div class="admin-col-header w100">역할</div>
+                <div class="admin-col-header w170">가입일자</div>
+                <div class="admin-col-header w60">관리</div>
+            </div>
+            <div class="admin-divider-thin"></div>
+
+            <th:block th:each="member : ${members}">
+                <div class="admin-row admin-data-row">
+                    <div class="admin-box w250" th:text="${member.email}"></div>
+                    <div class="admin-box w150" th:text="${member.nickname}"></div>
+                    <div class="admin-box w100" th:text="${member.grade == '관리자' ? '관리자' : '사용자'}"></div>
+                    <div class="admin-box w170" th:text="${#temporals.format(member.regDate, 'yyyy-MM-dd HH:mm')}"></div>
+
+                    <form th:action="@{|/admin/member/delete/${member.id}|}" method="post">
+                        <button type="submit" class="admin-btn w60" onclick="return confirm('정말 강퇴하시겠습니까?');">강퇴</button>
+                    </form>
+                </div>
+                <hr class="row-divider">
+            </th:block>
+
+            <div class="admin-row" th:if="${#lists.isEmpty(members)}">
+                <div style="padding: 20px; font-size: 20px;">회원 데이터가 없습니다.</div>
+            </div>
+        </div>
+
+
+        <div id="section-post" class="admin-section hidden">
+            <div class="admin-row admin-header-row">
+                <div class="admin-col-header w250">게시글 제목</div>
+                <div class="admin-col-header w100">카테고리</div>
+                <div class="admin-col-header w150">작성자</div>
+                <div class="admin-col-header w170">작성일자</div>
+                <div class="admin-col-header w60">관리</div>
+            </div>
+            <div class="admin-divider-thin"></div>
+
+            <th:block th:each="post : ${posts}">
+                <div class="admin-row admin-data-row">
+                    <div class="admin-box w250" th:text="${post.title}"></div>
+                    <div class="admin-box w80" th:text="${post.categoryName}"></div>
+                    <div class="admin-box w150" th:text="${post.nickname}"></div>
+                    <div class="admin-box w170" th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+
+                    <form th:action="@{|/admin/post/delete/${post.id}|}" method="post">
+                        <button type="submit" class="admin-btn w60" onclick="return confirm('게시글을 삭제하시겠습니까?');">삭제</button>
+                    </form>
+                </div>
+                <hr class="row-divider">
+            </th:block>
+
+            <div class="admin-row" th:if="${#lists.isEmpty(posts)}">
+                <div style="padding: 20px; font-size: 20px;">게시글이 없습니다.</div>
+            </div>
+        </div>
+
+
+        <div id="section-comment" class="admin-section hidden">
+            <div class="admin-row admin-header-row">
+                <div class="admin-col-header w250">게시글 제목</div>
+                <div class="admin-col-header w250">댓글 내용</div>
+                <div class="admin-col-header w150">작성자</div>
+                <div class="admin-col-header w170">작성일자</div>
+                <div class="admin-col-header w60">관리</div>
+            </div>
+            <div class="admin-divider-thin"></div>
+
+            <th:block th:each="comment : ${comments}">
+                <div class="admin-row admin-data-row">
+                    <div class="admin-box w250" th:text="${comment.postTitle}"></div>
+                    <div class="admin-box w250" th:text="${comment.content}"></div>
+                    <div class="admin-box w150" th:text="${comment.writerNickname}"></div>
+                    <div class="admin-box w170" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+
+                    <form th:action="@{|/admin/comment/delete/${comment.id}|}" method="post">
+                        <button type="submit" class="admin-btn w60" onclick="return confirm('댓글을 삭제하시겠습니까?');">삭제</button>
+                    </form>
+                </div>
+                <hr class="row-divider">
+            </th:block>
+
+            <div class="admin-row" th:if="${#lists.isEmpty(comments)}">
+                <div style="padding: 20px; font-size: 20px;">댓글이 없습니다.</div>
+            </div>
+        </div>
+
+        <div class="admin-divider"></div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</div>
+
+<script>
+    // 드롭다운 스크립트 (그대로 유지)
+    function changeAdminSection() {
+        const select = document.getElementById("adminCategorySelect");
+        const selectedValue = select.value;
+
+        document.getElementById("section-user").classList.add("hidden");
+        document.getElementById("section-post").classList.add("hidden");
+        document.getElementById("section-comment").classList.add("hidden");
+
+        document.getElementById("section-" + selectedValue).classList.remove("hidden");
+    }
+</script>
+</body>
+</html>

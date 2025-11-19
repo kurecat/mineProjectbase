@@ -31,7 +31,7 @@ public class SecurityConfig {
                                 "/api/**", "/posts/**", "/comments/**", "/board/detail/**", "/board/**", "/board/write",
                                 "/upload-images-dragdrop").permitAll()
                         .requestMatchers("/image/*", "/ajax/post-list", "/main/search").permitAll()
-                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

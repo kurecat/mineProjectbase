@@ -11,7 +11,7 @@
 
 <body>
 
-<div class="w-[1200px] mx-auto mt-8 mb-8 p-4 bg-white">
+<div class="w-[1200px] mx-auto mb-8 p-4 bg-white">
 
     <!-- 헤더 -->
     <div th:replace="~{fragments/header :: header}"></div>
@@ -57,7 +57,7 @@
                     </a>
 
                     <form th:action="@{|/board/delete/${post.id}|}" method="post"
-                          th:if="${loginMember != null and (loginMember.id == post.memberId or loginMember.grade == '2')}"
+                          th:if="${loginMember != null and (loginMember.id == post.memberId or loginMember.grade == '관리자')}"
                           onsubmit="return confirm('정말 이 게시글을 삭제하시겠습니까?');">
                         <button type="submit"
                                 class="w-20 h-12 flex items-center justify-center bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium">
@@ -116,7 +116,7 @@
                                 </a>
 
                                 <form th:action="@{|/comments/${c.id}/delete|}" method="post"
-                                      th:if="${loginMember.id == c.memberId or loginMember.grade == '2'}">
+                                      th:if="${loginMember.id == c.memberId or loginMember.grade == '관리자'}">
                                     <input type="hidden" name="postId" th:value="${post.id}">
 
                                     <button class="px-2 py-1 bg-red-500 text-white text-sm rounded"

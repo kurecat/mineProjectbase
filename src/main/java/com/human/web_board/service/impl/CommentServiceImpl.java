@@ -62,4 +62,8 @@ public class CommentServiceImpl implements CommentService {
         }
         return comment;
     }
+
+    public List<CommentRes> findAllComments() {
+        return commentDao.findAll();
+    }
 }

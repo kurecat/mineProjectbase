@@ -25,6 +25,7 @@ header {
   width: 1140px;
   background-color: #ffffff;
   border-bottom: 1px solid #e0e0e0;
+  margin-bottom:30px;
 }
 
 /* --- 1. 상단 헤더 (H70) --- */
@@ -34,6 +35,7 @@ header {
   align-items: center;
   height: 70px; /* 이미지에서 H70 */
   padding: 0 20px; /* 좌우 여백 */
+
 }
 
 /* --- 좌측: 검색창 --- */
@@ -1478,4 +1480,140 @@ footer-Copyright {
     font-size: 0.85rem;
     margin-top: 5px;
     display: block;
+}
+
+/* =========================================
+   Admin Page Styles (관리자 페이지 전용)
+   ========================================= */
+
+.admin-wrapper {
+    width: 100%;
+    max-width: 1140px; /* 기존 레이아웃 폭에 맞춤 */
+    margin: 0 auto;
+    padding: 20px 0;
+    background-color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* 1. 타이틀 (24px) */
+.admin-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 20px;
+}
+
+/* 2. 드롭다운 (박스 스타일) */
+.admin-select-wrapper {
+    margin-bottom: 10px;
+}
+
+.admin-select {
+    width: 150px;
+    height: 35px;
+    font-size: 16px; /* 내용 폰트 사이즈 */
+    padding: 5px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* 구분선 */
+.admin-divider {
+    width: 100%;
+    height: 2px;
+    background-color: #333; /* 진한 구분선 */
+    margin: 10px 0;
+}
+
+.admin-divider-thin {
+    width: 100%;
+    height: 1px;
+    background-color: #333;
+    margin-bottom: 20px;
+}
+
+/* 3. 로우(Row) 공통 스타일 */
+.admin-row {
+    display: flex;
+    justify-content: center; /* 중앙 정렬 */
+    align-items: center;
+    width: 100%;
+    gap: 10px; /* 박스 사이 간격 */
+}
+
+/* 헤더 로우 (이메일, 닉네임 등 글자) - 26px */
+.admin-header-row {
+    height: 50px;
+    margin-bottom: 5px;
+}
+
+.admin-col-header {
+    font-size: 26px; /* 요청: 나머지 폰트 사이즈 26px (헤더 등) */
+    font-weight: 500;
+    text-align: center;
+    color: #000;
+}
+
+/* 데이터 로우 (회색 박스들) - 높이 40px */
+.admin-data-row {
+    margin-bottom: 10px; /* 데이터 줄 간격 */
+}
+
+/* 데이터 박스 (회색 배경) - 20px */
+.admin-box {
+    height: 40px;
+    background-color: #d9d9d9;
+
+    /* ▼ [수정] 텍스트 정렬 및 말줄임표 설정을 위한 변경 */
+    display: block;       /* flex 대신 block 사용 */
+    line-height: 40px;    /* 높이와 똑같이 설정하면 세로 중앙 정렬됨 */
+    text-align: center;   /* 가로 중앙 정렬 */
+
+    font-size: 20px;      /* (기존 폰트 사이즈 유지) */
+    color: #000;
+
+    /* ▼ [핵심] 말줄임표(...) 설정 3대장 */
+    white-space: nowrap;      /* 글자가 길어도 줄바꿈 하지 않음 */
+    overflow: hidden;         /* 박스를 넘어가는 글자는 숨김 */
+    text-overflow: ellipsis;  /* 숨겨진 부분은 ... 으로 표시 */
+
+    /* ▼ [추천] 글자가 박스 벽에 딱 붙지 않게 양옆 여백 추가 */
+    padding: 0 10px;
+    box-sizing: border-box;   /* 패딩을 줘도 박스 전체 크기가 커지지 않게 함 */
+}
+
+/* 버튼 스타일 (강퇴, 삭제) - 16px */
+.admin-btn {
+    height: 40px;
+    background-color: #d9d9d9; /* 박스와 동일한 배경색 */
+    border: none;
+    font-size: 16px; /* 요청: 아래 내용(버튼 등) 16px */
+    font-weight: bold;
+    cursor: pointer;
+    color: #333;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-btn:hover {
+    background-color: #c0c0c0; /* 호버 시 약간 진하게 */
+}
+
+/* =========================================
+   Width Utility Classes (요청하신 사이즈)
+   =========================================
+*/
+.w250 { width: 250px; }
+.w170 { width: 170px; }
+.w150 { width: 150px; }
+.w80  { width: 80px; }
+.w60  { width: 60px; }
+
+
+/* 유틸리티: 숨김 클래스 (기존 hidden과 호환되도록 !important 추가) */
+.hidden {
+    display: none !important;
 }

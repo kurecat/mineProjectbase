@@ -1,8 +1,6 @@
 package com.human.web_board.controller;
 
-import com.human.web_board.dto.MemberRes;
 import com.human.web_board.dto.Pagination;
-import com.human.web_board.dto.PostSummaryRes;
 import com.human.web_board.service.MemberService;
 import com.human.web_board.service.PostService;
 import jakarta.servlet.http.HttpSession;
@@ -36,7 +34,7 @@ public class MainPageController {
             @RequestParam(required = false) Long mainCategoryId,
             @RequestParam(required = false) Long categoryId,
             @RequestParam(defaultValue = "0") int offset,
-            @RequestParam(defaultValue = "16") int rowNum,
+            @RequestParam(defaultValue = "15") int rowNum,
             Model model) {
 
         // 서비스에서 전체 목록 가져와서 모델에 추가
@@ -71,7 +69,7 @@ public class MainPageController {
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String query,
             @RequestParam(defaultValue = "0") int offset,
-            @RequestParam(defaultValue = "16") int rowNum,
+            @RequestParam(defaultValue = "15") int rowNum,
             Model model) {
         // 서비스에서 전체 목록 가져와서 모델에 추가
 
@@ -102,7 +100,7 @@ public class MainPageController {
     public String listPosts(Model model,
                             @RequestParam(value = "category", required = false) String category,
                             @RequestParam(defaultValue = "0") int offset,
-                            @RequestParam(defaultValue = "16") int rowNum) {
+                            @RequestParam(defaultValue = "15") int rowNum) {
 
         // 1. [수정] 총 게시물 수 계산 및 Pagination 객체 생성
         int totalCount = postService.countSummaries(category);
@@ -125,7 +123,7 @@ public class MainPageController {
     public String getPostListFragment(Model model,
                                       @RequestParam(value = "category", required = false) String category,
                                       @RequestParam(defaultValue = "0") int offset,
-                                      @RequestParam(defaultValue = "16") int rowNum) {
+                                      @RequestParam(defaultValue = "15") int rowNum) {
 
         // 1. [수정] 총 게시물 수 계산 및 Pagination 객체 생성
         int totalCount = postService.countSummaries(category);

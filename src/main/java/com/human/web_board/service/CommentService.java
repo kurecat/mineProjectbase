@@ -23,6 +23,6 @@ public interface CommentService {
     // id로 댓글찾기
     CommentRes findById(Long id);
 
-
+    List<CommentRes> findAllComments();
 }
 
