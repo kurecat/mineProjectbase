@@ -43,8 +43,12 @@ public interface PostService {
 
     int countSummaries(String category);
 
-    /** 🔥 최신글 가져오는 메소드 — 반환 타입 확정 */
     List<PostRes> listRecent(int limit);
+
+    PostRes findById(Long id);
+
+    boolean update(Long id, String title, String content);
 }
+
 
 

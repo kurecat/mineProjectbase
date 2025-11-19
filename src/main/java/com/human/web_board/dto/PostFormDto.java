@@ -32,4 +32,5 @@ public class PostFormDto {
     public PostFormDto() {
         this.allowComments = true; // '댓글 허용'이 기본으로 체크되도록 설정
     }
+    private Long id;
 }

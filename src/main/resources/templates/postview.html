@@ -49,11 +49,33 @@
                 <a class="text-sm text-gray-500 hover:underline" href="#">신고하기</a>
 
                 <div class="flex gap-2">
+
+                    <a th:href="@{|/board/edit/${post.id}|}"
+                       th:if="${loginMember != null and loginMember.id == post.memberId}"
+                       class="w-20 h-12 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg font-medium">
+                        수정
+                    </a>
+
+                    <form th:action="@{|/board/delete/${post.id}|}" method="post"
+                          th:if="${loginMember != null and (loginMember.id == post.memberId or loginMember.grade == '2')}"
+                          onsubmit="return confirm('정말 이 게시글을 삭제하시겠습니까?');">
+                        <button type="submit"
+                                class="w-20 h-12 flex items-center justify-center bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium">
+                            삭제
+                        </button>
+                    </form>
+
                     <a th:href="@{/}"
-                       class="w-32 h-12 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg">
+                       class="w-32 h-12 flex items-center justify-center bg-black hover:bg-gray-800 text-white rounded-lg font-bold">
                         돌아가기
                     </a>
                 </div>
+            </div>
+
+            <div th:if="${loginMember != null}">
+                내 등급: <span th:text="${loginMember.grade}"></span> <br>
+                내 ID: <span th:text="${loginMember.id}"></span> <br>
+                작성자 ID: <span th:text="${post.memberId}"></span>
             </div>
 
             <!-- 댓글 영역 -->
@@ -87,20 +109,21 @@
                             <p class="mt-2 text-gray-700" th:text="${c.content}">내용</p>
 
                             <!-- 본인 댓글만 버튼 보임 -->
-                            <div class="mt-2 flex gap-2"
-                                 th:if="${loginMember != null and loginMember.id == c.memberId}">
-
+                            <div class="mt-2 flex gap-2" th:if="${loginMember != null}">
                                 <a th:href="@{|/board/detail/${post.id}?editId=${c.id}|}"
+                                   th:if="${loginMember.id == c.memberId}"
                                    class="px-2 py-1 text-sm bg-yellow-300 rounded">
                                     수정
                                 </a>
-
-                                <form th:action="@{|/comments/${c.id}/delete|}" method="post">
+                                <form th:action="@{|/comments/${c.id}/delete|}" method="post"
+                                      th:if="${loginMember.id == c.memberId or loginMember.grade == '2'}">
                                     <input type="hidden" name="postId" th:value="${post.id}">
-                                    <button class="px-2 py-1 bg-red-500 text-white text-sm rounded">
+                                    <button class="px-2 py-1 bg-red-500 text-white text-sm rounded"
+                                            onclick="return confirm('정말 삭제하시겠습니까?');">
                                         삭제
                                     </button>
                                 </form>
+
                             </div>
                         </div>
 
