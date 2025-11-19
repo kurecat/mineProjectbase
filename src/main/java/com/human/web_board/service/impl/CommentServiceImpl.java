@@ -39,6 +39,11 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public List<CommentRes> listByMemberId(Long memberId, int offset, int rowNum) {
+        return commentDao.findByMemberId(memberId, offset, rowNum);
+    }
+
+    @Override
     public boolean update(CommentCreateReq req, Long id) {
         return commentDao.update(req, id);
     }

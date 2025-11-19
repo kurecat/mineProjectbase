@@ -84,6 +84,36 @@ public class PostDao {
         return list.isEmpty() ? null : list.get(0);
     }
 
+    public List<PostSummaryRes> findByMemberId(Long memberId, int offset, int rowNum) {
+        String sql = """
+                SELECT *
+                  FROM (
+                   SELECT ROWNUM AS RN,
+                          INNER_QUERY.*
+                     FROM (
+                      SELECT P.ID,
+                             MC.NAME AS CATEGORY_NAME,
+                             P.TITLE,
+                             P.MEMBER_ID,
+                             M.NICKNAME,
+                             P.VIEW_COUNT,
+                             P.RECOMMENDATIONS_COUNT,
+                             P.CREATED_AT
+                        FROM POSTS P
+                        JOIN MEMBERS M
+                      ON P.MEMBER_ID = M.ID
+                        JOIN MAIN_CATEGORY MC
+                      ON P.MAIN_CATEGORY_ID = MC.ID
+                      WHERE p.MEMBER_ID = ?
+                       ORDER BY P.ID DESC
+                   ) INNER_QUERY
+                    WHERE ROWNUM <= ?
+                )
+                 WHERE RN > ?
+                """;
+        return jdbc.query(sql, new PostSummaryResRowMapper(), memberId, offset + rowNum, offset);
+    }
+
     // [수정됨] 전체 게시판에서 검색 및 페이징 (CATEGORY 테이블 제거됨)
     public List<PostSummaryRes> findSummaries(
             Long mainCategoryId, // 이제 사용 안 함 (혹은 categoryId와 동일 취급)

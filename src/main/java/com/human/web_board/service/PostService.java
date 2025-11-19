@@ -48,6 +48,8 @@ public interface PostService {
     PostRes findById(Long id);
 
     boolean update(Long id, String title, String content);
+
+    List<PostSummaryRes> listSummaries(Long memberId, int offset, int rowNum);
 }
 
 
