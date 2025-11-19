@@ -10,7 +10,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class MemberSignupReq {
-    private int grade = 1;
+    private String grade = "사용자";
     private String email;
     private String pwd;
     private String passwordCheck; // 추가 비밀번호 검증
