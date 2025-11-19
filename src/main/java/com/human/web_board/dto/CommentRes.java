@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 public class CommentRes {
     private Long id;
     private Long postId;
-    private Long memberId;
+    private String nickname;
     private String content;
     private LocalDateTime createdAt;
+    private Long memberId;
+
 }
