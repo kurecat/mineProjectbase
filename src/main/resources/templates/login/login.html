@@ -75,7 +75,17 @@
         alert("비밀번호가 일치 하지 않습니다");
     }
 
-    // model.addAttribute("error")는 thymeleaf에서 alert 처리 가능
+    window.onload = function () {
+        const cookies = document.cookie.split(";").map(c => c.trim());
+        const rememberCookie = cookies.find(c => c.startsWith("rememberId="));
+
+        if (rememberCookie) {
+            const email = decodeURIComponent(rememberCookie.split("=")[1]);
+            document.getElementById("email").value = email;
+            document.getElementById("remember-me").checked = true;
+        }
+    };
+
 </script>
 
 </body>
