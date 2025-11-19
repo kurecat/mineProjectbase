@@ -39,11 +39,11 @@ public class CustomUserDetails implements UserDetails {
         this.profileImg = member.getProfileImg();
     }
 
-    /** 권한 지정: grade 2 = ADMIN, 그 외 = USER */
+    /** 권한 지정: grade 관리자 = ADMIN, 그 외 = USER */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        if ("2".equals(this.grade)) {
+        if ("관리자".equals(this.grade)) {
             authorities.add(new SimpleGrantedAuthority("ADMIN"));
         } else {
             authorities.add(new SimpleGrantedAuthority("USER"));

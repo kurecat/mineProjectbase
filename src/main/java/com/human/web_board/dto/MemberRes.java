@@ -14,8 +14,8 @@ public class MemberRes {
     private int point;
     private String profileImg;
 
-    // 한글 권한명 자동 제공
     public String getGradeName() {
-        return "ADMIN".equals(grade) ? "관리자" : "사용자";
+        return "관리자".equals(grade) ? "관리자" : "사용자";
     }
+
 }
