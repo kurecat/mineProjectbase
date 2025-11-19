@@ -157,5 +157,20 @@ public class PostServiceImpl implements PostService {
         return List.of();
     }
 
+    @Override
+    public PostRes findById(Long id) {
+        return postDao.findById(id);
+    }
+
+    @Override
+    public boolean update(Long id, String title, String content) {
+        return postDao.update(id, title, content);
+    }
+
+    @Override
+    public List<PostSummaryRes> listSummaries(Long memberId, int offset, int rowNum) {
+        return postDao.findByMemberId(memberId, offset, rowNum);
+    }
+
 
 }

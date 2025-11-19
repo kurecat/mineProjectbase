@@ -65,16 +65,42 @@ public class CommentDao {
     public CommentRes findById(Long post_id) {
         @Language("SQL")
         String sql = """
-        SELECT id, post_id, member_id, content, created_at
-        FROM comments
-        WHERE id = ?
-    """;
+    SELECT c.id,
+           c.post_id,
+           c.member_id,
+           c.content,
+           c.created_at,
+           m.nickname
+    FROM comments c
+    JOIN members m ON c.member_id = m.id
+    WHERE c.id = ?
+""";
+
 
         try {
             return jdbc.queryForObject(sql, new CommentResMapper(), post_id);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
+    }
+
+    public List<CommentRes> findByMemberId(Long memberId, int offset, int rowNum) {
+        @Language("SQL")
+        String sql = """        
+                SELECT * FROM (
+                    SELECT ROWNUM AS rn, inner_query.*
+                    FROM (
+                        SELECT c.id, c.post_id, c.member_id, m.nickname, c.content, c.created_at
+                        FROM comments c
+                        JOIN MEMBERS m ON m.id = c.MEMBER_ID
+                        WHERE member_id = ?
+                        ORDER BY id DESC
+                    ) inner_query
+                    WHERE ROWNUM <= ?
+                )
+                WHERE rn > ?
+        """;
+        return jdbc.query(sql, new CommentResMapper(), memberId, offset + rowNum, offset);
     }
 
     // mapper 메서드(수정)

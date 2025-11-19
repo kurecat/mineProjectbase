@@ -81,4 +81,5 @@ public class CommentController {
 
         return "redirect:/board/detail/" + postId + "?msg=deleted";
     }
+
 }
