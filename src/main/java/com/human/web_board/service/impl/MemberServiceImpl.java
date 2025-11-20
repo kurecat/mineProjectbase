@@ -136,5 +136,10 @@ public class MemberServiceImpl implements MemberService {
                 .map(MemberRes::new) // MemberRes 생성자 사용
                 .collect(Collectors.toList());
     }
+    @Override
+    public void addPoint(Long memberId, int point) {
+        memberDao.updateCount(memberId, point);
+    }
+
 
 }
