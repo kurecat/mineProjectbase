@@ -2,6 +2,7 @@ package com.human.web_board.controller;
 
 import com.human.web_board.dto.*;
 import com.human.web_board.service.CommentService;
+import com.human.web_board.service.MemberService;
 import com.human.web_board.service.PostService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class PostController {
 
     private final PostService postService;
     private final CommentService commentService;
+    private final MemberService memberService;
 
     /** 글쓰기 폼 */
     @GetMapping("/write")
@@ -58,6 +60,7 @@ public class PostController {
 
         // 저장 실행
         postService.save(postFormDto);
+        memberService.addPoint(loginMember.getId(), 3);
         System.out.println("선택된 카테고리 ID = " + categoryId);
         return "redirect:/";
     }

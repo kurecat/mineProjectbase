@@ -154,6 +154,16 @@ public class MemberDao {
         String sql = "UPDATE members SET pwd = ? WHERE id = ?";
         return jdbc.update(sql, encodedPassword, id) > 0;
     }
+// 카운트 업데이트
+    public void updateCount(Long memberId, int point) {
+        String sql = """
+            UPDATE members
+            SET point = point + ?
+            WHERE id = ?
+        """;
+
+        jdbc.update(sql, point, memberId);
+    }
 
 }
 

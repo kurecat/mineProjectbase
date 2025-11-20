@@ -39,4 +39,5 @@ public interface MemberService {
 
     List<MemberRes> findAllMembers();
 
+    void addPoint(Long memberId, int point);
 }
