@@ -8,6 +8,7 @@ import java.util.List;
 
 // MemberService 인터페이스는 서비스에 필요한 설계 명세 즉, 메서드 이름을 정해서 상속 주기
 public interface MemberService {
+
     // 회원 가입
     Long signup(MemberSignupReq req);
 

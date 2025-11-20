@@ -34,7 +34,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public boolean isEmailExists(String email) {
         boolean exists = memberDao.findByEmail(email) != null;
-        log.info("서비스 - 이메일 존재 여부 확인: {} -> {}", email, exists);
+        log.info("서비스 - 이메일 존재 확인: {} -> {}", email, exists);
         return exists;
     }
 
@@ -116,7 +116,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public List<MemberSummaryRes> listHighScores(int offset, int rowNum) {
-        List<MemberSummaryRes> list = null;
+        List<MemberSummaryRes> list;
         try {
             list = memberDao.findHighScores(offset, rowNum);
         } catch (DataAccessException e) {

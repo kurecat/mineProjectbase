@@ -25,16 +25,17 @@ public class AdminController {
         this.commentService = commentService;
     }
 
+    // 관리자 메인 페이지
     @GetMapping
     public String adminPage(Model model) {
-        // 1. 모든 회원 리스트 가져오기
+
+        // 전체 회원 목록
         model.addAttribute("members", memberService.findAllMembers());
 
-        // 2. 모든 게시글 리스트 가져오기
+        // 전체 게시글 목록
         model.addAttribute("posts", postService.findAllPosts());
 
-        // 3. 모든 댓글 리스트 가져오기
-        // (참고: 댓글 DTO에 게시글 제목(postTitle)이 포함되어 있어야 화면에 출력 가능)
+        // 전체 댓글 목록
         model.addAttribute("comments", commentService.findAllComments());
 
         return "adminPage"; // admin.html 파일 경로
