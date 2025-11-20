@@ -10,6 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
+
 
 import java.util.List;
 
@@ -173,5 +178,50 @@ public class PostController {
         postService.delete(id);
         return "redirect:/?msg=deleted";
     }
+    @PostMapping("/detail/{postId}")
+    @ResponseBody
+    public Map<String, Object> recommend(
+            @PathVariable Long postId,
+            HttpSession session
+    ) {
+        Map<String, Object> result = new HashMap<>();
+
+        MemberRes login = (MemberRes) session.getAttribute("loginMember");
+        if (login == null) {
+            result.put("status", "error");
+            result.put("message", "로그인이 필요합니다.");
+            return result;
+        }
+
+        // 세션에서 추천기록 가져오기
+        Set<Long> recommended = (Set<Long>) session.getAttribute("recommendedPosts");
+
+        if (recommended == null) {
+            recommended = new HashSet<>();
+            session.setAttribute("recommendedPosts", recommended);
+        }
+
+        // 이미 추천한 글인지 확인
+        if (recommended.contains(postId)) {
+            result.put("status", "fail");
+            result.put("message", "이미 추천했습니다!");
+            return result;
+        }
+
+        // 추천 증가
+        postService.increaseRecommendations(postId);
+        recommended.add(postId);
+
+        // 증가된 최신 값 가져오기
+        Long updatedCount = postService.get(postId).getRecommendationsCount();
+
+        result.put("status", "success");
+        result.put("count", updatedCount);
+
+        return result;
+    }
+
+
+
 
 }
