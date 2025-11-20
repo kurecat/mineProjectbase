@@ -28,7 +28,7 @@
                 <div class="flex items-center text-sm text-gray-500 space-x-4">
                     <span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</span>
                     <span th:text="|조회 : ${post.viewCount}|">조회</span>
-                    <span th:text="|추천 : ${post.recommendationsCount}|">추천</span>
+                    <span>추천 : <span id="recommend-count" th:text="${post.recommendationsCount}">0</span></span>
                 </div>
             </div>
 
@@ -52,6 +52,27 @@
                         class="text-sm text-gray-500 hover:underline">
                     신고하기
                 </button>
+
+                <div class="flex justify-center py-12">
+                    <button type="button"
+                            id="recommend-btn"
+                            onclick="recommendPost()"
+                            class="w-28 h-28 border-2 border-blue-500 rounded-xl bg-white text-blue-500
+                   flex flex-col items-center justify-center gap-2
+                   hover:bg-blue-50 hover:scale-105 transition duration-200 ease-in-out shadow-sm">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.5c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a2.25 2.25 0 012.25 2.25c0 1.152-.26 2.247-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23H5.904M14.25 9h2.25M5.904 18.75c.729%200%201.416.288%201.903.808.526.565.856%201.254.96%201.998a2.25%202.25%200%2001-2.235%202.29H5.62a2.25%202.25%200%2001-2.25-2.25v-8.18c0-.64.252-1.254.704-1.716l1.83-1.83" />
+                        </svg>
+
+                        <div class="text-center">
+                            <span class="text-lg font-bold block">추천</span>
+                        </div>
+                    </button>
+
+                    <input type="hidden" id="post-id" th:value="${post.id}">
+                    <input type="hidden" id="is-logged-in" th:value="${loginMember != null}">
+                </div>
 
                 <!-- 수정, 삭제, 돌아가기 -->
                 <div class="flex gap-2">
@@ -212,8 +233,9 @@
 
         <!-- 광고 -->
         <aside class="w-full lg:w-80 lg:flex-shrink-0 mt-8 lg:mt-0">
-            <div class="bg-white rounded-lg shadow-md h-[960px] flex items-center justify-center border">
-                <span class="text-gray-500 text-2xl">광고 (W310)</span>
+            <div class="bg-white rounded-lg shadow-md h-[960px] flex items-center justify-center border
+                        bg-[url('/image/ad2.png')] bg-contain bg-no-repeat bg-center">
+                <!--<span class="text-gray-500 text-2xl">광고 (W310)</span>-->
             </div>
         </aside>
 
@@ -266,6 +288,47 @@
             }
         });
     });
+</script>
+<script>
+    function recommendPost() {
+        // 1. 로그인 여부 확인
+        const isLoggedIn = document.getElementById("is-logged-in").value === 'true';
+
+        if (!isLoggedIn) {
+            alert("로그인이 필요한 서비스입니다.");
+            // 필요하다면 로그인 페이지로 이동: location.href = '/member/login';
+            return;
+        }
+
+        // 2. 게시글 ID 가져오기
+        const postId = document.getElementById("post-id").value;
+
+        // 3. AJAX 요청 (fetch)
+        fetch(`/board/recommend/${postId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                // 스프링 시큐리티 사용 시 CSRF 토큰이 필요할 수 있습니다.
+                // "X-CSRF-TOKEN": document.querySelector('meta[name="_csrf"]').content
+            }
+        })
+        .then(response => response.json()) // 서버에서 JSON 응답을 기대함
+        .then(data => {
+            if (data.success) {
+                // 성공 시: 상단 추천 수 업데이트
+                const countSpan = document.getElementById("recommend-count");
+                countSpan.innerText = data.newCount;
+                alert("추천하였습니다!");
+            } else {
+                // 실패 시 (이미 추천함 등): 메시지 출력
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("오류가 발생했습니다.");
+        });
+    }
 </script>
 
 </body>

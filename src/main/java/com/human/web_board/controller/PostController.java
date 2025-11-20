@@ -178,50 +178,54 @@ public class PostController {
         postService.delete(id);
         return "redirect:/?msg=deleted";
     }
-    @PostMapping("/detail/{postId}")
+
+    // ==================================================================
+    // 🚀 [수정/통합] 추천 기능 (AJAX 통신)
+    // ==================================================================
+    @PostMapping("/recommend/{id}")
     @ResponseBody
-    public Map<String, Object> recommend(
-            @PathVariable Long postId,
-            HttpSession session
-    ) {
+    public Map<String, Object> recommend(@PathVariable Long id, HttpSession session) {
         Map<String, Object> result = new HashMap<>();
 
-        MemberRes login = (MemberRes) session.getAttribute("loginMember");
-        if (login == null) {
-            result.put("status", "error");
-            result.put("message", "로그인이 필요합니다.");
+        // [1] 로그인 체크
+        MemberRes loginMember = (MemberRes) session.getAttribute("loginMember");
+        if (loginMember == null) {
+            result.put("success", false);
+            result.put("message", "로그인이 필요한 서비스입니다.");
             return result;
         }
 
-        // 세션에서 추천기록 가져오기
-        Set<Long> recommended = (Set<Long>) session.getAttribute("recommendedPosts");
-
-        if (recommended == null) {
-            recommended = new HashSet<>();
-            session.setAttribute("recommendedPosts", recommended);
+        // [2] 중복 추천 방지 (세션 이용)
+        Set<Long> recommendedPosts = (Set<Long>) session.getAttribute("recommendedPosts");
+        if (recommendedPosts == null) {
+            recommendedPosts = new HashSet<>();
+            session.setAttribute("recommendedPosts", recommendedPosts);
         }
 
-        // 이미 추천한 글인지 확인
-        if (recommended.contains(postId)) {
-            result.put("status", "fail");
+        if (recommendedPosts.contains(id)) {
+            result.put("success", false);
             result.put("message", "이미 추천했습니다!");
             return result;
         }
 
-        // 추천 증가
-        postService.increaseRecommendations(postId);
-        recommended.add(postId);
+        try {
+            // [3] 서비스 호출 (수정된 부분)
+            // Service가 증가된 숫자를 int로 바로 리턴해주므로, 그걸 받아서 씁니다.
+            int newCount = postService.increaseRecommendations(id);
 
-        // 증가된 최신 값 가져오기
-        Long updatedCount = postService.get(postId).getRecommendationsCount();
+            // 세션에 기록 (중복 방지)
+            recommendedPosts.add(id);
 
-        result.put("status", "success");
-        result.put("count", updatedCount);
+            // [4] 결과 반환
+            result.put("success", true);
+            result.put("newCount", newCount); // 리턴받은 숫자 바로 사용
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("success", false);
+            result.put("message", "오류가 발생했습니다.");
+        }
 
         return result;
     }
-
-
-
-
-}
+} // 클래스 끝

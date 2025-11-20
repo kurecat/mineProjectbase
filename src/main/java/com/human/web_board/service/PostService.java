@@ -52,6 +52,8 @@ public interface PostService {
     List<PostSummaryRes> listSummaries(Long memberId, int offset, int rowNum);
 
     List<PostRes> findAllPosts();
+
+
 }
 
 
