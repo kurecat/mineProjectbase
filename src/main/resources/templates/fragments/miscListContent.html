@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
   <div th:fragment="miscListContentFragment" class="misc-list-container">
     <div class="content-list__section">
-      <h3 class="content-list__title">인기글</h3>
+      <h3 class="content-list__title">화제의 게시글!</h3>
       <ul
         th:if="${popularPosts != null and !popularPosts.isEmpty()}"
         th:each="post : ${popularPosts}"
@@ -24,7 +24,7 @@
     </div>
 
     <div class="content-list__section">
-      <h3 class="content-list__title">추천글</h3>
+      <h3 class="content-list__title">추천글 모음집</h3>
       <ul
         th:if="${recommendedPosts != null and !recommendedPosts.isEmpty()}"
         th:each="post : ${recommendedPosts}"
