@@ -198,8 +198,7 @@ public class MemberController {
                                   @RequestParam String pwd,
                                  Principal principal,
                                  RedirectAttributes redirectAttributes) {
-        MemberRes loginMember = memberService.getByEmail(principal.getName());
-        return loginMember.getId().equals(id);
+        return passwordEncoder.matches(pwd, memberService.getById(id).getPwd());
     }
 
 

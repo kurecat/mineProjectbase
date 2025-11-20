@@ -49,14 +49,18 @@
       <h3 class="content-list__title">포인트 순위</h3>
       <ul
         th:if="${highScores != null and !highScores.isEmpty()}"
-        th:each="member : ${highScores}"
+        th:each="member, iterStat : ${highScores}"
       >
         <li class="unstyled-list">
-          <a
-            th:href="@{|/members/${member.id}|}"
-            class="unstyled-link"
-          >
-            <span th:text="${member.nickname}"></span>
+          <a th:href="@{|/members/${member.id}|}" class="unstyled-link">
+            <span>
+                <span class="rank-icon" th:utext="${iterStat.index == 0 ? '🥇'
+                                                    : (iterStat.index == 1 ? '🥈'
+                                                    : (iterStat.index == 2 ? '🥉'
+                                                    : '&nbsp;' + (iterStat.index + 1) + '&nbsp;&nbsp;'))}"></span>
+                &nbsp;
+                <span th:text="${member.nickname}"></span>
+            </span>
             <span th:text="${member.point}"></span>
           </a>
         </li>
