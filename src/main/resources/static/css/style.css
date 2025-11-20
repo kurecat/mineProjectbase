@@ -591,7 +591,6 @@ footer-Copyright {
 .postlistright {
   width: 310px;
   height: 1000px;
-  border: 1px solid black;
   margin-left: 30px;
   background-image: url("/image/ad1.jpeg");
   background-size: cover;
@@ -600,15 +599,14 @@ footer-Copyright {
 }
 
 .misclist {
-  width: 1200px;
-  height: 400px;
-  border: 1px solid black;
-  margin-top: 30px;
+  width: 1140px;
+  height: 350px;
+  margin-top: 60px;
 }
 
 .misc-list-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   gap: 24px
 }
 
@@ -1473,12 +1471,15 @@ footer-Copyright {
 .unstyled-link {
   all: unset; /* 모든 기본 스타일 제거 */
   cursor: pointer; /* 링크처럼 보이게 */
+  display: flex;
+  justify-content: space-between;
 }
 .unstyled-link:hover {
   text-decoration: underline;
 }
 .unstyled-list {
   list-style: none;
+  padding: 10px 0px;
 }
 
 .error-text {

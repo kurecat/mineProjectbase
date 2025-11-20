@@ -6,6 +6,7 @@ import com.human.web_board.dto.MemberRes;
 import com.human.web_board.service.CommentService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/comments")
+@Slf4j
 public class CommentController {
 
     private final CommentService commentService;
+
 
     /** 댓글 등록 */
     @PostMapping("/{postId}")
@@ -73,7 +76,11 @@ public class CommentController {
 
         CommentRes comment = commentService.findById(commentId);
 
-        if (!loginMember.getId().equals(comment.getMemberId())) {
+        boolean isOwner = loginMember.getId().equals(comment.getMemberId());
+        boolean isAdmin = loginMember.getGrade() != null
+                && loginMember.getGrade().equals("관리자");
+
+        if (!isOwner && !isAdmin) {
             return "redirect:/board/detail/" + postId + "?error=noPermission";
         }
 
@@ -99,6 +106,18 @@ public class CommentController {
         commentService.write(req);
 
         return "redirect:/board/detail/" + postId;
+    }
+    @DeleteMapping("/comment/delete/{id}")
+    public String deleteComment(@PathVariable Long id) {
+        log.info("관리자 코멘트 삭제 요청: {}", id);
+
+        boolean success = commentService.delete(id);
+
+        if (success) {
+            return "삭제 완료";
+        } else {
+            return "삭제 실패";
+        }
     }
 
 
