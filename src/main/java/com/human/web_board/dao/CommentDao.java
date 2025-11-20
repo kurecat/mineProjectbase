@@ -21,7 +21,7 @@ public class CommentDao {
     // 댓글 등록(수정)
     public Long save(CommentCreateReq c) {
         @Language("SQL")
-        String sql = "INSERT INTO comments (id, post_id, member_id, content) VALUES (comments_seq.NEXTVAL, ?, ?, ?)";
+        String sql = "INSERT INTO COMMENTS (ID, POST_ID, MEMBER_ID, CONTENT, CREATED_AT) VALUES (COMMENTS_SEQ.NEXTVAL, ?, ?, ?, SYSDATE)";
         jdbc.update(sql, c.getPostId(), c.getMemberId(), c.getContent());
         return jdbc.queryForObject("SELECT comments_seq.CURRVAL FROM dual", Long.class);
     }
@@ -103,6 +103,35 @@ public class CommentDao {
         return jdbc.query(sql, new CommentResMapper(), memberId, offset + rowNum, offset);
     }
 
+    public List<CommentRes> findAll() {
+        @Language("SQL")
+        String sql = """
+            SELECT 
+                c.id, 
+                c.post_id, 
+                c.member_id, 
+                c.content, 
+                c.created_at, 
+                m.nickname,
+                p.title AS post_title  -- 게시글 제목 추가 조회
+            FROM comments c
+            JOIN members m ON c.member_id = m.id
+            LEFT JOIN posts p ON c.post_id = p.id -- 게시글 정보 조인
+            ORDER BY c.created_at DESC
+        """;
+
+        // 관리자용은 제목(post_title)이 있으므로 별도의 매핑 로직을 사용
+        return jdbc.query(sql, (rs, rowNum) -> new CommentRes(
+                rs.getLong("id"),
+                rs.getLong("post_id"),
+                rs.getString("nickname"),
+                rs.getString("content"),
+                rs.getTimestamp("created_at").toLocalDateTime(),
+                rs.getLong("member_id"),
+                rs.getString("post_title") // ★ 여기서 제목을 넣음!
+        ));
+    }
+
     // mapper 메서드(수정)
     static class CommentResMapper implements RowMapper<CommentRes> {
         @Override
@@ -113,7 +142,8 @@ public class CommentDao {
               rs.getString("nickname"),
               rs.getString("content"),
               rs.getTimestamp("created_at").toLocalDateTime(),
-              rs.getLong("member_id")
+              rs.getLong("member_id"),
+                    null
             );
         }
     }

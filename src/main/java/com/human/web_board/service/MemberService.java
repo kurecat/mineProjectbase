@@ -36,5 +36,6 @@ public interface MemberService {
 
     List<MemberSummaryRes> listHighScores(int offset, int rowNum);
 
+    List<MemberRes> findAllMembers();
 
 }

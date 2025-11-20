@@ -1,9 +1,11 @@
 package com.human.web_board.service.impl;
 
+import com.human.web_board.Entity.Member;
 import com.human.web_board.dao.MemberDao;
 import com.human.web_board.dto.MemberRes;
 import com.human.web_board.dto.MemberSignupReq;
 import com.human.web_board.dto.MemberSummaryRes;
+import com.human.web_board.repository.MemberRepository;
 import com.human.web_board.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +23,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberDao memberDao;
     private final PasswordEncoder passwordEncoder;
+    private final MemberRepository memberRepository;
 
     @Override
     public boolean isNicknameExists(String nickname) {
@@ -120,6 +124,17 @@ public class MemberServiceImpl implements MemberService {
             throw new IllegalArgumentException("회원 목록을 조회 할 수 없습니다.");
         }
         return list;
+    }
+
+    @Override
+    public List<MemberRes> findAllMembers() {
+        // 1. DB에서 모든 회원 가져오기
+        List<Member> members = memberRepository.findAll();
+
+        // 2. MemberRes(DTO) 리스트로 변환해서 반환
+        return members.stream()
+                .map(MemberRes::new) // MemberRes 생성자 사용
+                .collect(Collectors.toList());
     }
 
 }

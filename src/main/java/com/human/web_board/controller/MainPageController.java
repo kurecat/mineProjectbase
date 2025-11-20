@@ -1,8 +1,6 @@
 package com.human.web_board.controller;
 
-import com.human.web_board.dto.MemberRes;
 import com.human.web_board.dto.Pagination;
-import com.human.web_board.dto.PostSummaryRes;
 import com.human.web_board.service.MemberService;
 import com.human.web_board.service.PostService;
 import jakarta.servlet.http.HttpSession;
@@ -51,15 +49,15 @@ public class MainPageController {
                         rowNum));
         model.addAttribute(
             "popularPosts",
-            postService.listPopular(1, 5)
+            postService.listPopular(0, 5)
         );
         model.addAttribute(
             "recommendedPosts",
-            postService.listRecommended(1, 5)
+            postService.listRecommended(0, 5)
         );
         model.addAttribute(
             "highScores",
-            memberService.listHighScores(1, 5)
+            memberService.listHighScores(0, 5)
         );
         return "main/main";
     }
@@ -85,15 +83,15 @@ public class MainPageController {
                         rowNum));
         model.addAttribute(
                 "popularPosts",
-                postService.listPopular(1, 5)
+                postService.listPopular(0, 5)
         );
         model.addAttribute(
                 "recommendedPosts",
-                postService.listRecommended(1, 5)
+                postService.listRecommended(0, 5)
         );
         model.addAttribute(
                 "highScores",
-                memberService.listHighScores(1, 5)
+                memberService.listHighScores(0, 5)
         );
         return "main/main";
     }
@@ -113,9 +111,9 @@ public class MainPageController {
         model.addAttribute("pagination", pagination); // [수정] 페이지네이션 객체 추가
 
         // 3. (기존 코드) 인기글, 추천글, 랭킹
-        model.addAttribute("popularPosts", postService.listPopular(1, 5));
-        model.addAttribute("recommendedPosts", postService.listRecommended(1, 5));
-        model.addAttribute("highScores", memberService.listHighScores(1, 5));
+        model.addAttribute("popularPosts", postService.listPopular(0, 5));
+        model.addAttribute("recommendedPosts", postService.listRecommended(0, 5));
+        model.addAttribute("highScores", memberService.listHighScores(0, 5));
 
         return "main/main"; // (뷰 이름은 "main/main"으로 가정)
     }

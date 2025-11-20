@@ -1,11 +1,13 @@
 package com.human.web_board.service.impl;
 
+import com.human.web_board.Entity.Posts;
 import com.human.web_board.dao.MemberDao;
 import com.human.web_board.dao.PostDao;
 import com.human.web_board.dto.PostCreateReq;
 import com.human.web_board.dto.PostFormDto;
 import com.human.web_board.dto.PostRes;
 import com.human.web_board.dto.PostSummaryRes;
+import com.human.web_board.repository.PostRepository;
 import com.human.web_board.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ import java.util.List;
 public class PostServiceImpl implements PostService {
     private final PostDao postDao;
     private final MemberDao memberDao;
+    private final PostRepository postRepository;
 
     @Override
     public Long save(PostFormDto form) {
@@ -170,6 +174,17 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostSummaryRes> listSummaries(Long memberId, int offset, int rowNum) {
         return postDao.findByMemberId(memberId, offset, rowNum);
+    }
+
+    @Override
+    public List<PostRes> findAllPosts() {
+        // 1. DB에서 모든 게시글 가져오기
+        List<Posts> posts = postRepository.findAll();
+
+        // 2. PostRes(DTO) 리스트로 변환해서 반환
+        return posts.stream()
+                .map(PostRes::new) // PostRes 생성자 사용
+                .collect(Collectors.toList());
     }
 
 

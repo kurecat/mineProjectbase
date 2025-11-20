@@ -50,6 +50,8 @@ public interface PostService {
     boolean update(Long id, String title, String content);
 
     List<PostSummaryRes> listSummaries(Long memberId, int offset, int rowNum);
+
+    List<PostRes> findAllPosts();
 }
 
 
