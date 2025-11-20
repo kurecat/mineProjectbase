@@ -138,7 +138,9 @@
 
                 <!-- 댓글 수 -->
                 <div class="flex items-center gap-2 border-b border-gray-300 pb-3">
-                    <span class="font-semibold" th:text="|댓글 (${#lists.size(comments)})|"></span>
+    <span class="font-semibold"
+          th:text="|댓글 (${#lists.size(comments.?[!content.contains('[신고]')])})|">
+    </span>
                 </div>
 
                 <div id="comment-list" class="mt-4">
