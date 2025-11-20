@@ -106,7 +106,7 @@
                 <div class="admin-row admin-data-row">
                     <div class="admin-box w250" th:text="${comment.postTitle}"></div>
                     <div class="admin-box w250" th:text="${comment.content}"></div>
-                    <div class="admin-box w150" th:text="${comment.writerNickname}"></div>
+                    <div class="admin-box w150" th:text="${comment.nickname}"></div>
                     <div class="admin-box w170" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
 
                     <form th:action="@{|/admin/comment/delete/${comment.id}|}" method="post">
