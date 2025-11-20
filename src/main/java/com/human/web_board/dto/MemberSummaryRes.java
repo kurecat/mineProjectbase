@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 // 게시글 응답
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @ToString
 public class MemberSummaryRes {
+    private Long id;
     private String nickname;
     private Long point;
 }

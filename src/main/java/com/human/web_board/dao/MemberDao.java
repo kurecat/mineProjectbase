@@ -108,9 +108,9 @@ public class MemberDao {
         @Language("SQL")
         String sql = """
         SELECT * FROM (
-            SELECT ROWNUM AS rn, NICKNAME, POINT
+            SELECT ROWNUM AS rn, ID, NICKNAME, POINT
             FROM (
-                SELECT NICKNAME, POINT
+                SELECT ID, NICKNAME, POINT
                 FROM members
                 ORDER BY POINT DESC
             )
@@ -143,6 +143,7 @@ public class MemberDao {
         @Override
         public MemberSummaryRes mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new MemberSummaryRes(
+                    rs.getLong("id"),
                     rs.getString("nickname"),
                     rs.getLong("point")
             );
