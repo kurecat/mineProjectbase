@@ -139,6 +139,34 @@
 
         document.getElementById("section-" + selectedValue).classList.remove("hidden");
     }
+    // 모든 삭제 form 공통 처리
+    document.querySelectorAll('form[th\\:action*="delete"]').forEach(form => {
+        form.addEventListener('submit', function(e){
+            e.preventDefault(); // 기본 전송 막기
+
+            // 어떤 종류인지에 따라 메시지 자동 설정
+            let msg = "정말 삭제하시겠습니까?";
+
+            const action = form.getAttribute("th:action") || "";
+
+            if (action.includes("/board/delete")) {
+                msg = "게시글과 관련 댓글까지 삭제하시겠습니까?";
+            } else if (action.includes("/comments") && action.includes("/delete")) {
+                msg = "댓글을 삭제하시겠습니까?";
+            } else if (action.includes("/admin/post/delete")) {
+                msg = "관리자 권한으로 해당 게시글을 삭제하시겠습니까?";
+            } else if (action.includes("/admin/comment/delete")) {
+                msg = "관리자 권한으로 해당 댓글을 삭제하시겠습니까?";
+            } else if (action.includes("/admin/member/delete")) {
+                msg = "정말 해당 회원을 강퇴하시겠습니까?";
+            }
+
+            if(confirm(msg)) {
+                form.submit(); // 확인 시 전송
+            }
+        });
+    });
+
 </script>
 </body>
 </html>
