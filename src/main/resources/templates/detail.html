@@ -62,6 +62,8 @@
 
         </div>
 
+
+
         <!-- 본문 -->
         <div class="prose max-w-none whitespace-pre-line leading-7"
              th:text="${post.content}">
@@ -139,7 +141,8 @@
 <script>
     const recommendBtn = document.getElementById("recommend-btn");
     const recommendCount = document.getElementById("recommend-count");
-    const postId = [[${post.id}]];
+    const postId = [[$,{post,id}]];
+
 
     recommendBtn.addEventListener("click", () => {
 
