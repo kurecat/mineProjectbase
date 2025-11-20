@@ -1492,135 +1492,137 @@ footer-Copyright {
 /* =========================================
    Admin Page Styles (관리자 페이지 전용)
    ========================================= */
-
 .admin-wrapper {
-    width: 100%;
-    max-width: 1140px; /* 기존 레이아웃 폭에 맞춤 */
-    margin: 0 auto;
-    padding: 20px 0;
-    background-color: #ffffff;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
 }
 
-/* 1. 타이틀 (24px) */
 .admin-title {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: bold;
-    color: #000;
     margin-bottom: 20px;
+    color: #333;
+    text-align: left; /* 제목은 왼쪽 정렬 유지 */
 }
 
-/* 2. 드롭다운 (박스 스타일) */
+/* 드롭다운 셀렉트 박스 */
 .admin-select-wrapper {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    text-align: left;
 }
 
 .admin-select {
-    width: 150px;
-    height: 35px;
-    font-size: 16px; /* 내용 폰트 사이즈 */
-    padding: 5px;
-    border: 1px solid #333;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
     border-radius: 4px;
-    cursor: pointer;
+    font-size: 16px;
 }
 
 /* 구분선 */
 .admin-divider {
-    width: 100%;
+    border: 0;
     height: 2px;
-    background-color: #333; /* 진한 구분선 */
-    margin: 10px 0;
+    background-color: #333; /* 더 두껍고 진한 선 */
+    margin: 20px 0;
 }
 
 .admin-divider-thin {
-    width: 100%;
+    border: 0;
     height: 1px;
-    background-color: #333;
-    margin-bottom: 20px;
+    background-color: #ccc; /* 얇은 구분선 */
+    margin: 0; /* 헤더와 데이터 사이의 간격 조절 */
 }
 
-/* 3. 로우(Row) 공통 스타일 */
+/* 테이블 행 스타일 */
 .admin-row {
-    display: flex;
-    justify-content: center; /* 중앙 정렬 */
-    align-items: center;
-    width: 100%;
-    gap: 10px; /* 박스 사이 간격 */
+    display: flex; /* Flexbox 사용하여 컬럼 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    padding: 10px 0; /* 행 내부 여백 */
+    /* border-bottom: 1px solid #e0e0e0; /* 각 행 아래 구분선 (hr 대신 사용 가능) */
 }
 
-/* 헤더 로우 (이메일, 닉네임 등 글자) - 26px */
 .admin-header-row {
-    height: 50px;
-    margin-bottom: 5px;
-}
-
-.admin-col-header {
-    font-size: 26px; /* 요청: 나머지 폰트 사이즈 26px (헤더 등) */
-    font-weight: 500;
-    text-align: center;
-    color: #000;
-}
-
-/* 데이터 로우 (회색 박스들) - 높이 40px */
-.admin-data-row {
-    margin-bottom: 10px; /* 데이터 줄 간격 */
-}
-
-/* 데이터 박스 (회색 배경) - 20px */
-.admin-box {
-    height: 40px;
-    background-color: #d9d9d9;
-
-    /* ▼ [수정] 텍스트 정렬 및 말줄임표 설정을 위한 변경 */
-    display: block;       /* flex 대신 block 사용 */
-    line-height: 40px;    /* 높이와 똑같이 설정하면 세로 중앙 정렬됨 */
-    text-align: center;   /* 가로 중앙 정렬 */
-
-    font-size: 20px;      /* (기존 폰트 사이즈 유지) */
-    color: #000;
-
-    /* ▼ [핵심] 말줄임표(...) 설정 3대장 */
-    white-space: nowrap;      /* 글자가 길어도 줄바꿈 하지 않음 */
-    overflow: hidden;         /* 박스를 넘어가는 글자는 숨김 */
-    text-overflow: ellipsis;  /* 숨겨진 부분은 ... 으로 표시 */
-
-    /* ▼ [추천] 글자가 박스 벽에 딱 붙지 않게 양옆 여백 추가 */
-    padding: 0 10px;
-    box-sizing: border-box;   /* 패딩을 줘도 박스 전체 크기가 커지지 않게 함 */
-}
-
-/* 버튼 스타일 (강퇴, 삭제) - 16px */
-.admin-btn {
-    height: 40px;
-    background-color: #d9d9d9; /* 박스와 동일한 배경색 */
-    border: none;
-    font-size: 16px; /* 요청: 아래 내용(버튼 등) 16px */
     font-weight: bold;
-    cursor: pointer;
+    background-color: #f9f9f9; /* 헤더 배경색 */
+    border-bottom: 2px solid #333; /* 헤더 아래는 더 두꺼운 선 */
+    padding: 15px 0; /* 헤더 여백 */
+    font-size: 16px;
     color: #333;
-    transition: background-color 0.2s;
+}
+
+/* 컬럼 스타일 */
+.admin-col-header, .admin-box {
+    text-align: center; /* 모든 텍스트 가운데 정렬 */
+    flex-shrink: 0; /* 너비가 줄어들지 않도록 */
+    display: flex; /* 내부 컨텐츠도 중앙 정렬을 위해 flex 사용 */
+    align-items: center;
+    justify-content: center;
+    min-height: 40px; /* 최소 높이 설정 (행 간격 확보) */
+    word-break: break-word; /* 긴 단어 자동 줄바꿈 */
+    padding: 0 5px; /* 좌우 패딩 */
+}
+
+
+/* 컬럼 너비 */
+.w250 { width: 250px; }
+.w150 { width: 150px; }
+.w100 { width: 100px; }
+.w170 { width: 170px; }
+.w80 { width: 80px; } /* 게시글 관리 - 카테고리 추가 */
+.w60 { width: 60px; }
+
+/* 데이터 행 버튼 스타일 */
+.admin-data-row form {
+    margin: 0; /* form 기본 margin 제거 */
+    height: 100%; /* 부모 행의 높이에 맞추기 */
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.admin-btn:hover {
-    background-color: #c0c0c0; /* 호버 시 약간 진하게 */
+.admin-btn {
+    padding: 8px 12px;
+    background-color: #ef4444; /* 밝은 빨간색 */
+    border: 1px solid #ef4444; /* 테두리도 빨간색 */
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    transition: background-color 0.2s ease;
+    height: 36px; /* 버튼 높이 조정 */
+    color: #ffffff;
 }
 
-/* =========================================
-   Width Utility Classes (요청하신 사이즈)
-   =========================================
-*/
-.w250 { width: 250px; }
-.w170 { width: 170px; }
-.w150 { width: 150px; }
-.w80  { width: 80px; }
-.w60  { width: 60px; }
+.admin-btn:hover {
+        background-color: #dc2626;
+        border-color: #dc2626;
+}
+
+.admin-link {
+    text-decoration: none; /* 밑줄 제거 */
+    color: #333; /* 기본 글자색 */
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.admin-link:hover {
+    text-decoration: underline; /* 마우스 올리면 밑줄 */
+    color: #2563eb; /* 마우스 올리면 파란색 */
+}
 
 
-/* 유틸리티: 숨김 클래스 (기존 hidden과 호환되도록 !important 추가) */
+/* hr 구분선 스타일 */
+hr.row-divider {
+    border: 0;
+    height: 1px;
+    background-color: #e0e0e0; /* 연한 회색 */
+    margin: 0; /* 행의 padding으로 간격을 조절하므로 margin은 0 */
+}
+
+/* 숨김 클래스 */
 .hidden {
-    display: none !important;
+    display: none; important!
 }
