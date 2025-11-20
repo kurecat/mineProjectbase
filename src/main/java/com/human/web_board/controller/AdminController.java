@@ -5,10 +5,7 @@ import com.human.web_board.service.PostService;
 import com.human.web_board.service.CommentService; // 댓글 서비스 (이름 확인 필요)
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/admin")
@@ -55,10 +52,18 @@ public class AdminController {
         return "redirect:/admin?section=post";
     }
 
-    // 3. 댓글 삭제
+    // 3. 댓글 및 신고 댓글 삭제
     @PostMapping("/comment/delete/{id}")
-    public String deleteComment(@PathVariable Long id) {
-        commentService.delete(id); // 댓글 삭제 서비스 호출 (혹은 deleteById 등)
+    public String deleteComment(
+            @PathVariable Long id,
+            @RequestParam(required = false) String redirectSection // 파라미터 추가
+    ) {
+        commentService.delete(id);
+
+        // 신고 관리 탭에서 삭제했다면 거기로 복귀, 아니면 기본 댓글 관리 탭으로
+        if ("report".equals(redirectSection)) {
+            return "redirect:/admin?section=report";
+        }
         return "redirect:/admin?section=comment";
     }
 }

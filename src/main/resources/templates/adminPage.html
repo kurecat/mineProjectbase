@@ -26,6 +26,7 @@
                 <option value="user">유저 관리</option>
                 <option value="post">게시글 관리</option>
                 <option value="comment">댓글 관리</option>
+                <option value="report">신고 관리</option>
             </select>
         </div>
 
@@ -48,7 +49,8 @@
                     <div class="admin-box w100" th:text="${member.grade == '관리자' ? '관리자' : '사용자'}"></div>
                     <div class="admin-box w170" th:text="${#temporals.format(member.regDate, 'yyyy-MM-dd HH:mm')}"></div>
 
-                    <form th:action="@{|/admin/member/delete/${member.id}|}" method="post">
+                    <form th:action="@{|/admin/member/delete/${member.id}|}" method="post"
+                          th:if="${member.grade != '관리자'}">
                         <button type="submit" class="admin-btn w60" onclick="return confirm('정말 강퇴하시겠습니까?');">강퇴</button>
                     </form>
                 </div>
@@ -106,31 +108,74 @@
             </div>
             <div class="admin-divider-thin"></div>
 
+            <th:block th:with="normalList=${comments.?[!content.contains('[신고]')]}">
 
-            <th:block th:each="comment : ${comments}">
-                <div class="admin-row admin-data-row">
-                    <div class="admin-box w250">
-                        <a th:href="@{|/board/detail/${comment.postId}|}"
-                           th:text="${comment.postTitle}"
-                           class="admin-link">
-                        </a>
+                <th:block th:each="comment : ${normalList}">
+                    <div class="admin-row admin-data-row">
+                        <div class="admin-box w250">
+                            <a th:href="@{|/board/detail/${comment.postId}|}"
+                               th:text="${comment.postTitle}"
+                               class="admin-link">
+                            </a>
+                        </div>
+                        <div class="admin-box w250" th:text="${comment.content}"></div>
+                        <div class="admin-box w150" th:text="${comment.nickname}"></div>
+                        <div class="admin-box w170" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+
+                        <form th:action="@{|/admin/comment/delete/${comment.id}|}" method="post">
+                            <button type="submit" class="admin-btn w60" onclick="return confirm('댓글을 삭제하시겠습니까?');">삭제</button>
+                        </form>
                     </div>
-                    <div class="admin-box w250" th:text="${comment.content}"></div>
-                    <div class="admin-box w150" th:text="${comment.nickname}"></div>
-                    <div class="admin-box w170" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+                    <hr class="row-divider">
+                </th:block>
 
-                    <form th:action="@{|/admin/comment/delete/${comment.id}|}" method="post">
-                        <button type="submit" class="admin-btn w60" onclick="return confirm('댓글을 삭제하시겠습니까?');">삭제</button>
-                    </form>
+                <div class="admin-row" th:if="${#lists.isEmpty(normalList)}">
+                    <div style="padding: 20px; font-size: 20px;">댓글이 없습니다.</div>
                 </div>
-                <hr class="row-divider">
-            </th:block>
 
+            </th:block> </div>
 
-            <div class="admin-row" th:if="${#lists.isEmpty(comments)}">
-                <div style="padding: 20px; font-size: 20px;">댓글이 없습니다.</div>
+        <div id="section-report" class="admin-section hidden">
+            <div class="admin-row admin-header-row">
+                <div class="admin-col-header w250">게시글 제목</div>
+                <div class="admin-col-header w250">신고 내용</div>
+                <div class="admin-col-header w150">신고자</div>
+                <div class="admin-col-header w170">신고일자</div>
+                <div class="admin-col-header w60">관리</div>
             </div>
-        </div>
+            <div class="admin-divider-thin"></div>
+
+            <th:block th:with="reportList=${comments.?[content.contains('[신고]')]}">
+
+                <th:block th:each="comment : ${reportList}">
+                    <div class="admin-row admin-data-row">
+                        <div class="admin-box w250">
+                            <a th:href="@{|/board/detail/${comment.postId}|}"
+                               th:text="${comment.postTitle}"
+                               class="admin-link">
+                            </a>
+                        </div>
+
+                        <div class="admin-box w250 font-bold text-red-600" style="color: #dc2626; font-weight: bold;">
+                            <span th:text="${comment.content}"></span>
+                        </div>
+
+                        <div class="admin-box w150" th:text="${comment.nickname}"></div>
+                        <div class="admin-box w170" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+
+                        <form th:action="@{|/admin/comment/delete/${comment.id}|}" method="post">
+                            <input type="hidden" name="redirectSection" value="report">
+                            <button type="submit" class="admin-btn w60" onclick="return confirm('신고된 댓글을 삭제하시겠습니까?');">삭제</button>
+                        </form>
+                    </div>
+                    <hr class="row-divider">
+                </th:block>
+
+                <div class="admin-row" th:if="${#lists.isEmpty(reportList)}">
+                    <div style="padding: 20px; font-size: 20px;">신고된 댓글이 없습니다.</div>
+                </div>
+
+            </th:block> </div>
 
         <div class="admin-divider"></div>
     </div>
@@ -142,25 +187,23 @@
     // 페이지 로드 시 실행
     window.onload = function() {
         const urlParams = new URLSearchParams(window.location.search);
-        const section = urlParams.get('section'); // URL에서 section 값 가져오기
+        const section = urlParams.get('section');
 
         if (section) {
-            // 드롭다운 값 변경
             const select = document.getElementById("adminCategorySelect");
             select.value = section;
-            // 해당 섹션 보여주기 함수 실행
             changeAdminSection();
         }
     }
 
     function changeAdminSection() {
-        // (기존 코드 유지)
         const select = document.getElementById("adminCategorySelect");
         const selectedValue = select.value;
 
         document.getElementById("section-user").classList.add("hidden");
         document.getElementById("section-post").classList.add("hidden");
         document.getElementById("section-comment").classList.add("hidden");
+        document.getElementById("section-report").classList.add("hidden");
 
         document.getElementById("section-" + selectedValue).classList.remove("hidden");
     }
