@@ -83,7 +83,7 @@
                     <div class="admin-box w150" th:text="${post.nickname}"></div>
                     <div class="admin-box w170" th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
 
-                    <form th:action="@{|/post/delete/${post.id}|}" method="post">
+                    <form th:action="@{|/admin/post/delete/${post.id}|}" method="post">
                         <button type="submit" class="admin-btn w60" onclick="return confirm('게시글을 삭제하시겠습니까?');">삭제</button>
                     </form>
                 </div>
@@ -138,8 +138,22 @@
 </div>
 
 <script>
-    // 드롭다운 스크립트 (그대로 유지)
+    // 페이지 로드 시 실행
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const section = urlParams.get('section'); // URL에서 section 값 가져오기
+
+        if (section) {
+            // 드롭다운 값 변경
+            const select = document.getElementById("adminCategorySelect");
+            select.value = section;
+            // 해당 섹션 보여주기 함수 실행
+            changeAdminSection();
+        }
+    }
+
     function changeAdminSection() {
+        // (기존 코드 유지)
         const select = document.getElementById("adminCategorySelect");
         const selectedValue = select.value;
 
